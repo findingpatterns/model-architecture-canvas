@@ -16,9 +16,7 @@
 <br/>
 <br/>
 
-**[Live demo →](https://modelcanvas.vercel.app)** · **[Contribute a diagram →](./CONTRIBUTING.md)**
-
-<sub>↑ replace with your own Vercel URL after deploying</sub>
+**[Live demo →](https://model-architecture-canvas.vercel.app)** · **[Contribute a diagram →](./CONTRIBUTING.md)**
 
 </div>
 
