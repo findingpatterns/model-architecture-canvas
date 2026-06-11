@@ -190,7 +190,7 @@ html, body {
   gap: 16px;
   padding: 14px 22px;
   border-bottom: 1px solid var(--hair-paper);
-  background: var(--ink-deep);
+  background: transparent;
 }
 
 .active-title {
