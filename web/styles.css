@@ -40,15 +40,6 @@ html, body {
   letter-spacing: 0.05em;
 }
 
-/* 1px hairline interior frame, inset from the viewport edges. Decorative; never blocks input. */
-.hairline-frame {
-  position: fixed;
-  inset: 14px;
-  border: 1px solid var(--hair-paper);
-  pointer-events: none;
-  z-index: 50;
-}
-
 /* ---- Layout ---- */
 .app {
   display: flex;
