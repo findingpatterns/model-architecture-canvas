@@ -35,6 +35,7 @@ const els = {
 let viewer = null;       // single reused JSONCanvasViewer instance
 let activeId = null;
 let loadSeq = 0;         // guards against out-of-order fetches from rapid switching
+let currentTheme = "dark"; // kept in sync with the shell theme; passed to the viewer
 
 // Show a plain text message in the viewer area (e.g. error / unknown model).
 // Uses textContent — never interpolate untrusted strings into innerHTML.
@@ -144,7 +145,7 @@ async function loadModel(id) {
     if (reqId !== loadSeq) return; // a newer switch superseded this one
     if (!viewer) {
       viewer = new JSONCanvasViewer(
-        { container: els.viewer, canvas, parser },
+        { container: els.viewer, canvas, parser, theme: currentTheme },
         [Minimap, Controls],
       );
     } else {
@@ -189,10 +190,12 @@ mobileQuery.addEventListener("change", (e) => setSidebarVisible(!e.matches));
 const THEME_KEY = "modelcanvas-theme";
 
 function applyTheme(theme) {
+  currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
   const isLight = theme === "light";
   els.themeToggle.textContent = isLight ? "🌙" : "☀";       // icon = the theme you'd switch TO
   els.themeToggle.setAttribute("aria-pressed", String(isLight));
+  viewer?.changeTheme(theme); // darken/lighten the canvas surface too (if a viewer exists)
 }
 
 function initialTheme() {
