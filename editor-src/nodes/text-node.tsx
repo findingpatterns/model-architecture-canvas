@@ -2,12 +2,13 @@ import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { NodeResizer, useReactFlow, type NodeProps } from "@xyflow/react";
 import { NodeHandles } from "./node-handles";
 import { resolveColor } from "../canvas-colors";
+import { renderMarkdown } from "../render-markdown";
 import { useEditorContext } from "../editor-context";
 import type { CanvasNodeData } from "../canvas-adapter";
 
-// Text node: colored left accent, raw (multiline) text. Double-click to edit
-// inline via a textarea (red-team #12 — multiline content like the demo title).
-// NodeResizer (visible when selected) drives width/height; RF persists them.
+// Text node: renders markdown (like the viewer) in display mode; double-click to
+// edit the RAW markdown inline via a textarea (red-team #12 — multiline content
+// like the demo title). NodeResizer (visible when selected) drives width/height.
 export function TextNode({ id, data, selected }: NodeProps) {
   const d = data as CanvasNodeData;
   const { updateNodeData } = useReactFlow();
@@ -44,9 +45,11 @@ export function TextNode({ id, data, selected }: NodeProps) {
           }}
         />
       ) : (
-        <div className="cv-node-text" onDoubleClick={() => { setDraft(d.label); setEditing(true); }}>
-          {d.label}
-        </div>
+        <div
+          className="cv-node-text cv-md"
+          onDoubleClick={() => { setDraft(d.label); setEditing(true); }}
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(d.label) }}
+        />
       )}
     </div>
   );

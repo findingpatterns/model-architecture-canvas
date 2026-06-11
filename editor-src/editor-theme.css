@@ -71,6 +71,19 @@ body { font-family: "Inter", system-ui, sans-serif; }
 /* faint colour wash when the node has an accent */
 .cv-node[style*="--node-accent"] { background: color-mix(in srgb, var(--node-accent) 13%, var(--cv-node)); }
 .cv-node-text { white-space: pre-wrap; word-break: break-word; }
+
+/* Rendered markdown inside text nodes (mirrors the viewer). */
+.cv-md { white-space: normal; }
+.cv-md .md-h { font-weight: 600; display: inline-block; }
+.cv-md .md-h1 { font-size: 1.25em; }
+.cv-md .md-h2 { font-size: 1.12em; }
+.cv-md strong { font-weight: 600; }
+.cv-md em { font-style: italic; }
+.cv-md .md-code {
+  font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em;
+  background: color-mix(in srgb, var(--cv-text) 12%, transparent);
+  padding: 1px 4px; border-radius: 3px;
+}
 .cv-node-kind { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; text-transform: uppercase; color: var(--cv-muted); display: block; margin-bottom: 3px; }
 .cv-node-edit { width: 100%; height: 100%; resize: none; border: none; outline: none; background: transparent; color: var(--cv-text); font: inherit; }
 .react-flow__node.selected .cv-node,
