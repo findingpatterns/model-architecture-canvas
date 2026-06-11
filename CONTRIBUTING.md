@@ -46,12 +46,15 @@ Every PR runs `npm run validate` (GitHub Action). It fails — with a red ✗ on
 Run it locally before pushing:
 
 ```bash
-npm run validate      # validate only, writes nothing
-npm run build         # validate + generate web/catalog.json and web/canvases/
+npm install           # first time only (installs the editor's build deps)
+npm run validate      # validate submissions only, writes nothing — no deps needed
+npm run build         # validate + generate catalog + build the editor
 npm run serve         # build, then serve the site at http://localhost:8000
 ```
 
-(Requires Node 18+ and Python 3 for the local server. No npm dependencies to install.)
+`npm run validate` (the PR gate for submissions) stays dependency-free. `npm run build`/`serve` also
+build the in-browser editor (a React/Vite app under `editor-src/`), which needs `npm install` first.
+Adding a model never requires touching the editor.
 
 ## How it deploys
 

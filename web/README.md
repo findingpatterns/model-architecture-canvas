@@ -3,12 +3,18 @@
 The deployed site. Overview, features, contributing, and deploy instructions live in the repo root:
 **[`../README.md`](../README.md)** and **[`../CONTRIBUTING.md`](../CONTRIBUTING.md)**.
 
-This folder is plain static output — `index.html` + `styles.css` + `app.js`, no build tooling. At runtime
-it fetches `catalog.json` (generated from `models/` by `scripts/build-catalog.mjs`) and renders the
-sidebar from it. `catalog.json` and `canvases/` are git-ignored build artifacts.
+The **viewer** (`index.html` + `styles.css` + `app.js`) is plain static output with no bundler. At
+runtime it fetches `catalog.json` (generated from `models/` by `scripts/build-catalog.mjs`) and renders
+the sidebar from it.
+
+The **editor** lives at `web/editor/` — the built output of the React/Vite app in `editor-src/` (see
+`../README.md`). The viewer's topbar "✎ Edit" button links to `editor/?model=<id>`. The editor reads
+the shared `localStorage["modelcanvas-theme"]` for light/dark and fetches `/canvases/<id>.canvas`.
+
+`catalog.json`, `canvases/`, and `editor/` are all git-ignored build artifacts.
 
 ```bash
-npm run serve   # from repo root: build the catalog, then serve http://localhost:8000
+npm install && npm run serve   # build catalog + editor, then serve http://localhost:8000
 ```
 
 ## Viewer API note

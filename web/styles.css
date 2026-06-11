@@ -232,6 +232,20 @@ html, body {
 .source-link:hover { color: var(--green-light); border-color: var(--orange); }
 .source-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
+.edit-btn {
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--paper);
+  border: 1px solid var(--line-accent);
+  padding: 8px 13px;
+  border-radius: 6px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.edit-btn:hover { color: var(--green-light); border-color: var(--green); }
+.edit-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
 /* The viewer fills main; the topbar overlays its top strip. */
 .viewer { position: absolute; inset: 0; }
 

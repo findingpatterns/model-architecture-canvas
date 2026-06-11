@@ -35,6 +35,7 @@ point to think with, not a finished poster.
 ## Features
 
 - 🗺️ **Browse a catalog** of model-architecture diagrams with pan / zoom / minimap / fullscreen.
+- ✏️ **Edit in the browser** — drag, add nodes, draw edges, resize, recolor, delete, and edit text, then download the result. Fully client-side; nothing is saved server-side.
 - ⬇️ **Download any `.canvas`** and open it in your note editor (e.g. Obsidian) to edit, re-layout, and annotate.
 - 🌗 **Light / dark** theme, responsive, collapsible sidebar.
 - 🔗 **Shareable deep links** — `?model=<id>` opens straight to a diagram.
@@ -67,29 +68,39 @@ automatically. **Full guide → [`CONTRIBUTING.md`](./CONTRIBUTING.md).**
 ## Run locally
 
 ```bash
-npm run serve     # builds the catalog, then serves http://localhost:8000
+npm install       # first time only
+npm run serve     # builds catalog + editor, then serves http://localhost:8000
+npm run dev:editor  # optional: hot-reloading editor dev server
 ```
 
-Needs Node 18+ and Python 3 — **no npm dependencies to install**.
+Needs Node 18+ and Python 3. The **viewer** is dependency-free static files; the **editor** is a small
+React/Vite app (the only npm dependencies) built into `web/editor/`.
 
 ## How it works
 
 ```
 models/<id>/ { model.canvas, meta.json }     ← source of truth (your PRs)
-        │   scripts/build-catalog.mjs  (validate + generate)
+        │   scripts/build-catalog.mjs  +  vite build   (validate + generate)
         ▼
-web/catalog.json + web/canvases/             ← built in CI, never committed
+web/catalog.json + web/canvases/ + web/editor/   ← built in CI, never committed
         │   fetched at runtime
         ▼
-web/  static site  →  json-canvas-viewer (CDN)  →  preview + download
+web/  static site
+   ├─ json-canvas-viewer (CDN)  →  catalog preview + download
+   └─ /editor/  React Flow app  →  in-browser edit + download (client-side, no DB)
 ```
 
-`models/` is the only thing contributors edit. CI validates every submission and Vercel regenerates
-the catalog on each deploy — which is why two people adding different models never conflict.
+`models/` is the only thing contributors edit. CI validates every submission, builds the editor, and
+Vercel regenerates everything on each deploy — which is why two people adding different models never conflict.
+
+> **Design note:** the viewer started as a deliberately thin "preview + download, edit in your note
+> editor" surface. In-browser editing was added later by request — it's an optional convenience layered
+> on top; the download-to-Obsidian flow remains first-class.
 
 ## Built with
 
-- [json-canvas-viewer](https://github.com/hesprs/json-canvas-viewer) by Hesprs (MIT) — renders the JSON Canvas spec
+- [json-canvas-viewer](https://github.com/hesprs/json-canvas-viewer) by Hesprs (MIT) — renders the catalog preview
+- [React Flow](https://reactflow.dev/) (`@xyflow/react`, MIT) — powers the in-browser editor
 - [JSON Canvas](https://jsoncanvas.org/) — the open `.canvas` format (used by note editors like Obsidian)
 
 <div align="center"><sub>Made for people who learn by drawing on the diagram.</sub></div>

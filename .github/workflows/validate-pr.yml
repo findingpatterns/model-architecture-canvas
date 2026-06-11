@@ -1,19 +1,20 @@
-name: Validate model submissions
+name: Validate submissions & build
 
-# Runs on every PR that touches the models/ folder (or the build script).
-# Blocks the merge with a red ✗ if any submission is malformed, so admins and
-# contributors see problems immediately. Vercel handles deploy/preview itself.
+# On PRs: validate model submissions (fast, dep-free) AND build the editor so a
+# broken bundle can't reach main and take down the whole web/ deploy. Vercel
+# handles deploy/preview itself.
 on:
   pull_request:
     paths:
       - "models/**"
-      - "scripts/build-catalog.mjs"
+      - "scripts/**"
+      - "editor-src/**"
+      - "vite.config.ts"
+      - "tsconfig.json"
       - "package.json"
+      - "package-lock.json"
   push:
     branches: [main]
-    paths:
-      - "models/**"
-      - "scripts/build-catalog.mjs"
 
 jobs:
   validate:
@@ -25,3 +26,18 @@ jobs:
           node-version: "20"
       - name: Validate catalog (no files written)
         run: npm run validate
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Install (deterministic)
+        run: npm ci
+      - name: Build catalog + editor
+        run: npm run build
+      - name: Run adapter tests
+        run: npm test

@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    { "id": "t1", "type": "text", "x": 0, "y": 0, "width": 200, "height": 80, "text": "preset red", "color": "1" },
+    { "id": "t2", "type": "text", "x": 240, "y": 0, "width": 200, "height": 80, "text": "preset orange", "color": "2" },
+    { "id": "t3", "type": "text", "x": 480, "y": 0, "width": 200, "height": 80, "text": "preset yellow", "color": "3" },
+    { "id": "t4", "type": "text", "x": 0, "y": 120, "width": 200, "height": 80, "text": "preset green", "color": "4" },
+    { "id": "t5", "type": "text", "x": 240, "y": 120, "width": 200, "height": 80, "text": "preset cyan", "color": "5" },
+    { "id": "t6", "type": "text", "x": 480, "y": 120, "width": 200, "height": 80, "text": "preset purple", "color": "6" },
+    { "id": "thex", "type": "text", "x": 0, "y": 240, "width": 200, "height": 80, "text": "hex color", "color": "#3344ff" },
+    { "id": "tnone", "type": "text", "x": 240, "y": 240, "width": 200, "height": 80, "text": "no color\nmultiline" },
+    { "id": "f1", "type": "file", "x": 480, "y": 240, "width": 200, "height": 80, "file": "models/example.md", "color": "4" },
+    { "id": "l1", "type": "link", "x": 0, "y": 360, "width": 200, "height": 80, "url": "https://example.com" },
+    { "id": "g1", "type": "group", "x": -40, "y": -40, "width": 760, "height": 420, "label": "Styled group", "background": "https://example.com/bg.png", "backgroundStyle": "cover", "color": "6" }
+  ],
+  "edges": [
+    { "id": "e1", "fromNode": "t1", "toNode": "t2", "fromSide": "right", "toSide": "left", "toEnd": "arrow", "label": "labeled" },
+    { "id": "e2", "fromNode": "t2", "toNode": "t3", "fromSide": "bottom", "toSide": "top", "toEnd": "none" },
+    { "id": "e3", "fromNode": "t4", "toNode": "t5", "color": "1" },
+    { "id": "e4", "fromNode": "t1", "toNode": "t4", "fromSide": "top", "toSide": "top" },
+    { "id": "e5", "fromNode": "t6", "toNode": "t1", "fromSide": "top", "toSide": "bottom" }
+  ]
+}

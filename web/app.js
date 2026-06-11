@@ -26,6 +26,7 @@ const els = {
   download: document.getElementById("download"),
   activeTitle: document.getElementById("active-title"),
   source: document.getElementById("source"),
+  edit: document.getElementById("edit"),
   app: document.querySelector(".app"),
   sidebar: document.getElementById("sidebar"),
   toggle: document.getElementById("sidebar-toggle"),
@@ -127,6 +128,10 @@ async function loadModel(id) {
   els.download.setAttribute("download", `${entry.id}.canvas`);
   els.download.hidden = false;
 
+  // Edit this model in the in-browser editor (separate React app at /editor/).
+  els.edit.href = `editor/?model=${encodeURIComponent(id)}`;
+  els.edit.hidden = false;
+
   // Optional source link (paper / repo the diagram is based on).
   if (entry.source) {
     els.source.href = entry.source;
@@ -153,9 +158,10 @@ async function loadModel(id) {
     }
   } catch (err) {
     if (reqId !== loadSeq) return;
-    // Failed load: clear the stale download target/title/source so they don't mislead.
+    // Failed load: clear the stale download target/title/source/edit so they don't mislead.
     els.download.hidden = true;
     els.source.hidden = true;
+    els.edit.hidden = true;
     els.activeTitle.textContent = "";
     showViewerMessage(`Failed to load ${entry.file}: ${err?.message ?? err}`);
   }
