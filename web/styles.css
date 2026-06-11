@@ -182,15 +182,24 @@ html, body {
 .foot-note .mono { color: var(--green-light); }
 
 /* ---- Main / viewer ---- */
-.main { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+/* The viewer fills the whole area; the topbar floats over it so the canvas
+   (dotted grid + diagram) shows through behind the controls. */
+.main { flex: 1 1 auto; position: relative; min-width: 0; }
 
 .topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 14px 22px;
   background: transparent;
+  pointer-events: none; /* empty strip lets canvas pan/zoom through… */
 }
+.topbar > * { pointer-events: auto; } /* …but the controls stay clickable */
 
 .active-title {
   flex: 1 1 auto;
@@ -232,8 +241,12 @@ html, body {
 .source-link:hover { color: var(--green-light); border-color: var(--orange); }
 .source-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
-/* The viewer surface stays clean — no grain/frame overlay inside it. */
-.viewer { flex: 1 1 auto; min-height: 0; position: relative; }
+/* The viewer fills main; the topbar overlays its top strip. */
+.viewer { position: absolute; inset: 0; }
+
+/* Push the viewer's own zoom/fullscreen panel below the floating topbar so the
+   two control clusters never collide at the top-right. */
+.viewer .JCV-controls { top: 64px !important; }
 
 /* Sidebar toggle: always visible — collapses the panel on desktop, opens the drawer on mobile. */
 .sidebar-toggle {
