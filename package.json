@@ -1,0 +1,12 @@
+{
+  "name": "model-architecture-canvas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Community catalog of model-architecture diagrams — preview in-browser, download the .canvas for Obsidian.",
+  "scripts": {
+    "build": "node scripts/build-catalog.mjs",
+    "validate": "node scripts/build-catalog.mjs --check",
+    "serve": "npm run build && (cd web && python3 -m http.server 8000)"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "DeepSeek-V4-Flash",
+  "description": "Architecture colored by weight dtype — FP4 routed experts, FP8 default linears, BF16 overrides.",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["deepseek", "moe", "quantization"],
+  "source": "https://github.com/deepseek-ai"
+}

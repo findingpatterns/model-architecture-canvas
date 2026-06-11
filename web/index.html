@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ModelCanvas — model architecture preview</title>
+  <meta name="description" content="Preview a model's architecture diagram in the browser and download the .canvas to edit in Obsidian." />
+
+  <!-- Editorial type system: DM Serif Display (headings), Inter 300 (body), JetBrains Mono (metadata) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- Shell chrome decoration: thin interior frame; both are pointer-events:none so they never block the viewer. -->
+  <div class="hairline-frame" aria-hidden="true"></div>
+
+  <div class="app">
+    <aside id="sidebar" class="sidebar">
+      <header class="sidebar-head">
+        <h1 class="site-title">ModelCanvas</h1>
+        <p class="kicker">MODEL ARCHITECTURE · PREVIEW + DOWNLOAD</p>
+      </header>
+
+      <nav id="catalog-list" class="catalog" aria-label="Available models"></nav>
+
+      <footer class="sidebar-foot">
+        <p class="foot-note">
+          The preview is a starting point. Download the
+          <span class="mono">.canvas</span> and open it in your own Obsidian vault to drag nodes,
+          draw edges, and annotate.
+        </p>
+      </footer>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle model list" aria-controls="sidebar" aria-expanded="false">☰</button>
+        <span id="active-title" class="active-title mono"></span>
+        <a id="source" class="source-link mono" target="_blank" rel="noopener noreferrer" hidden>↗ source</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+        <a id="download" class="download-btn" download hidden>⬇ Download <span class="mono">.canvas</span></a>
+      </div>
+      <div id="viewer" class="viewer"></div>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

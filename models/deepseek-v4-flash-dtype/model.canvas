@@ -1,0 +1,613 @@
+{
+  "nodes": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": -60,
+      "y": -260,
+      "width": 560,
+      "height": 120,
+      "text": "# DeepSeek-V4-Flash \u2014 by numeric format\nColor = weight dtype (from `model.py` Linear init)\nNote: activations are dynamically quantized to FP8 at each GEMM",
+      "color": "6"
+    },
+    {
+      "id": "leg",
+      "type": "group",
+      "x": 540,
+      "y": -260,
+      "width": 360,
+      "height": 360,
+      "label": "LEGEND \u2014 dtype"
+    },
+    {
+      "id": "lg1",
+      "type": "text",
+      "x": 560,
+      "y": -200,
+      "width": 320,
+      "height": 40,
+      "text": "**FP4** `float4_e2m1fn_x2` \u2014 routed experts",
+      "color": "1"
+    },
+    {
+      "id": "lg2",
+      "type": "text",
+      "x": 560,
+      "y": -150,
+      "width": 320,
+      "height": 40,
+      "text": "**FP8** `e4m3` \u2014 default (most linears)",
+      "color": "2"
+    },
+    {
+      "id": "lg3",
+      "type": "text",
+      "x": 560,
+      "y": -100,
+      "width": 320,
+      "height": 40,
+      "text": "**BF16** \u2014 explicit override (wo_a, weights_proj)",
+      "color": "5"
+    },
+    {
+      "id": "lg4",
+      "type": "text",
+      "x": 560,
+      "y": -50,
+      "width": 320,
+      "height": 40,
+      "text": "**FP32** \u2014 norms / HC / compressor / lm_head",
+      "color": "4"
+    },
+    {
+      "id": "lg5",
+      "type": "text",
+      "x": 560,
+      "y": 0,
+      "width": 320,
+      "height": 40,
+      "text": "**int / logits** \u2014 non-weight tensors",
+      "color": "6"
+    },
+    {
+      "id": "lg6",
+      "type": "text",
+      "x": 560,
+      "y": 50,
+      "width": 320,
+      "height": 44,
+      "text": "_Activations: act_quant\u2192FP8 before fp4/fp8 GEMM_\n_KV: non-rope FP8-sim, rope dims BF16_",
+      "color": "6"
+    },
+    {
+      "id": "inp",
+      "type": "text",
+      "x": 60,
+      "y": -110,
+      "width": 260,
+      "height": 40,
+      "text": "**input_ids**  (int)",
+      "color": "6"
+    },
+    {
+      "id": "embed",
+      "type": "text",
+      "x": 60,
+      "y": -30,
+      "width": 260,
+      "height": 56,
+      "text": "**ParallelEmbedding**\nweight: BF16/FP32",
+      "color": "4"
+    },
+    {
+      "id": "hcexp",
+      "type": "text",
+      "x": 30,
+      "y": 60,
+      "width": 320,
+      "height": 56,
+      "text": "**HC expand** \u2192 [1,S,4,4096]\n(HC params FP32)",
+      "color": "4"
+    },
+    {
+      "id": "blk",
+      "type": "group",
+      "x": -200,
+      "y": 150,
+      "width": 1640,
+      "height": 1640,
+      "label": "Block \u00d743  \u2014  dtype identical across all layers"
+    },
+    {
+      "id": "hcpre1",
+      "type": "text",
+      "x": 0,
+      "y": 190,
+      "width": 360,
+      "height": 56,
+      "text": "**hc_pre** (attn)\nhc_attn_fn / Sinkhorn \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "anorm",
+      "type": "text",
+      "x": 0,
+      "y": 290,
+      "width": 360,
+      "height": 40,
+      "text": "**attn_norm** RMSNorm \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "mla",
+      "type": "group",
+      "x": -160,
+      "y": 360,
+      "width": 1560,
+      "height": 520,
+      "label": "Attention (MLA)"
+    },
+    {
+      "id": "wq_a",
+      "type": "text",
+      "x": -380,
+      "y": 405,
+      "width": 300,
+      "height": 46,
+      "text": "**wq_a** 4096\u21921024 \u2014 **FP8**",
+      "color": "2"
+    },
+    {
+      "id": "qnorm",
+      "type": "text",
+      "x": -380,
+      "y": 485,
+      "width": 300,
+      "height": 40,
+      "text": "**q_norm** \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "wq_b",
+      "type": "text",
+      "x": -380,
+      "y": 555,
+      "width": 300,
+      "height": 56,
+      "text": "**wq_b** 1024\u219264\u00d7512 \u2014 **FP8**\n(+RoPE)",
+      "color": "2"
+    },
+    {
+      "id": "wkv",
+      "type": "text",
+      "x": 10,
+      "y": 405,
+      "width": 300,
+      "height": 46,
+      "text": "**wkv** 4096\u2192512 \u2014 **FP8**",
+      "color": "2"
+    },
+    {
+      "id": "kvnorm",
+      "type": "text",
+      "x": 10,
+      "y": 485,
+      "width": 300,
+      "height": 52,
+      "text": "**kv_norm** \u2014 **FP32**\nKV: non-rope FP8-sim, rope BF16",
+      "color": "4"
+    },
+    {
+      "id": "comp",
+      "type": "text",
+      "x": 10,
+      "y": 575,
+      "width": 300,
+      "height": 64,
+      "text": "**Compressor**\nwkv/wgate/ape \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "idx",
+      "type": "text",
+      "x": 400,
+      "y": 405,
+      "width": 360,
+      "height": 150,
+      "text": "**Indexer**\nwq_b \u2014 **FP8**\nweights_proj \u2014 **BF16**\nq & kv FP4-simulated",
+      "color": "5"
+    },
+    {
+      "id": "spattn",
+      "type": "text",
+      "x": 10,
+      "y": 695,
+      "width": 360,
+      "height": 64,
+      "text": "**sparse_attn**\n(compute; q FP8-quant, kv bf16/fp8-sim)",
+      "color": "2"
+    },
+    {
+      "id": "wo_a",
+      "type": "text",
+      "x": 10,
+      "y": 795,
+      "width": 360,
+      "height": 46,
+      "text": "**wo_a** (grouped O-proj) \u2014 **BF16**",
+      "color": "5"
+    },
+    {
+      "id": "wo_b",
+      "type": "text",
+      "x": 10,
+      "y": 865,
+      "width": 360,
+      "height": 46,
+      "text": "**wo_b** (RowParallel) \u2014 **FP8**",
+      "color": "2"
+    },
+    {
+      "id": "hcpost1",
+      "type": "text",
+      "x": 0,
+      "y": 910,
+      "width": 360,
+      "height": 52,
+      "text": "**hc_post** (attn) \u2014 **FP32**\n\u2192 [1,S,4,4096]",
+      "color": "4"
+    },
+    {
+      "id": "hcpre2",
+      "type": "text",
+      "x": 0,
+      "y": 1000,
+      "width": 360,
+      "height": 48,
+      "text": "**hc_pre** (ffn) \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "fnorm",
+      "type": "text",
+      "x": 0,
+      "y": 1090,
+      "width": 360,
+      "height": 40,
+      "text": "**ffn_norm** \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "moe",
+      "type": "group",
+      "x": -160,
+      "y": 1150,
+      "width": 1560,
+      "height": 400,
+      "label": "MoE FFN"
+    },
+    {
+      "id": "gate",
+      "type": "text",
+      "x": 0,
+      "y": 1195,
+      "width": 360,
+      "height": 72,
+      "text": "**Gate** weight \u2014 **FP32**\n(hash L0-2 / sqrtsoftplus L3-42)",
+      "color": "4"
+    },
+    {
+      "id": "rexp",
+      "type": "text",
+      "x": -320,
+      "y": 1335,
+      "width": 360,
+      "height": 76,
+      "text": "**Routed Experts \u00d7256** (6 active)\nw1/w2/w3 \u2014 **FP4**\ninter 2048",
+      "color": "1"
+    },
+    {
+      "id": "sexp",
+      "type": "text",
+      "x": 320,
+      "y": 1335,
+      "width": 300,
+      "height": 76,
+      "text": "**Shared Expert \u00d71**\nw1/w2/w3 \u2014 **FP32** (no fp4)\nalways on",
+      "color": "4"
+    },
+    {
+      "id": "moesum",
+      "type": "text",
+      "x": 0,
+      "y": 1465,
+      "width": 360,
+      "height": 44,
+      "text": "**y = \u03a3 routed + shared**",
+      "color": "2"
+    },
+    {
+      "id": "hcpost2",
+      "type": "text",
+      "x": 0,
+      "y": 1580,
+      "width": 360,
+      "height": 48,
+      "text": "**hc_post** (ffn) \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "hchead",
+      "type": "text",
+      "x": 10,
+      "y": 1860,
+      "width": 340,
+      "height": 52,
+      "text": "**HC-head** \u2014 **FP32**\n[1,S,4,4096] \u2192 [1,S,4096]",
+      "color": "4"
+    },
+    {
+      "id": "headnorm",
+      "type": "text",
+      "x": 10,
+      "y": 1960,
+      "width": 340,
+      "height": 40,
+      "text": "**final RMSNorm** \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "head",
+      "type": "text",
+      "x": 10,
+      "y": 2040,
+      "width": 340,
+      "height": 52,
+      "text": "**ParallelHead** (lm_head)\nweight \u2014 **FP32**",
+      "color": "4"
+    },
+    {
+      "id": "logits",
+      "type": "text",
+      "x": 10,
+      "y": 2140,
+      "width": 340,
+      "height": 44,
+      "text": "**logits** [1,129280] (int\u2192token)",
+      "color": "6"
+    },
+    {
+      "id": "mtp",
+      "type": "text",
+      "x": 520,
+      "y": 1960,
+      "width": 420,
+      "height": 150,
+      "text": "**MTPBlock \u00d71**\ne_proj/h_proj \u2014 **FP8**\nenorm/hnorm/norm \u2014 **FP32**\n(inherits Block dtypes)",
+      "color": "2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "inp__embed",
+      "fromNode": "inp",
+      "toNode": "embed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "embed__hcexp",
+      "fromNode": "embed",
+      "toNode": "hcexp",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "hcexp__blk",
+      "fromNode": "hcexp",
+      "toNode": "blk",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "blk__hcpre1",
+      "fromNode": "blk",
+      "toNode": "hcpre1",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "id": "hcpre1__anorm",
+      "fromNode": "hcpre1",
+      "toNode": "anorm",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "anorm__wq_a",
+      "fromNode": "anorm",
+      "toNode": "wq_a",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "wq_a__qnorm",
+      "fromNode": "wq_a",
+      "toNode": "qnorm",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "qnorm__wq_b",
+      "fromNode": "qnorm",
+      "toNode": "wq_b",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "anorm__wkv",
+      "fromNode": "anorm",
+      "toNode": "wkv",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "wkv__kvnorm",
+      "fromNode": "wkv",
+      "toNode": "kvnorm",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "kvnorm__comp",
+      "fromNode": "kvnorm",
+      "toNode": "comp",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "qnorm__idx",
+      "fromNode": "qnorm",
+      "toNode": "idx",
+      "fromSide": "right",
+      "toSide": "left",
+      "label": "qr"
+    },
+    {
+      "id": "wq_b__spattn",
+      "fromNode": "wq_b",
+      "toNode": "spattn",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "comp__spattn",
+      "fromNode": "comp",
+      "toNode": "spattn",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "label": "compressed KV"
+    },
+    {
+      "id": "idx__spattn",
+      "fromNode": "idx",
+      "toNode": "spattn",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "label": "topk 512"
+    },
+    {
+      "id": "spattn__wo_a",
+      "fromNode": "spattn",
+      "toNode": "wo_a",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "wo_a__wo_b",
+      "fromNode": "wo_a",
+      "toNode": "wo_b",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "wo_b__hcpost1",
+      "fromNode": "wo_b",
+      "toNode": "hcpost1",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "hcpost1__hcpre2",
+      "fromNode": "hcpost1",
+      "toNode": "hcpre2",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "hcpre2__fnorm",
+      "fromNode": "hcpre2",
+      "toNode": "fnorm",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "fnorm__gate",
+      "fromNode": "fnorm",
+      "toNode": "gate",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gate__rexp",
+      "fromNode": "gate",
+      "toNode": "rexp",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gate__sexp",
+      "fromNode": "gate",
+      "toNode": "sexp",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "rexp__moesum",
+      "fromNode": "rexp",
+      "toNode": "moesum",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "sexp__moesum",
+      "fromNode": "sexp",
+      "toNode": "moesum",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "moesum__hcpost2",
+      "fromNode": "moesum",
+      "toNode": "hcpost2",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "blk__hchead",
+      "fromNode": "blk",
+      "toNode": "hchead",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "hchead__headnorm",
+      "fromNode": "hchead",
+      "toNode": "headnorm",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "headnorm__head",
+      "fromNode": "headnorm",
+      "toNode": "head",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "head__logits",
+      "fromNode": "head",
+      "toNode": "logits",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "blk__mtp",
+      "fromNode": "blk",
+      "toNode": "mtp",
+      "fromSide": "right",
+      "toSide": "left",
+      "label": "hidden h"
+    }
+  ]
+}

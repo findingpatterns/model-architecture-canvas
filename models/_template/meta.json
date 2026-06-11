@@ -1,0 +1,7 @@
+{
+  "name": "Human-Readable Model Name",
+  "description": "One or two sentences: what this diagram shows and how to read it (e.g. what the colors mean).",
+  "author": { "name": "Your Name", "github": "your-handle" },
+  "tags": ["family", "topic"],
+  "source": "https://link-to-paper-or-repo"
+}

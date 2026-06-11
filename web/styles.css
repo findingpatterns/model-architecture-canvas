@@ -1,0 +1,308 @@
+/* ModelCanvas shell theme — nocturnal editorial system.
+   Green is the primary accent; orange-red is the secondary (hover / accent-on-accent).
+   The .canvas node colors are intrinsic to each file and are never themed here. */
+
+:root {
+  --ink-deep: #060807;        /* near-black warm surface */
+  --ink-raise: #0f120f;       /* sidebar / raised panels */
+  --paper: #ecf2ec;           /* primary text */
+
+  --green: #2fbf71;           /* PRIMARY accent */
+  --green-light: #5be39a;
+  --green-deep: #1e8a50;
+
+  --orange: #ff5a36;          /* SECONDARY accent */
+  --orange-light: #ff7a52;
+  --orange-deep: #d63b1c;
+
+  --line-accent: rgba(47, 191, 113, 0.32);
+  --mute-paper: rgba(236, 242, 236, 0.55);
+  --hair-paper: rgba(236, 242, 236, 0.14);
+
+  --sidebar-w: 320px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--ink-deep);
+  color: var(--paper);
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  /* Warm-black surface lit from the upper-left by a faint radial ellipse. */
+  background-image: radial-gradient(120% 90% at 8% 4%, #0f140f 0%, var(--ink-deep) 58%);
+}
+
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.05em;
+}
+
+/* 1px hairline interior frame, inset from the viewport edges. Decorative; never blocks input. */
+.hairline-frame {
+  position: fixed;
+  inset: 14px;
+  border: 1px solid var(--hair-paper);
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ---- Layout ---- */
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  position: relative;
+  flex: 0 0 var(--sidebar-w);
+  width: var(--sidebar-w);
+  background: var(--ink-raise);
+  border-right: 1px solid var(--line-accent);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 28px 24px;
+  z-index: 20;
+}
+
+/* Film-grain overlay — confined to the chrome (sidebar), kept off the viewer surface. */
+.sidebar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.sidebar-head { margin-bottom: 26px; }
+
+.site-title {
+  font-family: "DM Serif Display", serif;
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 1.02;
+  margin: 0 0 10px;
+  color: var(--paper);
+}
+
+.kicker {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 0;
+}
+
+/* ---- Catalog list ---- */
+.catalog { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; }
+
+.catalog-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-left: 2px solid transparent;
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: var(--paper);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.catalog-item:hover {
+  border-left-color: var(--orange);     /* secondary accent on hover */
+  background: rgba(255, 90, 54, 0.06);
+}
+
+.catalog-item.is-active {
+  border-left-color: var(--green);       /* primary accent for active */
+  background: rgba(47, 191, 113, 0.08);
+}
+
+.catalog-item:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.item-name {
+  font-family: "DM Serif Display", serif;
+  font-size: 19px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.item-id {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--green-light);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.item-note { font-size: 13px; line-height: 1.45; color: var(--mute-paper); }
+
+.item-meta {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--mute-paper);
+  margin-top: 8px;
+}
+
+.item-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tag {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  border: 1px solid var(--line-accent);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.catalog-empty { color: var(--mute-paper); font-size: 14px; line-height: 1.5; }
+
+.sidebar-foot {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair-paper);
+}
+.foot-note { font-size: 12.5px; line-height: 1.5; color: var(--mute-paper); margin: 0; }
+.foot-note .mono { color: var(--green-light); }
+
+/* ---- Main / viewer ---- */
+.main { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--hair-paper);
+  background: var(--ink-deep);
+}
+
+.active-title {
+  flex: 1 1 auto;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute-paper);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-btn {
+  flex: 0 0 auto;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: #05140c;            /* fixed dark — green button keeps contrast in both themes */
+  background: var(--green);
+  padding: 9px 16px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.download-btn:hover { background: var(--green-light); }
+.download-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+.source-link {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--mute-paper);
+  border: 1px solid var(--line-accent);
+  padding: 8px 11px;
+  border-radius: 6px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.source-link:hover { color: var(--green-light); border-color: var(--orange); }
+.source-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+/* The viewer surface stays clean — no grain/frame overlay inside it. */
+.viewer { flex: 1 1 auto; min-height: 0; position: relative; }
+
+/* Sidebar toggle: always visible — collapses the panel on desktop, opens the drawer on mobile. */
+.sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--line-accent);
+  color: var(--paper);
+  font-size: 16px;
+  line-height: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sidebar-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+/* Theme toggle: same chip style as the sidebar toggle, always visible in the topbar. */
+.theme-toggle {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--line-accent);
+  color: var(--paper);
+  font-size: 15px;
+  line-height: 1;
+  padding: 8px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--orange); }
+.theme-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+/* ---- Light theme: token overrides applied via html[data-theme="light"] ---- */
+html[data-theme="light"] {
+  --ink-deep: #f3f5f1;       /* light surface */
+  --ink-raise: #ffffff;      /* sidebar / panels */
+  --paper: #14201a;          /* primary text (now dark) */
+  --green: #1e8a50;          /* deepen accents for contrast on light */
+  --green-light: #2fbf71;
+  --orange: #d63b1c;
+  --orange-light: #ff5a36;
+  --line-accent: rgba(30, 138, 80, 0.28);
+  --mute-paper: rgba(20, 32, 26, 0.62);
+  --hair-paper: rgba(20, 32, 26, 0.12);
+}
+html[data-theme="light"] body {
+  /* Lit-from-upper-left surface, light variant. */
+  background-image: radial-gradient(120% 90% at 8% 4%, #ffffff 0%, var(--ink-deep) 60%);
+}
+/* Grain barely reads on a light surface; drop it to avoid muddiness. */
+html[data-theme="light"] .sidebar::after { display: none; }
+html[data-theme="light"] .item-id { color: var(--green); }
+
+/* Desktop: collapse the panel out of the flow so the viewer reclaims its width. */
+@media (min-width: 769px) {
+  .app.sidebar-collapsed .sidebar { display: none; }
+}
+
+/* ---- Responsive: sidebar becomes an off-canvas drawer on narrow screens ---- */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  }
+  .app.sidebar-open .sidebar { transform: translateX(0); }
+}

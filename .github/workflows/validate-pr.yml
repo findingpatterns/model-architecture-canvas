@@ -1,0 +1,27 @@
+name: Validate model submissions
+
+# Runs on every PR that touches the models/ folder (or the build script).
+# Blocks the merge with a red ✗ if any submission is malformed, so admins and
+# contributors see problems immediately. Vercel handles deploy/preview itself.
+on:
+  pull_request:
+    paths:
+      - "models/**"
+      - "scripts/build-catalog.mjs"
+      - "package.json"
+  push:
+    branches: [main]
+    paths:
+      - "models/**"
+      - "scripts/build-catalog.mjs"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Validate catalog (no files written)
+        run: npm run validate
