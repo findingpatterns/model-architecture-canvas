@@ -1,30 +1,35 @@
 /* Editor theme — Obsidian-canvas look, matching the viewer's type system
    (Inter / JetBrains Mono / DM Serif) and green-primary palette.
    Light + dark via html[data-theme]. */
+/* Palette mirrors web/styles.css EXACTLY so the editor and viewer are one app. */
 :root {
+  /* dark (default) */
   --green: #2fbf71;
   --green-light: #5be39a;
   --orange: #ff5a36;
   --cv-accent: var(--green);
 
-  /* dark (default) — Obsidian-ish gray canvas, warm-black chrome */
-  --cv-bg: #1a1b1a;           /* canvas surface */
-  --cv-node: #26282b;         /* node card */
-  --cv-shell: #0f120f;        /* topbar / panels */
-  --cv-text: #ecf2ec;
+  --cv-bg: #060807;           /* canvas surface = viewer --ink-deep */
+  --cv-node: #0f120f;         /* node card / panel = viewer --ink-raise */
+  --cv-shell: #0f120f;        /* topbar chrome */
+  --cv-text: #ecf2ec;         /* --paper */
   --cv-muted: rgba(236, 242, 236, 0.55);
-  --cv-line: rgba(236, 242, 236, 0.16);
-  --cv-dots: rgba(236, 242, 236, 0.12);
-  --cv-edge: rgba(236, 242, 236, 0.40);
-  --cv-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --cv-line: rgba(236, 242, 236, 0.14);
+  --cv-dots: rgba(236, 242, 236, 0.10);
+  --cv-edge: rgba(236, 242, 236, 0.38);
+  --cv-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 html[data-theme="light"] {
-  --cv-accent: #1e8a50;
-  --cv-bg: #f6f7f4;
+  --green: #1e8a50;
+  --green-light: #2fbf71;
+  --orange: #d63b1c;
+  --cv-accent: var(--green);
+
+  --cv-bg: #f3f5f1;
   --cv-node: #ffffff;
   --cv-shell: #ffffff;
   --cv-text: #14201a;
-  --cv-muted: rgba(20, 32, 26, 0.6);
+  --cv-muted: rgba(20, 32, 26, 0.62);
   --cv-line: rgba(20, 32, 26, 0.14);
   --cv-dots: rgba(20, 32, 26, 0.12);
   --cv-edge: rgba(20, 32, 26, 0.4);
@@ -108,8 +113,17 @@ body { font-family: "Inter", system-ui, sans-serif; }
 .react-flow__minimap-node { fill: var(--cv-muted); }
 .react-flow__attribution { background: transparent; color: var(--cv-muted); }
 
+/* ---- Topbar right group (theme toggle + toolbar) ---- */
+.cv-topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.cv-theme {
+  font-size: 14px; line-height: 1; cursor: pointer;
+  color: var(--cv-text); background: var(--cv-shell);
+  border: 1px solid var(--cv-line); border-radius: 6px; padding: 7px 10px;
+}
+.cv-theme:hover { border-color: var(--orange); }
+
 /* ---- Toolbar ---- */
-.cv-toolbar { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.cv-toolbar { display: flex; align-items: center; gap: 8px; }
 .cv-toolbar-sep { width: 1px; height: 20px; background: var(--cv-line); }
 .cv-btn {
   font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; cursor: pointer;

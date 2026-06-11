@@ -23,10 +23,7 @@ import { makeId } from "./editor-io";
 
 const nodeTypes: NodeTypes = { text: TextNode, file: GenericNode, link: GenericNode, group: GenericNode };
 
-function initTheme() {
-  const saved = localStorage.getItem("modelcanvas-theme");
-  document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
-}
+const readTheme = (): "dark" | "light" => (localStorage.getItem("modelcanvas-theme") === "light" ? "light" : "dark");
 
 // change types that represent a real user edit (not initial load / selection)
 const DIRTYING = new Set(["position", "dimensions", "remove", "add", "replace"]);
@@ -36,12 +33,18 @@ function Editor() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<EditorEdge>([]);
   const [error, setError] = useState<string | null>(null);
   const [modelId, setModelId] = useState<string | null>(null);
+  const [theme, setTheme] = useState<"dark" | "light">(readTheme);
   const dirty = useRef(false);
   const loaded = useRef(false);
   const markDirty = useCallback(() => { if (loaded.current) dirty.current = true; }, []);
 
+  // Theme is shared with the viewer via the same localStorage key (red-team #10).
+  useEffect(() => { document.documentElement.setAttribute("data-theme", theme); }, [theme]);
+  const toggleTheme = useCallback(() => {
+    setTheme((t) => { const next = t === "light" ? "dark" : "light"; localStorage.setItem("modelcanvas-theme", next); return next; });
+  }, []);
+
   useEffect(() => {
-    initTheme();
     const id = new URLSearchParams(location.search).get("model");
     if (!id) { setError("No ?model specified."); return; }
     setModelId(id);
@@ -100,7 +103,12 @@ function Editor() {
         <div className="cv-topbar">
           <a className="cv-back mono" href={modelId ? `../?model=${encodeURIComponent(modelId)}` : "../"} onClick={onBack}>← Preview</a>
           <span className="cv-title mono">{modelId}</span>
-          <Toolbar modelId={modelId} />
+          <div className="cv-topbar-right">
+            <button className="cv-theme" onClick={toggleTheme} aria-label="Toggle dark / light theme" aria-pressed={theme === "light"}>
+              {theme === "light" ? "🌙" : "☀"}
+            </button>
+            <Toolbar modelId={modelId} />
+          </div>
         </div>
         <ReactFlow
           nodes={nodes}
