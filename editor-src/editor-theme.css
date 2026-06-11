@@ -1,100 +1,131 @@
-/* Editor theme — mirrors the site's tokens (green primary / orange secondary),
-   light + dark driven by html[data-theme]. */
+/* Editor theme — Obsidian-canvas look, matching the viewer's type system
+   (Inter / JetBrains Mono / DM Serif) and green-primary palette.
+   Light + dark via html[data-theme]. */
 :root {
   --green: #2fbf71;
   --green-light: #5be39a;
   --orange: #ff5a36;
   --cv-accent: var(--green);
 
-  /* dark (default) */
-  --cv-bg: #060807;
-  --cv-surface: #0f120f;
+  /* dark (default) — Obsidian-ish gray canvas, warm-black chrome */
+  --cv-bg: #1a1b1a;           /* canvas surface */
+  --cv-node: #26282b;         /* node card */
+  --cv-shell: #0f120f;        /* topbar / panels */
   --cv-text: #ecf2ec;
   --cv-muted: rgba(236, 242, 236, 0.55);
   --cv-line: rgba(236, 242, 236, 0.16);
+  --cv-dots: rgba(236, 242, 236, 0.12);
+  --cv-edge: rgba(236, 242, 236, 0.40);
+  --cv-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 html[data-theme="light"] {
   --cv-accent: #1e8a50;
-  --cv-bg: #f3f5f1;
-  --cv-surface: #ffffff;
+  --cv-bg: #f6f7f4;
+  --cv-node: #ffffff;
+  --cv-shell: #ffffff;
   --cv-text: #14201a;
   --cv-muted: rgba(20, 32, 26, 0.6);
   --cv-line: rgba(20, 32, 26, 0.14);
+  --cv-dots: rgba(20, 32, 26, 0.12);
+  --cv-edge: rgba(20, 32, 26, 0.4);
+  --cv-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 html, body, #root { margin: 0; padding: 0; width: 100%; height: 100%; }
+body { font-family: "Inter", system-ui, sans-serif; }
 .mono { font-family: "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.04em; }
 
-.cv-app { width: 100vw; height: 100vh; display: flex; flex-direction: column; background: var(--cv-bg); color: var(--cv-text); }
-.react-flow { background: var(--cv-bg); flex: 1 1 auto; }
+.cv-app { width: 100vw; height: 100vh; position: relative; background: var(--cv-bg); color: var(--cv-text); }
+.react-flow { background: var(--cv-bg); width: 100%; height: 100%; }
+.react-flow__background { color: var(--cv-dots); }
 
-/* Topbar floats over the canvas (transparent, like the viewer). */
+/* ---- Topbar (floats over canvas, transparent like the viewer) ---- */
 .cv-topbar {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-  display: flex; align-items: center; gap: 16px; padding: 12px 18px;
+  display: flex; align-items: center; gap: 14px; padding: 12px 18px;
   pointer-events: none;
 }
 .cv-topbar > * { pointer-events: auto; }
 .cv-back {
   text-decoration: none; font-size: 12px; color: var(--cv-text);
-  border: 1px solid var(--cv-line); border-radius: 6px; padding: 7px 12px; background: var(--cv-surface);
+  border: 1px solid var(--cv-line); border-radius: 6px; padding: 7px 12px; background: var(--cv-shell);
 }
 .cv-back:hover { border-color: var(--orange); }
 .cv-title { font-size: 12px; color: var(--cv-muted); text-transform: uppercase; }
+.cv-message { padding: 40px; color: var(--cv-text); background: var(--cv-bg); width: 100vw; height: 100vh; box-sizing: border-box; }
 
-.cv-message { padding: 40px; font-family: system-ui, sans-serif; color: var(--cv-text); background: var(--cv-bg); width: 100vw; height: 100vh; box-sizing: border-box; }
-
-/* Nodes */
+/* ---- Nodes: Obsidian-style bordered + faintly tinted cards ---- */
 .cv-node {
   box-sizing: border-box; width: 100%; height: 100%;
-  background: var(--cv-surface); color: var(--cv-text);
-  border: 1px solid var(--cv-line); border-left: 4px solid var(--cv-accent);
-  border-radius: 6px; padding: 8px 10px; overflow: hidden;
-  font-family: system-ui, sans-serif; font-size: 13px; line-height: 1.4;
+  background: var(--cv-node);
+  color: var(--cv-text);
+  border: 1px solid var(--node-accent, var(--cv-line));
+  border-radius: 8px; padding: 10px 12px; overflow: hidden;
+  font-size: 13.5px; line-height: 1.45; box-shadow: var(--cv-shadow);
 }
+/* faint colour wash when the node has an accent */
+.cv-node[style*="--node-accent"] { background: color-mix(in srgb, var(--node-accent) 13%, var(--cv-node)); }
 .cv-node-text { white-space: pre-wrap; word-break: break-word; }
-.cv-node-kind { font-size: 9px; text-transform: uppercase; color: var(--cv-muted); display: block; margin-bottom: 3px; }
-.cv-node-edit {
-  width: 100%; height: 100%; resize: none; border: none; outline: none;
-  background: transparent; color: var(--cv-text); font: inherit;
-}
+.cv-node-kind { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 9px; text-transform: uppercase; color: var(--cv-muted); display: block; margin-bottom: 3px; }
+.cv-node-edit { width: 100%; height: 100%; resize: none; border: none; outline: none; background: transparent; color: var(--cv-text); font: inherit; }
+.react-flow__node.selected .cv-node,
+.react-flow__node.selected .cv-group { outline: 2px solid var(--cv-accent); outline-offset: 1px; }
 
-/* Group: translucent box behind everything; body ignores pointer so children stay clickable. */
+/* Group: translucent labelled box BEHIND everything; body ignores pointer. */
 .cv-group {
   box-sizing: border-box; width: 100%; height: 100%;
-  border: 1.5px dashed var(--cv-accent); border-radius: 8px;
-  background: color-mix(in srgb, var(--cv-accent) 7%, transparent);
+  border: 1.5px solid var(--node-accent, var(--cv-line)); border-radius: 10px;
+  background: color-mix(in srgb, var(--node-accent, var(--cv-line)) 7%, transparent);
   pointer-events: none;
 }
 .cv-group-label {
-  pointer-events: auto; display: inline-block; margin: 6px;
-  font-size: 11px; font-weight: 600; color: #06140c;
-  padding: 2px 8px; border-radius: 4px;
+  pointer-events: auto; display: inline-block; margin: 8px;
+  font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 500;
+  color: var(--cv-text); background: var(--cv-shell);
+  padding: 3px 9px; border-radius: 5px; border: 1px solid var(--node-accent, var(--cv-line));
 }
 .cv-group-label-edit { border: none; outline: none; background: transparent; font: inherit; color: inherit; }
 
-/* Handles: subtle until node hover. */
-.cv-handle { width: 7px; height: 7px; background: var(--cv-accent); opacity: 0; transition: opacity 0.12s; }
-.cv-node:hover .cv-handle, .cv-group:hover .cv-handle, .react-flow__node:hover .cv-handle { opacity: 0.9; }
+/* Edges */
+.react-flow__edge-path { stroke: var(--cv-edge); stroke-width: 1.5; }
+.react-flow__arrowhead { fill: var(--cv-edge); }
 
-/* Toolbar */
+/* Handles: subtle until hover */
+.cv-handle { width: 7px; height: 7px; background: var(--cv-accent); border: none; opacity: 0; transition: opacity 0.12s; }
+.react-flow__node:hover .cv-handle { opacity: 0.9; }
+
+/* ---- React Flow chrome themed for dark (defaults are light & clash) ---- */
+.react-flow__controls { box-shadow: var(--cv-shadow); border-radius: 8px; overflow: hidden; }
+.react-flow__controls-button {
+  background: var(--cv-shell); border-bottom: 1px solid var(--cv-line); color: var(--cv-text);
+}
+.react-flow__controls-button:hover { background: color-mix(in srgb, var(--cv-accent) 18%, var(--cv-shell)); }
+.react-flow__controls-button svg { fill: var(--cv-text); }
+.react-flow__minimap {
+  background: var(--cv-shell); border: 1px solid var(--cv-line); border-radius: 8px;
+}
+.react-flow__minimap-mask { fill: color-mix(in srgb, var(--cv-bg) 70%, transparent); }
+.react-flow__minimap-node { fill: var(--cv-muted); }
+.react-flow__attribution { background: transparent; color: var(--cv-muted); }
+
+/* ---- Toolbar ---- */
 .cv-toolbar { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 .cv-toolbar-sep { width: 1px; height: 20px; background: var(--cv-line); }
 .cv-btn {
-  font: inherit; font-size: 12px; cursor: pointer;
-  color: var(--cv-text); background: var(--cv-surface);
+  font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; cursor: pointer;
+  color: var(--cv-text); background: var(--cv-shell);
   border: 1px solid var(--cv-line); border-radius: 6px; padding: 7px 11px;
 }
 .cv-btn:hover { border-color: var(--orange); }
-.cv-btn-primary { background: var(--green); color: #05140c; border-color: var(--green); font-family: "JetBrains Mono", ui-monospace, monospace; }
+.cv-btn-primary { background: var(--green); color: #05140c; border-color: var(--green); }
 .cv-btn-primary:hover { background: var(--green-light); border-color: var(--green-light); }
 
 .cv-color-wrap { position: relative; }
 .cv-color-pop {
   position: absolute; top: 110%; left: 0; z-index: 20;
   display: flex; flex-wrap: wrap; gap: 6px; width: 140px; padding: 8px;
-  background: var(--cv-surface); border: 1px solid var(--cv-line); border-radius: 8px;
+  background: var(--cv-shell); border: 1px solid var(--cv-line); border-radius: 8px; box-shadow: var(--cv-shadow);
 }
 .cv-swatch { width: 26px; height: 26px; border: 1px solid var(--cv-line); border-radius: 5px; cursor: pointer; padding: 0; }
 .cv-swatch-hex { background: none; }
-.cv-swatch-none { background: var(--cv-surface); color: var(--cv-muted); }
+.cv-swatch-none { background: var(--cv-node); color: var(--cv-muted); }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { NodeResizer, useReactFlow, type NodeProps } from "@xyflow/react";
 import { NodeHandles } from "./node-handles";
 import { resolveColor } from "../canvas-colors";
@@ -15,7 +15,8 @@ import type { CanvasNodeData } from "../canvas-adapter";
 export function GenericNode({ id, data, selected }: NodeProps) {
   const d = data as CanvasNodeData;
   const type = d.canvas.type;
-  const accent = resolveColor(d.color) ?? "var(--cv-accent)";
+  const accent = resolveColor(d.color);
+  const accentStyle = accent ? ({ "--node-accent": accent } as CSSProperties) : undefined;
 
   const { updateNodeData } = useReactFlow();
   const { markDirty } = useEditorContext();
@@ -30,10 +31,10 @@ export function GenericNode({ id, data, selected }: NodeProps) {
 
   if (type === "group") {
     return (
-      <div className="cv-group" style={{ borderColor: accent }}>
+      <div className="cv-group" style={accentStyle}>
         <NodeResizer isVisible={selected} minWidth={120} minHeight={80} />
         <NodeHandles />
-        <div className="cv-group-label" style={{ background: accent }}>
+        <div className="cv-group-label" style={accentStyle}>
           {editing ? (
             <input
               ref={ref}
@@ -53,7 +54,7 @@ export function GenericNode({ id, data, selected }: NodeProps) {
 
   // file / link card
   return (
-    <div className="cv-node cv-file-node" style={{ borderLeftColor: accent }}>
+    <div className="cv-node cv-file-node" style={accentStyle}>
       <NodeResizer isVisible={selected} minWidth={80} minHeight={40} />
       <NodeHandles />
       <span className="cv-node-kind mono">{type}</span>

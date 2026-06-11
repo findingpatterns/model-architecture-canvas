@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { NodeResizer, useReactFlow, type NodeProps } from "@xyflow/react";
 import { NodeHandles } from "./node-handles";
 import { resolveColor } from "../canvas-colors";
@@ -20,7 +20,7 @@ export function TextNode({ id, data, selected }: NodeProps) {
     if (editing) ref.current?.focus();
   }, [editing]);
 
-  const accent = resolveColor(d.color) ?? "var(--cv-accent)";
+  const accent = resolveColor(d.color);
 
   function commit() {
     setEditing(false);
@@ -28,7 +28,7 @@ export function TextNode({ id, data, selected }: NodeProps) {
   }
 
   return (
-    <div className="cv-node cv-text-node" style={{ borderLeftColor: accent }}>
+    <div className="cv-node cv-text-node" style={accent ? ({ "--node-accent": accent } as CSSProperties) : undefined}>
       <NodeResizer isVisible={selected} minWidth={80} minHeight={40} />
       <NodeHandles />
       {editing ? (
