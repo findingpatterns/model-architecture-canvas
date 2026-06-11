@@ -207,8 +207,8 @@ function applyTheme(theme) {
 function initialTheme() {
   const saved = localStorage.getItem(THEME_KEY);
   if (saved === "light" || saved === "dark") return saved;
-  // First visit: respect the OS preference, defaulting to the dark brand look.
-  return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  // First visit: default to the dark brand look (same default as the editor).
+  return "dark";
 }
 
 els.themeToggle.addEventListener("click", () => {
