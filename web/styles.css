@@ -73,6 +73,35 @@ html, body {
   margin: 0;
 }
 
+.gallery-head-text { max-width: 720px; }
+.gallery-intro {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--mute-paper);
+  margin: 18px 0 0;
+}
+.gallery-lead {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--green-light);
+  margin: 14px 0 0;
+}
+
+.gallery-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.gh-link {
+  text-decoration: none;
+  font-size: 12px;
+  color: var(--paper);
+  background: var(--ink-raise);
+  border: 1px solid var(--line-accent);
+  border-radius: 6px;
+  padding: 9px 13px;
+  white-space: nowrap;
+}
+.gh-link:hover { border-color: var(--orange); color: var(--green-light); }
+.gh-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
 /* 3-up grid (responsive down to 1). */
 .gallery-grid {
   display: grid;

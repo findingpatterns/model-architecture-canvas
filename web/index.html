@@ -19,11 +19,20 @@
   <!-- Gallery view (landing): grid of model cards. Shown when there is no ?model. -->
   <main id="gallery-view" class="gallery-view">
     <header class="gallery-head">
-      <div>
+      <div class="gallery-head-text">
         <h1 class="site-title">ModelCanvas</h1>
         <p class="kicker">MODEL ARCHITECTURE · GALLERY</p>
+        <p class="gallery-intro">
+          Model architectures are easiest to understand when you can wrestle with the diagram yourself —
+          drag nodes around, draw your own edges, scribble notes on top. That happens best in a
+          canvas-capable note editor (for example Obsidian), not in a locked-down web widget.
+        </p>
+        <p id="gallery-lead" class="gallery-lead"></p>
       </div>
-      <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+      <div class="gallery-actions">
+        <a class="gh-link mono" href="https://github.com/findingpatterns/model-architecture-canvas" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+      </div>
     </header>
     <nav id="gallery-grid" class="gallery-grid" aria-label="Models"></nav>
     <footer class="gallery-foot">

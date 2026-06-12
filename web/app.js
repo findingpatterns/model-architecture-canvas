@@ -26,6 +26,7 @@ let CATALOG = [];
 const els = {
   galleryView: document.getElementById("gallery-view"),
   galleryGrid: document.getElementById("gallery-grid"),
+  galleryLead: document.getElementById("gallery-lead"),
   canvasView: document.getElementById("canvas-view"),
   viewer: document.getElementById("viewer"),
   download: document.getElementById("download"),
@@ -55,7 +56,18 @@ function showViewerMessage(text) {
 }
 
 // ---- Gallery ----
+// One-line intro to the model lines currently in the catalog (auto-updates as models are added).
+function renderLead() {
+  const names = CATALOG.map((m) => m.name);
+  if (names.length === 0) { els.galleryLead.textContent = ""; return; }
+  els.galleryLead.textContent =
+    names.length === 1
+      ? `Currently featuring the ${names[0]} architecture.`
+      : `Currently featuring ${names.length} architectures — ${names.join(", ")}.`;
+}
+
 function renderGallery() {
+  renderLead();
   els.galleryGrid.replaceChildren();
   if (CATALOG.length === 0) {
     els.galleryGrid.appendChild(
