@@ -22,6 +22,10 @@
 
 * { box-sizing: border-box; }
 
+/* The `hidden` attribute must win over .gallery-view{display:flex} / .main display,
+   otherwise both views stack vertically. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   height: 100%;
