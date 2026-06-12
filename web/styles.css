@@ -172,7 +172,7 @@ html, body {
   font-weight: 700;
   overflow: hidden;
 }
-.card-badge-img { object-fit: cover; padding: 0; background: var(--ink-raise); }
+.card-badge-img { object-fit: contain; padding: 8px; background: var(--ink-raise); }
 
 .card-name {
   font-family: "DM Serif Display", serif;
