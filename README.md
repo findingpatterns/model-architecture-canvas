@@ -37,7 +37,8 @@ point to think with, not a finished poster.
 - 🗺️ **Browse a catalog** of model-architecture diagrams with pan / zoom / minimap / fullscreen.
 - ✏️ **Edit in the browser** — drag, add nodes, draw edges, resize, recolor, delete, and edit text, then download the result. Fully client-side; nothing is saved server-side.
 - ⬇️ **Download any `.canvas`** and open it in your note editor (e.g. Obsidian) to edit, re-layout, and annotate.
-- 🌗 **Light / dark** theme, responsive, collapsible sidebar.
+- 🖼️ **Gallery landing** — browse all models as a responsive grid; click one to open its full canvas.
+- 🌗 **Light / dark** theme (dark by default), shared across gallery, viewer, and editor.
 - 🔗 **Shareable deep links** — `?model=<id>` opens straight to a diagram.
 - 🤝 **Community-driven** — add a model with a single Pull Request. No code, no merge conflicts.
 - ⚡ **Zero backend** — pure static site, free hosting, no secrets.
