@@ -10,14 +10,15 @@
 // --check: validate only (used by the PR CI gate); writes nothing, exits 1 on error.
 //
 // No third-party deps — Node built-ins only, so CI needs no `npm install`.
-import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
+import { join, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MODELS_DIR = join(ROOT, "models");
 const WEB_DIR = join(ROOT, "web");
 const OUT_CANVASES = join(WEB_DIR, "canvases");
+const OUT_LOGOS = join(WEB_DIR, "logos");
 const OUT_CATALOG = join(WEB_DIR, "catalog.json");
 
 const checkOnly = process.argv.includes("--check");
@@ -63,6 +64,19 @@ function processModel(id) {
     fail(id, "meta.source must be an http(s) URL");
   if (meta.author !== undefined && (typeof meta.author !== "object" || typeof meta.author.name !== "string"))
     fail(id, "meta.author must be an object with a name string");
+  if (meta.logo !== undefined && typeof meta.logo !== "string")
+    fail(id, "meta.logo must be a string (a filename in this folder, an http(s) URL, or a short glyph/emoji)");
+
+  // Resolve logo: a local file in the model folder → copy it; otherwise pass the
+  // string through (emoji / short text / http URL). Trademark note: only commit
+  // logo image files you have the right to use.
+  let logoFile = null; // abs path of a local image to copy
+  let logoValue = null; // final catalog value (path / url / glyph)
+  if (typeof meta.logo === "string" && meta.logo.trim()) {
+    const candidate = join(dir, meta.logo);
+    if (existsSync(candidate) && statSync(candidate).isFile()) logoFile = candidate;
+    else logoValue = meta.logo.trim(); // emoji / short text / external URL
+  }
 
   // exactly one .canvas
   const canvases = readdirSync(dir).filter((f) => f.endsWith(".canvas"));
@@ -89,7 +103,9 @@ function processModel(id) {
     author: meta.author ?? null,
     tags: Array.isArray(meta.tags) ? meta.tags : [],
     source: typeof meta.source === "string" && meta.source ? meta.source : null,
+    logo: logoValue, // glyph / url, or replaced with a copied path below
     _canvasPath: canvasPath, // internal; stripped before write
+    _logoFile: logoFile, // internal; copied below if set
   };
 }
 
@@ -121,12 +137,19 @@ if (checkOnly) {
   process.exit(0);
 }
 
-// Emit: fresh canvases/ + catalog.json
+// Emit: fresh canvases/ + logos/ + catalog.json
 rmSync(OUT_CANVASES, { recursive: true, force: true });
+rmSync(OUT_LOGOS, { recursive: true, force: true });
 mkdirSync(OUT_CANVASES, { recursive: true });
-const catalog = entries.map(({ _canvasPath, ...entry }) => {
+mkdirSync(OUT_LOGOS, { recursive: true });
+const catalog = entries.map(({ _canvasPath, _logoFile, ...entry }) => {
   copyFileSync(_canvasPath, join(OUT_CANVASES, `${entry.id}.canvas`));
+  if (_logoFile) {
+    const dest = `${entry.id}${extname(_logoFile)}`;
+    copyFileSync(_logoFile, join(OUT_LOGOS, dest));
+    entry.logo = `logos/${dest}`;
+  }
   return entry;
 });
 writeFileSync(OUT_CATALOG, JSON.stringify(catalog, null, 2) + "\n");
-console.log(`Wrote ${OUT_CATALOG} and ${catalog.length} canvas file(s) to ${OUT_CANVASES}`);
+console.log(`Wrote ${OUT_CATALOG}, ${catalog.length} canvas file(s), and logos to ${WEB_DIR}`);

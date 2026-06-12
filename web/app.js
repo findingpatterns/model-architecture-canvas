@@ -56,6 +56,22 @@ function showViewerMessage(text) {
 }
 
 // ---- Gallery ----
+// Build a model's logo badge: image (path/URL), else a glyph/emoji, else its initial.
+function modelBadge(entry) {
+  const logo = entry.logo;
+  const isImage = typeof logo === "string" && /^(https?:\/\/|logos\/|\/)|\.(svg|png|jpe?g|webp|gif)$/i.test(logo);
+  if (isImage) {
+    const img = el("img", "card-badge card-badge-img");
+    img.src = logo;
+    img.alt = `${entry.name} logo`;
+    img.loading = "lazy";
+    return img;
+  }
+  const badge = el("span", "card-badge");
+  badge.textContent = logo && logo.trim() ? logo.trim() : entry.name.charAt(0).toUpperCase();
+  return badge;
+}
+
 // One-line intro to the model lines currently in the catalog (auto-updates as models are added).
 function renderLead() {
   const names = CATALOG.map((m) => m.name);
@@ -79,8 +95,16 @@ function renderGallery() {
     const card = el("a", "model-card");
     card.href = `?model=${encodeURIComponent(entry.id)}`;
 
-    card.appendChild(el("div", "card-name", entry.name));
-    card.appendChild(el("span", "card-id mono", entry.id));
+    // Header: logo badge + name/id. Logo can be an image path/URL, a glyph/emoji,
+    // or absent (falls back to the model's first initial).
+    const head = el("div", "card-head");
+    head.appendChild(modelBadge(entry));
+    const titles = el("div", "card-titles");
+    titles.appendChild(el("div", "card-name", entry.name));
+    titles.appendChild(el("span", "card-id mono", entry.id));
+    head.appendChild(titles);
+    card.appendChild(head);
+
     card.appendChild(el("p", "card-note", entry.description));
 
     if (Array.isArray(entry.tags) && entry.tags.length) {

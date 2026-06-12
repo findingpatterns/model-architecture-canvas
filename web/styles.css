@@ -153,18 +153,38 @@ html, body {
 }
 .model-card:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
+.card-head { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+.card-titles { min-width: 0; }
+.card-badge {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  line-height: 1;
+  background: color-mix(in srgb, var(--green) 12%, var(--ink-raise));
+  border: 1px solid var(--line-accent);
+  color: var(--green-light);
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 700;
+  overflow: hidden;
+}
+.card-badge-img { object-fit: cover; padding: 0; background: var(--ink-raise); }
+
 .card-name {
   font-family: "DM Serif Display", serif;
-  font-size: 24px;
+  font-size: 23px;
   line-height: 1.15;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 .card-id {
   font-size: 10.5px;
   letter-spacing: 0.08em;
   color: var(--green-light);
   display: block;
-  margin-bottom: 12px;
 }
 .card-note {
   font-size: 13.5px;
