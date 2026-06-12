@@ -33,12 +33,14 @@ const els = {
   activeTitle: document.getElementById("active-title"),
   source: document.getElementById("source"),
   edit: document.getElementById("edit"),
+  levelTabs: document.getElementById("level-tabs"),
   themeToggle: document.getElementById("theme-toggle"),
   themeToggleGallery: document.getElementById("theme-toggle-gallery"),
 };
 
 let viewer = null;       // single reused JSONCanvasViewer instance
 let currentTheme = "dark";
+let loadSeq = 0;         // guards against out-of-order level fetches
 
 // Build an element with a class + text. textContent only (no innerHTML interpolation).
 function el(tag, className, text) {
@@ -122,38 +124,68 @@ function renderGallery() {
   }
 }
 
-// ---- Canvas (full viewer for one model) ----
-async function loadModel(entry) {
-  els.activeTitle.textContent = entry.name;
+// ---- Canvas (full viewer for one model, with detail-level tabs) ----
+let activeEntry = null;
 
-  // Download serves original file bytes (no re-serialization that could drop fields).
-  els.download.href = entry.file;
-  els.download.setAttribute("download", `${entry.id}.canvas`);
+// A model has one or more `levels` (detail variants). levels[0] is the default.
+// Tabs show only when there are 2+ levels.
+function levelsOf(entry) {
+  return Array.isArray(entry.levels) && entry.levels.length
+    ? entry.levels
+    : [{ label: "Diagram", file: entry.file }];
+}
+
+function renderTabs(entry, activeIdx) {
+  const levels = levelsOf(entry);
+  els.levelTabs.replaceChildren();
+  if (levels.length < 2) { els.levelTabs.hidden = true; return; }
+  els.levelTabs.hidden = false;
+  levels.forEach((lv, i) => {
+    const tab = el("button", "level-tab", lv.label);
+    tab.type = "button";
+    if (i === activeIdx) { tab.classList.add("is-active"); tab.setAttribute("aria-current", "true"); }
+    tab.addEventListener("click", () => loadLevel(i));
+    els.levelTabs.appendChild(tab);
+  });
+}
+
+// Load one detail level: swap the canvas, retarget download/edit, sync the URL.
+async function loadLevel(idx) {
+  const entry = activeEntry;
+  const levels = levelsOf(entry);
+  idx = Math.max(0, Math.min(idx, levels.length - 1));
+  const level = levels[idx];
+  renderTabs(entry, idx);
+
+  // Download serves the original file bytes (no re-serialization that could drop fields).
+  const suffix = levels.length > 1 ? `-${slugify(level.label)}` : "";
+  els.download.href = level.file;
+  els.download.setAttribute("download", `${entry.id}${suffix}.canvas`);
   els.download.hidden = false;
 
-  els.edit.href = `editor/?model=${encodeURIComponent(entry.id)}`;
+  els.edit.href = `editor/?model=${encodeURIComponent(entry.id)}${idx ? `&level=${idx}` : ""}`;
   els.edit.hidden = false;
 
-  if (entry.source) {
-    els.source.href = entry.source;
-    els.source.hidden = false;
-  } else {
-    els.source.hidden = true;
-    els.source.removeAttribute("href");
-  }
+  // Shareable URL: model + level (level omitted when default).
+  history.replaceState(null, "", `?model=${encodeURIComponent(entry.id)}${idx ? `&level=${idx}` : ""}`);
 
+  const reqId = ++loadSeq;
   try {
-    const canvas = await fetchCanvas(entry.file);
-    viewer = new JSONCanvasViewer(
-      { container: els.viewer, canvas, parser, theme: currentTheme },
-      [Minimap, Controls],
-    );
+    const canvas = await fetchCanvas(level.file);
+    if (reqId !== loadSeq) return;
+    if (!viewer) {
+      viewer = new JSONCanvasViewer({ container: els.viewer, canvas, parser, theme: currentTheme }, [Minimap, Controls]);
+    } else {
+      viewer.load({ canvas }); // reuse instance when switching tabs
+    }
   } catch (err) {
-    els.download.hidden = true;
-    els.source.hidden = true;
-    els.edit.hidden = true;
-    showViewerMessage(`Failed to load ${entry.file}: ${err?.message ?? err}`);
+    if (reqId !== loadSeq) return;
+    showViewerMessage(`Failed to load ${level.file}: ${err?.message ?? err}`);
   }
+}
+
+function slugify(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 function showGallery() {
@@ -162,10 +194,14 @@ function showGallery() {
   renderGallery();
 }
 
-function showCanvas(entry) {
+function showCanvas(entry, levelIdx) {
+  activeEntry = entry;
   els.galleryView.hidden = true;
   els.canvasView.hidden = false;
-  loadModel(entry);
+  els.activeTitle.textContent = entry.name;
+  if (entry.source) { els.source.href = entry.source; els.source.hidden = false; }
+  else { els.source.hidden = true; els.source.removeAttribute("href"); }
+  loadLevel(levelIdx || 0);
 }
 
 // ---- Theme (dark default; shared localStorage key with the editor) ----
@@ -211,9 +247,10 @@ async function bootstrap() {
     return;
   }
 
-  const requested = new URLSearchParams(location.search).get("model");
+  const params = new URLSearchParams(location.search);
+  const requested = params.get("model");
   const entry = requested && CATALOG.find((m) => m.id === requested);
-  if (entry) showCanvas(entry);
+  if (entry) showCanvas(entry, parseInt(params.get("level"), 10) || 0);
   else showGallery();
 }
 

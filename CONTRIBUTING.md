@@ -21,6 +21,8 @@ Request with a single new folder — you never touch any web or JavaScript code.
 | `author` | optional | object | `{ "name": "...", "github": "handle" }` — credited in the sidebar. |
 | `tags` | optional | string[] | e.g. `["llama", "attention", "moe"]` — for grouping/filtering. |
 | `source` | optional | string | `http(s)` URL to the paper, repo, or model card. Shown as a `↗ source` link. |
+| `logo` | optional | string | A logo image filename in this folder (e.g. `logo.svg`), an `http(s)` image URL, or a short glyph/emoji. Falls back to the model's initial. |
+| `levels` | optional | object[] | Detail-level **tabs** — `[{ "label": "Overview", "file": "overview.canvas" }, …]`. Any number, in display order. Each `file` is a `.canvas` in this folder. Omit `levels` for a single diagram (use one `.canvas`, no tabs). |
 
 Example:
 
@@ -30,7 +32,22 @@ Example:
   "description": "Architecture colored by weight dtype — FP4 routed experts, FP8 default linears, BF16 overrides.",
   "author": { "name": "Jane Doe", "github": "janedoe" },
   "tags": ["deepseek", "moe", "quantization"],
-  "source": "https://github.com/deepseek-ai"
+  "source": "https://github.com/deepseek-ai",
+  "logo": "logo.svg"
+}
+```
+
+Multiple detail levels (tabs appear automatically when there are 2+):
+
+```json
+{
+  "name": "DeepSeek-V4-Flash",
+  "description": "...",
+  "levels": [
+    { "label": "Overview", "file": "overview.canvas" },
+    { "label": "Attention", "file": "attention.canvas" },
+    { "label": "Full detail", "file": "full.canvas" }
+  ]
 }
 ```
 

@@ -316,6 +316,34 @@ html, body {
 .edit-btn:hover { color: var(--green-light); border-color: var(--green); }
 .edit-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
+/* Detail-level tabs (shown only when a model has 2+ levels). */
+.level-tabs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 0 0 auto;
+  background: var(--ink-raise);
+  border: 1px solid var(--line-accent);
+  border-radius: 8px;
+  padding: 3px;
+}
+.level-tab {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--mute-paper);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.level-tab:hover { color: var(--paper); }
+.level-tab.is-active { background: var(--green); color: #05140c; }
+.level-tab:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
 .theme-toggle {
   flex: 0 0 auto;
   background: var(--ink-raise);

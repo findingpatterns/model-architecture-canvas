@@ -38,6 +38,22 @@ function isHttpUrl(value) {
   }
 }
 
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+// Validate a .canvas file is JSON with a nodes array. Records a failure if not.
+function validCanvas(id, path) {
+  try {
+    const c = JSON.parse(readFileSync(path, "utf8"));
+    if (!Array.isArray(c.nodes)) { fail(id, `${path} has no \`nodes\` array (not valid JSON Canvas)`); return false; }
+    return true;
+  } catch (e) {
+    fail(id, `${path} is not valid JSON (${e.message})`);
+    return false;
+  }
+}
+
 // Validate one model directory; returns a catalog entry, or null if invalid.
 function processModel(id) {
   const dir = join(MODELS_DIR, id);
@@ -78,33 +94,66 @@ function processModel(id) {
     else logoValue = meta.logo.trim(); // emoji / short text / external URL
   }
 
-  // exactly one .canvas
-  const canvases = readdirSync(dir).filter((f) => f.endsWith(".canvas"));
-  if (canvases.length !== 1) {
-    fail(id, `expected exactly one .canvas file, found ${canvases.length}`);
-    return null;
+  // Resolve diagram levels (tabs). Either explicit, ordered, labeled meta.levels
+  // (any number) — or, for back-compat, the single .canvas in the folder as one
+  // implicit level. The viewer shows tabs only when there are 2+ levels.
+  const canvasFiles = readdirSync(dir).filter((f) => f.endsWith(".canvas"));
+  let levelSpecs = []; // [{ label, src(absPath) }]
+  if (meta.levels !== undefined) {
+    if (!Array.isArray(meta.levels) || meta.levels.length === 0) {
+      fail(id, "meta.levels must be a non-empty array of { label, file }");
+      return null;
+    }
+    const seenLabels = new Set();
+    for (const [i, lv] of meta.levels.entries()) {
+      if (!lv || typeof lv.label !== "string" || !lv.label.trim() || typeof lv.file !== "string" || !lv.file.trim()) {
+        fail(id, `meta.levels[${i}] must be { label: string, file: string }`);
+        continue;
+      }
+      if (seenLabels.has(lv.label)) fail(id, `meta.levels has a duplicate label "${lv.label}"`);
+      seenLabels.add(lv.label);
+      const src = join(dir, lv.file);
+      if (!existsSync(src) || !statSync(src).isFile()) { fail(id, `meta.levels[${i}].file "${lv.file}" not found in folder`); continue; }
+      if (!validCanvas(id, src)) continue;
+      levelSpecs.push({ label: lv.label.trim(), src });
+    }
+    if (levelSpecs.length === 0) return null;
+  } else {
+    if (canvasFiles.length !== 1) {
+      fail(id, `expected exactly one .canvas file (or declare meta.levels for multiple), found ${canvasFiles.length}`);
+      return null;
+    }
+    const src = join(dir, canvasFiles[0]);
+    if (!validCanvas(id, src)) return null;
+    levelSpecs = [{ label: "Diagram", src }];
   }
-  const canvasPath = join(dir, canvases[0]);
-  let canvasRaw;
-  try {
-    canvasRaw = readFileSync(canvasPath, "utf8");
-    const canvas = JSON.parse(canvasRaw);
-    if (!Array.isArray(canvas.nodes)) fail(id, "canvas has no `nodes` array (not a valid JSON Canvas)");
-  } catch (e) {
-    fail(id, `canvas is not valid JSON (${e.message})`);
-    return null;
-  }
+
+  // Assign output filenames: single level keeps `<id>.canvas`; multiple use `<id>--<slug>.canvas`.
+  const multi = levelSpecs.length > 1;
+  const usedNames = new Set();
+  const levels = []; // catalog: [{ label, file }]
+  const _levels = []; // internal copy list: [{ src, dest }]
+  levelSpecs.forEach((lv, i) => {
+    const base = multi ? `${id}--${slugify(lv.label) || `level-${i + 1}`}` : id;
+    let dest = `${base}.canvas`;
+    let n = 2;
+    while (usedNames.has(dest)) dest = `${base}-${n++}.canvas`;
+    usedNames.add(dest);
+    levels.push({ label: lv.label, file: `canvases/${dest}` });
+    _levels.push({ src: lv.src, dest });
+  });
 
   return {
     id,
-    file: `canvases/${id}.canvas`,
+    file: levels[0].file, // default level (back-compat for editor + download)
+    levels,
     name: meta.name,
     description: meta.description,
     author: meta.author ?? null,
     tags: Array.isArray(meta.tags) ? meta.tags : [],
     source: typeof meta.source === "string" && meta.source ? meta.source : null,
     logo: logoValue, // glyph / url, or replaced with a copied path below
-    _canvasPath: canvasPath, // internal; stripped before write
+    _levels, // internal; copied below
     _logoFile: logoFile, // internal; copied below if set
   };
 }
@@ -142,8 +191,8 @@ rmSync(OUT_CANVASES, { recursive: true, force: true });
 rmSync(OUT_LOGOS, { recursive: true, force: true });
 mkdirSync(OUT_CANVASES, { recursive: true });
 mkdirSync(OUT_LOGOS, { recursive: true });
-const catalog = entries.map(({ _canvasPath, _logoFile, ...entry }) => {
-  copyFileSync(_canvasPath, join(OUT_CANVASES, `${entry.id}.canvas`));
+const catalog = entries.map(({ _levels, _logoFile, ...entry }) => {
+  for (const lv of _levels) copyFileSync(lv.src, join(OUT_CANVASES, lv.dest));
   if (_logoFile) {
     const dest = `${entry.id}${extname(_logoFile)}`;
     copyFileSync(_logoFile, join(OUT_LOGOS, dest));

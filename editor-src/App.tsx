@@ -45,10 +45,20 @@ function Editor() {
   }, []);
 
   useEffect(() => {
-    const id = new URLSearchParams(location.search).get("model");
+    const params = new URLSearchParams(location.search);
+    const id = params.get("model");
+    const levelIdx = parseInt(params.get("level") ?? "", 10) || 0;
     if (!id) { setError("No ?model specified."); return; }
     setModelId(id);
-    fetch(`/canvases/${encodeURIComponent(id)}.canvas`, { cache: "no-cache" })
+    // Resolve the level's .canvas file from the catalog (a model can have several
+    // detail levels). Falls back to canvases/<id>.canvas if the catalog is absent.
+    fetch("/catalog.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((catalog: Array<{ id: string; file?: string; levels?: { file: string }[] }>) => {
+        const entry = Array.isArray(catalog) ? catalog.find((m) => m.id === id) : undefined;
+        const file = entry?.levels?.[levelIdx]?.file ?? entry?.file ?? `canvases/${id}.canvas`;
+        return fetch(`/${file}`, { cache: "no-cache" });
+      })
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() as Promise<Canvas>; })
       .then((canvas) => {
         const conv = toReactFlow(canvas);
