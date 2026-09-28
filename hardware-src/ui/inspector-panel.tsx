@@ -3,6 +3,8 @@
 import { renderMarkdown } from "../../editor-src/render-markdown.ts";
 import { locate } from "../chip-edit-actions.ts";
 import { useChipStore } from "../chip-store.tsx";
+import { EstimateBadge } from "./estimate-badge.tsx";
+import { isHttpUrl } from "../url-utils.ts";
 
 export function InspectorPanel() {
   const { state, dispatch } = useChipStore();
@@ -37,8 +39,8 @@ export function InspectorPanel() {
                 <th>{s.label}</th>
                 <td>
                   {s.value}{" "}
-                  {s.estimate && <span className="badge">estimate</span>}
-                  {s.source && /^https?:\/\//i.test(s.source) && (
+                  {s.estimate && <EstimateBadge sourced={isHttpUrl(s.source)} />}
+                  {isHttpUrl(s.source) && (
                     <a className="src" href={s.source} target="_blank" rel="noopener noreferrer">
                       source ↗
                     </a>

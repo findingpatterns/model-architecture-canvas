@@ -72,4 +72,23 @@ export function worldScales(chips: Chip[], mode: "fit" | "real"): number[] {
   return chips.map((c) => (FRAME * c.scale!.mmPerUnit) / biggestMm);
 }
 
+// Physical size (mm) of the die + HBM area — the parts drawn to scale. Uses
+// components carrying these roles; null when the chip has no scale info.
+const SCALED_ROLES = new Set(["compute-die", "second-compute-die", "die-to-die-link", "hbm-stack"]);
+export function scaledFootprintMm(chip: Chip): { w: number; d: number } | null {
+  if (!chip.scale) return null;
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const c of chip.components) {
+    if (!c.role || !SCALED_ROLES.has(c.role)) continue;
+    for (const { offset } of instanceOffsets(c)) {
+      const x = c.geom.pos[0] + offset[0], z = c.geom.pos[2] + offset[2];
+      x0 = Math.min(x0, x - c.geom.size[0] / 2); x1 = Math.max(x1, x + c.geom.size[0] / 2);
+      z0 = Math.min(z0, z - c.geom.size[2] / 2); z1 = Math.max(z1, z + c.geom.size[2] / 2);
+    }
+  }
+  if (!Number.isFinite(x0)) return null;
+  const k = chip.scale.mmPerUnit;
+  return { w: (x1 - x0) * k, d: (z1 - z0) * k };
+}
+
 export const round3 = (n: number) => Math.round(n * 1000) / 1000;

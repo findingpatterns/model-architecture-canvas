@@ -76,6 +76,13 @@ body { background: var(--bg); color: var(--text); font: 400 14px/1.5 "Inter", sy
 .specs th { text-align: left; font-weight: 400; color: var(--muted); padding: 6px 8px 6px 0; vertical-align: top; width: 45%; }
 .specs td { padding: 6px 0; border-bottom: 1px solid var(--line); }
 .specs tr:first-child td { border-top: 1px solid var(--line); }
+button.badge { font: inherit; font-size: 10px; background: none; cursor: help; position: relative; }
+/* Keyboard users get the explanation too (title only shows on mouse hover). */
+button.badge:focus-visible::after {
+  content: attr(data-tip); position: absolute; left: 0; top: calc(100% + 6px); z-index: 5; width: 260px;
+  padding: 6px 8px; border-radius: 6px; background: var(--raise); border: 1px solid var(--line); color: var(--text);
+  font-size: 12px; line-height: 1.4; white-space: normal;
+}
 .badge { font-size: 10px; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--orange); color: var(--orange); }
 .src { margin-left: 6px; font-size: 12px; color: var(--green); }
 .error { color: var(--danger); margin: 0; }
@@ -122,9 +129,21 @@ body { background: var(--bg); color: var(--text); font: 400 14px/1.5 "Inter", sy
 /* ---- Compare mode ---- */
 .compare-app { min-height: 100%; display: flex; flex-direction: column; }
 .compare-stage { position: relative; display: grid; grid-template-columns: 1fr 1fr; height: 58vh; min-height: 360px; background: var(--stage); touch-action: none; }
-.compare-track { position: relative; border-right: 1px solid var(--line); }
+/* Tracks are the pointer-event targets drei <View> raycasts against. */
+.compare-track { position: relative; z-index: 2; border-right: 1px solid var(--line); }
 .compare-track + .compare-track { border-right: 0; }
-.compare-label { position: absolute; top: 10px; left: 12px; z-index: 1; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--raise); border: 1px solid var(--line); pointer-events: none; }
+/* Overlay layer mirrors the two tracks but sits OUTSIDE the canvas event source. */
+.compare-wrap { position: relative; }
+.compare-overlays { position: absolute; inset: 0; z-index: 3; display: grid; grid-template-columns: 1fr 1fr; pointer-events: none; }
+.view-overlay { position: relative; }
+.compare-label { position: absolute; top: 10px; left: 12px; display: flex; flex-direction: column; gap: 2px; font-size: 12px; padding: 4px 8px; border-radius: 6px; background: var(--raise); border: 1px solid var(--line); }
+.size-label { font-size: 10.5px; color: var(--muted); cursor: help; pointer-events: auto; }
+.view-card { position: absolute; left: 10px; bottom: 10px; width: min(340px, calc(100% - 20px)); max-height: calc(100% - 70px); overflow-y: auto; pointer-events: auto; background: var(--raise); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+.view-card .panel-body { padding: 12px 14px; }
+.view-card .panel-title { font-size: 20px; padding-right: 24px; }
+.view-card-close { position: absolute; top: 6px; right: 6px; }
+.diff-group.empty h3 { opacity: 0.7; }
+.disclaimer { margin: 0; }
 .compare-canvas { position: absolute !important; inset: 0; }
 .compare-steps { align-items: flex-start; }
 .step-pair { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 2px; }
@@ -147,14 +166,13 @@ body { background: var(--bg); color: var(--text); font: 400 14px/1.5 "Inter", sy
 .bar { height: 4px; border-radius: 2px; background: var(--line); margin: 5px 0; max-width: 220px; }
 .bar span { display: block; height: 100%; border-radius: 2px; background: var(--green); }
 .cell-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.compare-inspectors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.panel-card { border: 1px solid var(--line); border-radius: 10px; background: var(--raise); }
 .compare-picker { font: inherit; font-size: 13px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
 
 @media (max-width: 800px) {
-  .compare-stage { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; height: 80vh; }
+  .compare-stage, .compare-overlays { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .compare-stage { height: 80vh; }
   .compare-track { border-right: 0; border-bottom: 1px solid var(--line); }
-  .compare-inspectors { grid-template-columns: 1fr; }
+  .view-card { max-height: calc(100% - 60px); }
   .compare-table { font-size: 12px; }
   .compare-table th, .compare-table td { padding: 6px; }
 }

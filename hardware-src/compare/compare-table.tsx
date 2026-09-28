@@ -1,11 +1,19 @@
 // Side-by-side spec table from both chips' `summary`, aligned by standard key.
-// Numeric rows get a ratio and proportional bars; every cell shows its source
-// or an "estimate" badge. Clicking a row highlights the related part in 3D.
+// Columns follow the page title (left chip, right chip); the ratio is left ÷ right.
+// Every cell shows its source and/or an explained "estimate" badge. Clicking a
+// row highlights the related part in both 3D views.
 import type { Chip, SummaryRow } from "../chip-types.ts";
+import { EstimateBadge } from "../ui/estimate-badge.tsx";
 import { formatRatio, joinSummary } from "./compare-diff.ts";
+import { isHttpUrl as isHttp } from "../url-utils.ts";
 
-function Cell({ row, max, unit, better }: { row?: SummaryRow; max: number; unit: string | null; better: boolean }) {
-  if (!row) return <td className="muted">—</td>;
+function Cell({ row, max, better, chipName }: { row?: SummaryRow; max: number; better: boolean; chipName: string }) {
+  if (!row)
+    return (
+      <td className="muted" title={`No value in ${chipName}'s data for this spec — usually because the vendor has not published it.`}>
+        not listed
+      </td>
+    );
   return (
     <td className={better ? "better" : ""}>
       <div>{row.value}</div>
@@ -15,11 +23,10 @@ function Cell({ row, max, unit, better }: { row?: SummaryRow; max: number; unit:
         </div>
       )}
       <div className="cell-meta">
-        {row.estimate && <span className="badge">estimate</span>}
-        {row.source && /^https?:\/\//i.test(row.source) && (
+        {row.estimate && <EstimateBadge sourced={isHttp(row.source)} />}
+        {isHttp(row.source) && (
           <a className="src" href={row.source} target="_blank" rel="noopener noreferrer">source ↗</a>
         )}
-        {unit && row.number !== undefined && <span className="muted small">{row.number} {unit}</span>}
       </div>
     </td>
   );
@@ -35,7 +42,7 @@ export function CompareTable({ a, b, onRole, activeRole }: { a: Chip; b: Chip; o
           <th scope="col">Spec</th>
           <th scope="col">{a.name}</th>
           <th scope="col">{b.name}</th>
-          <th scope="col">{b.name} vs {a.name}</th>
+          <th scope="col" title={`${a.name} divided by ${b.name}`}>{a.name} ÷ {b.name}</th>
         </tr>
       </thead>
       <tbody>
@@ -50,8 +57,8 @@ export function CompareTable({ a, b, onRole, activeRole }: { a: Chip; b: Chip; o
               title={role ? "Highlight this part in both 3D views" : undefined}
             >
               <th scope="row">{r.label}</th>
-              <Cell row={r.a} max={max} unit={r.unit} better={r.better === "a"} />
-              <Cell row={r.b} max={max} unit={r.unit} better={r.better === "b"} />
+              <Cell row={r.a} max={max} better={r.better === "a"} chipName={a.name} />
+              <Cell row={r.b} max={max} better={r.better === "b"} chipName={b.name} />
               <td className="ratio mono">{r.ratio !== null ? formatRatio(r.ratio) : "—"}</td>
             </tr>
           );

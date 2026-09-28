@@ -5,7 +5,7 @@ import { roleDiff } from "./compare-diff.ts";
 
 function Group({ title, items, activeRole, onRole }: { title: string; items: { role: string; name: string }[]; activeRole: string | null; onRole: (r: string | null) => void }) {
   return (
-    <div className="diff-group">
+    <div className={`diff-group ${items.length ? "" : "empty"}`}>
       <h3 className="mono">{title}</h3>
       {items.length ? (
         <div className="chips">
@@ -16,7 +16,7 @@ function Group({ title, items, activeRole, onRole }: { title: string; items: { r
           ))}
         </div>
       ) : (
-        <p className="muted small">Nothing — every modeled part has a counterpart.</p>
+        <p className="muted small">None — every modeled part has a counterpart in the other chip.</p>
       )}
     </div>
   );
@@ -26,8 +26,9 @@ export function RoleDiffList({ a, b, activeRole, onRole }: { a: Chip; b: Chip; a
   const d = roleDiff(a, b);
   return (
     <section className="role-diff" aria-label="Structural differences">
-      <Group title={`Only in ${b.name}`} items={d.onlyB} activeRole={activeRole} onRole={onRole} />
+      {/* Left chip first, matching the page title and the table columns. */}
       <Group title={`Only in ${a.name}`} items={d.onlyA} activeRole={activeRole} onRole={onRole} />
+      <Group title={`Only in ${b.name}`} items={d.onlyB} activeRole={activeRole} onRole={onRole} />
       <p className="muted small">
         {d.shared.length} part types exist in both. Compares the modeled structure only; parts without a role are not compared.
       </p>

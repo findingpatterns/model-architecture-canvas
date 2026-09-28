@@ -9,7 +9,7 @@ export interface SummaryPair {
   unit: string | null;
   a?: SummaryRow;
   b?: SummaryRow;
-  ratio: number | null; // b / a when both numeric and a ≠ 0
+  ratio: number | null; // a / b (left ÷ right, matching the "A vs B" title) when both numeric and non-zero
   better: "a" | "b" | null; // side with the better value, when the key is directional
 }
 
@@ -25,10 +25,10 @@ export function joinSummary(a: Chip, b: Chip): SummaryPair[] {
       const rb = mb.get(key);
       const na = ra?.number;
       const nb = rb?.number;
-      const ratio = na !== undefined && nb !== undefined && na !== 0 && nb !== 0 ? nb / na : null;
+      const ratio = na !== undefined && nb !== undefined && na !== 0 && nb !== 0 ? na / nb : null;
       let better: "a" | "b" | null = null;
       if (ratio !== null && meta.higherIsBetter !== null && ratio !== 1)
-        better = (ratio > 1) === meta.higherIsBetter ? "b" : "a";
+        better = (ratio > 1) === meta.higherIsBetter ? "a" : "b";
       return { key, label: meta.label, unit: meta.unit, a: ra, b: rb, ratio, better };
     });
 }
@@ -91,6 +91,7 @@ export function effectiveStepView(chip: Chip, index: number): { drill: string | 
   return { drill, explode };
 }
 
+// "2.6×" = left chip is 2.6 times the right one; "0.62×" = about 3/5 of it.
 export function formatRatio(r: number): string {
-  return r >= 1 ? `×${r >= 10 ? r.toFixed(0) : r.toFixed(1)}` : `÷${(1 / r).toFixed(1)}`;
+  return `${r >= 10 ? r.toFixed(0) : r >= 1 ? r.toFixed(1) : r.toFixed(2)}×`;
 }

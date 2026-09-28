@@ -4,9 +4,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Chip } from "../chip-types.ts";
 import { loadChip } from "../chip-loader.ts";
-import { initialState, useChipReducer, ChipStoreBridge, type ChipStore } from "../chip-store.tsx";
+import { initialState, useChipReducer, type ChipStore } from "../chip-store.tsx";
 import { useTheme } from "../use-theme.ts";
-import { InspectorPanel } from "../ui/inspector-panel.tsx";
 import { alignStages, effectiveStepView } from "./compare-diff.ts";
 import { worldScales } from "../chip-geometry.ts";
 import { CompareViews } from "./compare-views.tsx";
@@ -113,21 +112,16 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
         <button className="btn icon" aria-label="Toggle dark / light theme" onClick={toggleTheme}>{theme === "light" ? "🌙" : "☀"}</button>
       </header>
 
-      <CompareViews stores={stores} highlightRole={role} reducedMotion={reducedMotion} viewKey={viewKey} scales={scales} />
+      <CompareViews stores={stores} highlightRole={role} reducedMotion={reducedMotion} viewKey={viewKey} scales={scales} realSize={realSize && canLock} />
       <CompareStepBar pairs={pairs} names={[a.name, b.name]} index={stage.index} playing={stage.playing} onChange={onStage} />
 
       <main className="compare-body">
         <RoleDiffList a={a} b={b} activeRole={role} onRole={setRole} />
         <CompareTable a={a} b={b} activeRole={role} onRole={setRole} />
-        <div className="compare-inspectors">
-          {stores.map((s, i) => (
-            <section key={i} className="panel-card" aria-label={`${chips[i].name} details`}>
-              <ChipStoreBridge store={s}>
-                <InspectorPanel />
-              </ChipStoreBridge>
-            </section>
-          ))}
-        </div>
+        {/* One disclaimer for the page (shown twice before, once per chip). */}
+        {[...new Set([a.disclaimer, b.disclaimer].filter(Boolean))].map((d) => (
+          <p key={d} className="muted small disclaimer">{d}</p>
+        ))}
       </main>
     </div>
   );

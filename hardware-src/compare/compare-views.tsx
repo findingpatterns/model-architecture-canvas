@@ -8,6 +8,7 @@ import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import { View, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { ChipStoreBridge, type ChipStore } from "../chip-store.tsx";
 import { ChipScene } from "../scene/chip-scene.tsx";
+import { ViewOverlay } from "./view-overlay.tsx";
 
 const CAMERA_POS: [number, number, number] = [14, 13, 16];
 
@@ -17,9 +18,10 @@ interface Props {
   reducedMotion: boolean;
   viewKey: number; // bump to reset both cameras
   scales: [number, number]; // per-chip world scale (fit vs real size)
+  realSize: boolean;
 }
 
-export function CompareViews({ stores, highlightRole, reducedMotion, viewKey, scales }: Props) {
+export function CompareViews({ stores, highlightRole, reducedMotion, viewKey, scales, realSize }: Props) {
   const container = useRef<HTMLDivElement>(null!);
   const tracks = [useRef<HTMLDivElement>(null!), useRef<HTMLDivElement>(null!)];
   const [tip, setTip] = useState<{ name: string; x: number; y: number } | null>(null);
@@ -30,11 +32,10 @@ export function CompareViews({ stores, highlightRole, reducedMotion, viewKey, sc
   };
 
   return (
+    <div className="compare-wrap">
     <div className="compare-stage" ref={container} onPointerLeave={() => setTip(null)}>
-      {stores.map((store, i) => (
-        <div className="compare-track" ref={tracks[i]} key={i}>
-          <span className="compare-label mono">{store.state.chip.name}</span>
-        </div>
+      {stores.map((_, i) => (
+        <div className="compare-track" ref={tracks[i]} key={i} />
       ))}
       <Canvas key={viewKey} className="compare-canvas" eventSource={container} dpr={[1, 2]}>
         {stores.map((store, i) => (
@@ -48,6 +49,15 @@ export function CompareViews({ stores, highlightRole, reducedMotion, viewKey, sc
         ))}
       </Canvas>
       {tip && <div className="tip" style={{ left: tip.x + 14, top: tip.y + 14 }}>{tip.name}</div>}
+    </div>
+    {/* Overlays live outside the Canvas event source so their clicks stay pure DOM. */}
+    <div className="compare-overlays">
+      {stores.map((store, i) => (
+        <ChipStoreBridge store={store} key={i}>
+          <ViewOverlay realSize={realSize} />
+        </ChipStoreBridge>
+      ))}
+    </div>
     </div>
   );
 }

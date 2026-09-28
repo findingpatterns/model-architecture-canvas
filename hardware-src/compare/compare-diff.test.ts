@@ -11,8 +11,9 @@ const b200 = load("b200");
 test("summary rows align by key with ratio and better side", () => {
   const rows = joinSummary(h200, b200);
   const bw = rows.find((r) => r.key === "hbm_bandwidth")!;
-  assert.ok(Math.abs(bw.ratio! - 8 / 4.8) < 1e-9);
+  assert.ok(Math.abs(bw.ratio! - 4.8 / 8) < 1e-9, "ratio is left ÷ right");
   assert.equal(bw.better, "b");
+  assert.equal(joinSummary(b200, h200).find((r) => r.key === "hbm_bandwidth")!.better, "a", "better side follows the order");
   const sm = rows.find((r) => r.key === "sm_count")!;
   assert.ok(sm.a && !sm.b, "keys reported by only one chip are kept");
   assert.equal(sm.ratio, null);
@@ -44,7 +45,15 @@ test("step drill/explode carry forward until a later step changes them", () => {
 });
 
 test("ratios format both ways", () => {
-  assert.equal(formatRatio(2), "×2.0");
-  assert.equal(formatRatio(0.5), "÷2.0");
-  assert.equal(formatRatio(12), "×12");
+  assert.equal(formatRatio(2), "2.0×");
+  assert.equal(formatRatio(0.5), "0.50×");
+  assert.equal(formatRatio(12), "12×");
+});
+
+test("scaled footprint in mm: B200 die+HBM area is larger than H200's", async () => {
+  const { scaledFootprintMm } = await import("../chip-geometry.ts");
+  const fb = scaledFootprintMm(b200)!;
+  const fh = scaledFootprintMm(h200)!;
+  assert.ok(fb.w * fb.d > fh.w * fh.d);
+  assert.ok(Math.abs(fb.w - 77.6) < 0.5, `B200 width ≈ 77.6 mm, got ${fb.w}`);
 });

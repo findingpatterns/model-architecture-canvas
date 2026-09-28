@@ -662,7 +662,7 @@
     },
     {
       "key": "nvlink_bandwidth",
-      "value": "1.8 TB/s (NVLink 5)",
+      "value": "1,800 GB/s (NVLink 5; 1.8 TB/s)",
       "number": 1800,
       "role": "nvlink",
       "source": "https://www.nvidia.com/en-us/data-center/hgx/"
