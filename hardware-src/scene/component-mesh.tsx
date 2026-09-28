@@ -15,12 +15,13 @@ interface Props {
   comp: Component;
   scene: SceneKey;
   dimmed: boolean;
+  highlighted?: boolean;
   onHover: (name: string | null, e?: ThreeEvent<PointerEvent>) => void;
 }
 
 const tmp = new THREE.Object3D();
 
-export function ComponentMesh({ chip, comp, scene, dimmed, onHover }: Props) {
+export function ComponentMesh({ chip, comp, scene, dimmed, highlighted = false, onHover }: Props) {
   const { state, dispatch } = useChipStore();
   const group = useRef<THREE.Group>(null!);
   const inst = useRef<THREE.InstancedMesh>(null!);
@@ -49,7 +50,7 @@ export function ComponentMesh({ chip, comp, scene, dimmed, onHover }: Props) {
   const material = (
     <meshLambertMaterial
       color={color}
-      emissive={selected ? "#553300" : "#000000"}
+      emissive={highlighted ? "#c25a00" : selected ? "#553300" : "#000000"}
       transparent
       opacity={dimmed ? 0.18 : 1}
       depthWrite={!dimmed}
@@ -58,6 +59,7 @@ export function ComponentMesh({ chip, comp, scene, dimmed, onHover }: Props) {
   const handlers = {
     onClick: (e: ThreeEvent<MouseEvent>) => {
       e.stopPropagation();
+      if (e.delta > 4) return; // end of an orbit drag, not a click
       dispatch({ type: "set", patch: { selected: comp.id } });
     },
     onPointerOver: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); onHover(comp.name, e); },

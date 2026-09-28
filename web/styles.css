@@ -227,6 +227,9 @@ html, body {
   color: var(--mute-paper);
   margin: 0 0 14px;
 }
+.gallery-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.compare-link { font-size: 11px; color: var(--green); text-decoration: none; margin-bottom: 14px; }
+.compare-link:hover { color: var(--orange-light); }
 .card-3d {
   margin-left: auto;
   align-self: flex-start;

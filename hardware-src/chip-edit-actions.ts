@@ -121,6 +121,11 @@ export function deleteComponent(chip: Chip, id: string): Chip {
         return out;
       }),
     };
+  // Summary rows can point at a role that no remaining part carries → unlink.
+  if (next.summary) {
+    const roles = new Set([...next.components, ...Object.values(next.scenes ?? {}).flatMap((sc) => sc.components)].map((c) => c.role));
+    next = { ...next, summary: next.summary.map((r) => (r.role && !roles.has(r.role) ? (({ role: _r, ...rest }) => rest)(r) : r)) };
+  }
   return next;
 }
 

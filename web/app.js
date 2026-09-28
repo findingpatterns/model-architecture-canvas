@@ -33,6 +33,7 @@ const els = {
   hardwareSection: document.getElementById("hardware-section"),
   modelsHeading: document.getElementById("models-heading"),
   open3d: document.getElementById("open-3d"),
+  compareLink: document.getElementById("compare-link"),
   canvasView: document.getElementById("canvas-view"),
   viewer: document.getElementById("viewer"),
   download: document.getElementById("download"),

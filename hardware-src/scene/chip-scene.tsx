@@ -8,7 +8,16 @@ import { ComponentMesh } from "./component-mesh.tsx";
 import { FlowParticles } from "./flow-particles.tsx";
 import { TravelDot, CameraRig } from "./step-visuals.tsx";
 
-export function ChipScene({ onHover, reducedMotion }: { onHover: (n: string | null, e?: ThreeEvent<PointerEvent>) => void; reducedMotion: boolean }) {
+interface Props {
+  onHover: (n: string | null, e?: ThreeEvent<PointerEvent>) => void;
+  reducedMotion: boolean;
+  // Compare mode: the parent owns camera + controls (shared between two views)
+  // and can highlight every part with a given role.
+  compare?: boolean;
+  highlightRole?: string | null;
+}
+
+export function ChipScene({ onHover, reducedMotion, compare = false, highlightRole = null }: Props) {
   const { state, dispatch } = useChipStore();
   const { chip, explode, drill } = state;
   const step = state.step >= 0 ? chip.steps?.[state.step] ?? null : null;
@@ -20,16 +29,18 @@ export function ChipScene({ onHover, reducedMotion }: { onHover: (n: string | nu
     <>
       <ambientLight intensity={0.7} />
       <directionalLight position={[6, 12, 8]} intensity={0.9} />
-      <OrbitControls makeDefault enableDamping autoRotate={state.autoRotate && !reducedMotion} autoRotateSpeed={0.6} minDistance={3} maxDistance={60} />
+      {!compare && (
+        <OrbitControls makeDefault enableDamping autoRotate={state.autoRotate && !reducedMotion} autoRotateSpeed={0.6} minDistance={3} maxDistance={60} />
+      )}
 
       <group onPointerMissed={() => dispatch({ type: "set", patch: { selected: null } })}>
         {chip.components.map((c) => (
-          <ComponentMesh key={c.id} chip={chip} comp={c} scene={null} dimmed={!!focus && !focus.has(c.id)} onHover={onHover} />
+          <ComponentMesh key={c.id} chip={chip} comp={c} scene={null} dimmed={!!focus && !focus.has(c.id)} highlighted={!!highlightRole && c.role === highlightRole} onHover={onHover} />
         ))}
         {scene &&
           drill &&
           scene.components.map((c) => (
-            <ComponentMesh key={c.id} chip={chip} comp={c} scene={drill} dimmed={!!focus && !focus.has(c.id)} onHover={onHover} />
+            <ComponentMesh key={c.id} chip={chip} comp={c} scene={drill} dimmed={!!focus && !focus.has(c.id)} highlighted={!!highlightRole && c.role === highlightRole} onHover={onHover} />
           ))}
       </group>
 
@@ -46,7 +57,7 @@ export function ChipScene({ onHover, reducedMotion }: { onHover: (n: string | nu
 
       {state.flows && !reducedMotion && <FlowParticles chip={chip} explode={explode} />}
       <TravelDot chip={chip} step={step} explode={explode} instant={reducedMotion} />
-      <CameraRig chip={chip} step={step} explode={explode} instant={reducedMotion} />
+      {!compare && <CameraRig chip={chip} step={step} explode={explode} instant={reducedMotion} />}
     </>
   );
 }

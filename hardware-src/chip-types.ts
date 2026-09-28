@@ -20,6 +20,7 @@ export interface Component {
   desc?: string;
   specs?: Spec[];
   drill?: string;
+  role?: string; // shared vocabulary for comparing chips (e.g. "tensor-memory")
 }
 
 export interface Scene {
@@ -42,6 +43,16 @@ export interface Step {
   dot?: string;
   explode?: number;
   drill?: string | null;
+  stage?: string; // aligns walkthroughs across chips when comparing
+}
+
+export interface SummaryRow {
+  key: string; // one of SUMMARY_KEYS
+  value: string; // display text, including basis (e.g. "per 8-GPU DGX / 8")
+  number?: number; // in the key's unit, for ratios/bars
+  role?: string; // component role to highlight from this row
+  source?: string;
+  estimate?: boolean;
 }
 
 export interface Chip {
@@ -56,6 +67,7 @@ export interface Chip {
   scenes?: Record<string, Scene>;
   flows?: Flow[];
   steps?: Step[];
+  summary?: SummaryRow[];
 }
 
 // Where a component lives: the main scene (null) or a drill-down scene id.

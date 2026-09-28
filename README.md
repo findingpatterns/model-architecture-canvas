@@ -39,6 +39,7 @@ point to think with, not a finished poster.
 - ⬇️ **Download any `.canvas`** and open it in your note editor (e.g. Obsidian) to edit, re-layout, and annotate.
 - 🖼️ **Gallery landing** — browse all models as a responsive grid; click one to open its full canvas.
 - 🧊 **Hardware in 3D** — explore GPU chips (NVIDIA B200, H200) as interactive 3D models: rotate, zoom, explode the package into layers, click any part for specs with sources, drill into an SM, and play a guided "how a matmul flows through the chip" walkthrough.
+- ⚖️ **Compare two chips** — `hardware/?compare=h200,b200`: a sourced spec table with ratios, the parts that exist in only one chip (e.g. Tensor Memory, the die-to-die link), and two synced 3D views playing the same data-path walkthrough side by side.
 - 🛠️ **Edit chips visually** — move/resize parts with a gizmo, edit specs and walkthrough steps, undo/redo, then download `chip.json`. Every chip also gets a generated 2D `.canvas`.
 - 🌗 **Light / dark** theme (dark by default), shared across gallery, viewer, and editor.
 - 🔗 **Shareable deep links** — `?model=<id>` opens straight to a diagram.

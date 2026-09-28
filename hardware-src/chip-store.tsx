@@ -90,11 +90,26 @@ export function reducer(s: ViewState, a: Action): ViewState {
   }
 }
 
-const Ctx = createContext<{ state: ViewState; dispatch: Dispatch<Action> } | null>(null);
+export interface ChipStore {
+  state: ViewState;
+  dispatch: Dispatch<Action>;
+}
+
+const Ctx = createContext<ChipStore | null>(null);
 
 export function ChipStoreProvider({ init, children }: { init: ViewState; children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, init);
   return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>;
+}
+
+// Compare mode owns two stores at the top and hands each to its view/panels.
+export function useChipReducer(init: ViewState): ChipStore {
+  const [state, dispatch] = useReducer(reducer, init);
+  return { state, dispatch };
+}
+
+export function ChipStoreBridge({ store, children }: { store: ChipStore; children: ReactNode }) {
+  return <Ctx.Provider value={store}>{children}</Ctx.Provider>;
 }
 
 export function useChipStore() {

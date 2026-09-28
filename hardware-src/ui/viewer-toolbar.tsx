@@ -2,14 +2,16 @@
 // to the 2D diagram, download, edit-mode toggle and theme.
 import { useChipStore, type ViewPatch } from "../chip-store.tsx";
 import { downloadChip } from "../chip-serialize.ts";
+import { ComparePicker } from "./compare-picker.tsx";
 
 interface Props {
+  chipId: string;
   onResetView: () => void;
   theme: "dark" | "light";
   onToggleTheme: () => void;
 }
 
-export function ViewerToolbar({ onResetView, theme, onToggleTheme }: Props) {
+export function ViewerToolbar({ chipId, onResetView, theme, onToggleTheme }: Props) {
   const { state, dispatch } = useChipStore();
   const { chip } = state;
   const set = (patch: ViewPatch) => dispatch({ type: "set", patch });
@@ -41,6 +43,7 @@ export function ViewerToolbar({ onResetView, theme, onToggleTheme }: Props) {
       </button>
       <button className="btn" onClick={onResetView}>Reset view</button>
       <span className="spacer" />
+      <ComparePicker chipId={chipId} />
       <a className="btn" href={`../?model=${encodeURIComponent(chip.id)}`}>2D diagram</a>
       <button className="btn" onClick={() => downloadChip(chip)}>Download chip.json</button>
       <button

@@ -23,7 +23,8 @@
         "pos": [0, 0, 0]
       },
       "explode": 0,
-      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls."
+      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls.",
+      "role": "substrate"
     },
     {
       "id": "interposer",
@@ -41,10 +42,11 @@
       "specs": [
         {
           "label": "Packaging",
-          "value": "CoWoS-S",
+          "value": "CoWoS",
           "estimate": true
         }
-      ]
+      ],
+      "role": "interposer"
     },
     {
       "id": "die",
@@ -61,15 +63,16 @@
       "specs": [
         {
           "label": "Transistors",
-          "value": "80 billion",
-          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+          "value": "80 billion (GH100)",
+          "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
         },
         {
-          "label": "SMs enabled (SXM)",
+          "label": "SMs enabled (H100/H200 SXM)",
           "value": "132 of 144",
-          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+          "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
         }
-      ]
+      ],
+      "role": "compute-die"
     },
     {
       "id": "hbm-base-left",
@@ -87,7 +90,8 @@
         "step": [0, 0, 2.1]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack."
+      "desc": "Logic base die at the bottom of each HBM stack.",
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-left",
@@ -118,7 +122,8 @@
           "value": "4.8 TB/s",
           "source": "https://www.nvidia.com/en-us/data-center/h200/"
         }
-      ]
+      ],
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-base-right",
@@ -136,7 +141,8 @@
         "step": [0, 0, 2.1]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack."
+      "desc": "Logic base die at the bottom of each HBM stack.",
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-right",
@@ -155,7 +161,8 @@
         "spread": 0.28
       },
       "explode": 2.3,
-      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die."
+      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die.",
+      "role": "hbm-stack"
     },
     {
       "id": "l2",
@@ -174,9 +181,10 @@
         {
           "label": "Size",
           "value": "50 MB",
-          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+          "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
         }
-      ]
+      ],
+      "role": "l2-cache"
     },
     {
       "id": "mc-left",
@@ -189,7 +197,8 @@
         "pos": [-2.15, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Memory controllers + HBM PHY for the stacks on this side."
+      "desc": "Memory controllers + HBM PHY for the stacks on this side.",
+      "role": "memory-controller"
     },
     {
       "id": "mc-right",
@@ -202,7 +211,8 @@
         "pos": [2.15, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Memory controllers + HBM PHY for the stacks on this side."
+      "desc": "Memory controllers + HBM PHY for the stacks on this side.",
+      "role": "memory-controller"
     },
     {
       "id": "nvlink",
@@ -222,7 +232,8 @@
           "value": "900 GB/s",
           "source": "https://www.nvidia.com/en-us/data-center/h200/"
         }
-      ]
+      ],
+      "role": "nvlink"
     },
     {
       "id": "gigathread",
@@ -254,7 +265,8 @@
       },
       "explode": 3.2,
       "drill": "sm-detail",
-      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside."
+      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside.",
+      "role": "sm-array"
     },
     {
       "id": "sm-b",
@@ -273,7 +285,8 @@
       },
       "explode": 3.2,
       "drill": "sm-detail",
-      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside."
+      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside.",
+      "role": "sm-array"
     }
   ],
   "scenes": {
@@ -295,10 +308,11 @@
           "specs": [
             {
               "label": "L1 + shared (per SM)",
-              "value": "256 KB",
-              "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+              "value": "256 KB (up to 228 KB shared)",
+              "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
             }
-          ]
+          ],
+          "role": "shared-memory"
         },
         {
           "id": "tensor-core",
@@ -319,10 +333,11 @@
           "specs": [
             {
               "label": "Low-precision format",
-              "value": "FP8",
-              "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+              "value": "FP8 (E4M3, E5M2)",
+              "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
             }
-          ]
+          ],
+          "role": "tensor-core"
         },
         {
           "id": "register-file",
@@ -346,7 +361,8 @@
               "value": "256 KB (4 × 64 KB)",
               "estimate": true
             }
-          ]
+          ],
+          "role": "register-file"
         },
         {
           "id": "warp-scheduler",
@@ -362,7 +378,8 @@
             "count": [4, 1, 1],
             "step": [0.83, 0, 0]
           },
-          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization."
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
         },
         {
           "id": "tma",
@@ -374,7 +391,8 @@
             "size": [1.6, 0.15, 0.4],
             "pos": [-0.9, -0.25, 1.4]
           },
-          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads."
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads.",
+          "role": "tma"
         }
       ]
     }
@@ -401,35 +419,153 @@
       "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
       "dot": "hbm-dram-left",
       "explode": 0.6,
-      "drill": null
+      "drill": null,
+      "stage": "hbm"
     },
     {
       "text": "2. Memory controllers read the HBM stacks.",
       "focus": ["mc-left"],
-      "dot": "mc-left"
+      "dot": "mc-left",
+      "stage": "memory-controller"
     },
     {
       "text": "3. Data lands in the 50 MB L2 cache.",
       "focus": ["l2"],
-      "dot": "l2"
+      "dot": "l2",
+      "stage": "l2"
     },
     {
-      "text": "4. TMA copies tiles into shared memory.",
+      "text": "4. TMA copies A and B tiles into shared memory, asynchronously.",
       "focus": ["tma"],
       "dot": "tma",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "tma"
     },
     {
-      "text": "5. Tensor Cores multiply tiles (wgmma, FP8); accumulators stay in registers.",
-      "focus": ["tensor-core", "register-file"],
+      "text": "5. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. A warpgroup issues wgmma: Tensor Cores multiply the tiles (e.g. in FP8).",
+      "focus": ["tensor-core"],
       "dot": "tensor-core",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "tensor-core"
     },
     {
-      "text": "6. Epilogue in CUDA cores, results back to HBM; NVLink all-reduce across GPUs.",
+      "text": "7. Partial sums accumulate in registers — Hopper has no Tensor Memory.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. Epilogue: CUDA cores add bias, apply activation, quantize.",
+      "focus": ["warp-scheduler", "register-file"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results go back to HBM; with tensor parallelism, NVLink all-reduces with other GPUs.",
       "focus": ["nvlink"],
       "dot": "nvlink",
-      "drill": null
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "80 billion (GH100 die, same as H100)",
+      "number": 80,
+      "role": "compute-die",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "dies",
+      "value": "1",
+      "number": 1,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4N (GH100 die, same as H100)",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "141 GB HBM3e",
+      "number": 141,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "4.8 TB/s",
+      "number": 4.8,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "nvlink_bandwidth",
+      "value": "900 GB/s (NVLink 4)",
+      "number": 900,
+      "role": "nvlink",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "3.958 PFLOPS (3,958 TFLOPS)",
+      "number": 3.958,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "not supported (FP8 is the lowest)",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "key": "sm_count",
+      "value": "132 (same GH100 config as H100 SXM5)",
+      "number": 132,
+      "role": "sm-array",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "50 MB (as stated for H100 SXM5)",
+      "number": 50,
+      "role": "l2-cache",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "4th generation",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS",
+      "role": "interposer",
+      "estimate": true
     }
   ]
 }

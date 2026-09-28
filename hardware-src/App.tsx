@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import type { Chip } from "./chip-types.ts";
-import { validateChip } from "../scripts/chip-schema.mjs";
+import { loadChip } from "./chip-loader.ts";
+import { CompareApp } from "./compare/compare-app.tsx";
 import { ChipStoreProvider, initialState, useChipStore } from "./chip-store.tsx";
 import { ChipScene } from "./scene/chip-scene.tsx";
 import { ViewerToolbar } from "./ui/viewer-toolbar.tsx";
@@ -20,20 +21,24 @@ export function App() {
   const [chip, setChip] = useState<Chip | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const params = new URLSearchParams(location.search);
+  const compareIds = params.get("compare")?.split(",") ?? null;
+
   useEffect(() => {
-    const id = new URLSearchParams(location.search).get("chip");
-    if (!id || !/^[a-z0-9-]+$/.test(id)) { setError("No chip selected. Open one from the gallery."); return; }
-    fetch(`../hardware-data/${id}.json`, { cache: "no-cache" })
-      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    if (compareIds) return;
+    const id = params.get("chip");
+    if (!id) { setError("No chip selected. Open one from the gallery."); return; }
+    loadChip(id)
       .then((data) => {
-        const errs = validateChip(data);
-        if (errs.length) throw new Error(`invalid chip.json — ${errs[0]}`);
         document.title = `ModelCanvas — ${data.name} (3D)`;
-        setChip(data as Chip);
+        setChip(data);
       })
-      .catch((e) => setError(`Could not load chip "${id}": ${e.message}`));
+      .catch((e) => setError(e.message));
+    // Route params are read once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (compareIds) return <CompareApp ids={compareIds} reducedMotion={reducedMotion} />;
   if (error) return <div className="center-msg"><p>{error}</p><a className="btn" href="../">← Gallery</a></div>;
   if (!chip) return <div className="center-msg"><p className="muted">Loading chip…</p></div>;
   return (
@@ -64,7 +69,7 @@ function Explorer() {
 
   return (
     <div className={`app ${state.edit ? "is-editing" : ""}`}>
-      <ViewerToolbar onResetView={() => setViewKey((k) => k + 1)} theme={theme} onToggleTheme={toggleTheme} />
+      <ViewerToolbar chipId={state.chip.id} onResetView={() => setViewKey((k) => k + 1)} theme={theme} onToggleTheme={toggleTheme} />
       {state.edit && <EditToolbar />}
       <main className="stage">
         <div className="canvas-wrap" onPointerLeave={() => setTip(null)}>

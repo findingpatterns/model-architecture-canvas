@@ -16,7 +16,8 @@ You can also open any chip in the 3D view, switch to **Edit**, change it visuall
 | `components[]` | Component | The main scene. |
 | `scenes` | `{ id: { anchor, offset?, components[] } }` | Drill-down sub-scenes, floating above `anchor` (a main component) at `offset`. |
 | `flows[]` | `{ id, from, to, group, particles? }` | Animated particles between main components. |
-| `steps[]` | `{ text, focus?, dot?, explode?, drill? }` | Guided animation. `drill`: scene id to open, or `null` to close. |
+| `steps[]` | `{ text, focus?, dot?, explode?, drill?, stage? }` | Guided animation. `drill`: scene id to open, or `null` to close. `stage` (kebab-case, unique) lines steps up across chips when comparing, e.g. `hbm`, `l2`, `tensor-core`, `accumulate`, `writeback`. |
+| `summary[]` | `{ key, value, number?, role?, source?, estimate? }` | Chip-level specs for the comparison table. `key` must be one of `SUMMARY_KEYS` in `scripts/chip-schema.mjs` (e.g. `hbm_bandwidth`, `fp8_sparse`); `number` is in that key's unit and drives ratios; `value` is the display text and should state its basis (e.g. "64 TB/s / 8 GPUs"). |
 
 ### Component
 
@@ -32,3 +33,4 @@ You can also open any chip in the 3D view, switch to **Edit**, change it visuall
 | `desc` | markdown | `**bold**`, `*italic*`, `` `code` ``. |
 | `specs[]` | `{ label, value, source?, estimate? }` | Each spec needs an http(s) `source` **or** `estimate: true`. |
 | `drill` | scene id | Adds an "Open" button that shows that scene. |
+| `role` | kebab-case | Shared vocabulary for comparing chips (`compute-die`, `hbm-stack`, `tensor-core`, `tensor-memory`…). Parts with a role in one chip but not the other are listed as "only in X". Leave it off parts you don't want compared. |

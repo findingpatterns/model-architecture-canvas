@@ -23,7 +23,8 @@
         "pos": [0, 0, 0]
       },
       "explode": 0,
-      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls."
+      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls.",
+      "role": "substrate"
     },
     {
       "id": "interposer",
@@ -42,9 +43,10 @@
         {
           "label": "Packaging",
           "value": "CoWoS-L",
-          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+          "estimate": true
         }
-      ]
+      ],
+      "role": "interposer"
     },
     {
       "id": "die0",
@@ -69,7 +71,8 @@
           "value": "TSMC 4NP",
           "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
         }
-      ]
+      ],
+      "role": "compute-die"
     },
     {
       "id": "die1",
@@ -82,7 +85,8 @@
         "pos": [1.95, 0.8, 0]
       },
       "explode": 2.2,
-      "desc": "Second Blackwell die, identical to die 0."
+      "desc": "Second Blackwell die, identical to die 0.",
+      "role": "second-compute-die"
     },
     {
       "id": "nv-hbi",
@@ -102,7 +106,8 @@
           "value": "10 TB/s",
           "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
         }
-      ]
+      ],
+      "role": "die-to-die-link"
     },
     {
       "id": "hbm-base-left",
@@ -120,7 +125,8 @@
         "step": [0, 0, 1.7]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack: the PHY that talks to the memory controller through the interposer."
+      "desc": "Logic base die at the bottom of each HBM stack: the PHY that talks to the memory controller through the interposer.",
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-left",
@@ -142,21 +148,22 @@
       "desc": "Stacked DRAM dies joined by through-silicon vias (TSVs). 8 stacks surround the two dies. LLM decoding is usually bound by this bandwidth: every token re-reads the weights.",
       "specs": [
         {
-          "label": "Capacity (HGX B200, per GPU)",
-          "value": "180 GB",
-          "source": "https://www.nvidia.com/en-us/data-center/hgx/"
+          "label": "Capacity (per GPU)",
+          "value": "180 GB (1,440 GB per 8-GPU DGX B200)",
+          "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
         },
         {
           "label": "Bandwidth (per GPU)",
-          "value": "~8 TB/s",
-          "source": "https://www.nvidia.com/en-us/data-center/hgx/"
+          "value": "8 TB/s (64 TB/s per 8-GPU DGX B200)",
+          "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
         },
         {
           "label": "Stacks",
           "value": "8",
           "estimate": true
         }
-      ]
+      ],
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-base-right",
@@ -174,7 +181,8 @@
         "step": [0, 0, 1.7]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack."
+      "desc": "Logic base die at the bottom of each HBM stack.",
+      "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-right",
@@ -193,7 +201,8 @@
         "spread": 0.28
       },
       "explode": 2.3,
-      "desc": "Stacked DRAM dies joined by TSVs, feeding die 1."
+      "desc": "Stacked DRAM dies joined by TSVs, feeding die 1.",
+      "role": "hbm-stack"
     },
     {
       "id": "l2-die0",
@@ -207,7 +216,8 @@
         "pos": [-1.95, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Shared L2 cache, coherent across both dies. Buffers data between HBM and all SMs; hot weights and KV cache stay here instead of going back to HBM."
+      "desc": "Shared L2 cache, coherent across both dies. Buffers data between HBM and all SMs; hot weights and KV cache stay here instead of going back to HBM.",
+      "role": "l2-cache"
     },
     {
       "id": "l2-die1",
@@ -221,7 +231,8 @@
         "pos": [1.95, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Shared L2 cache slice on die 1."
+      "desc": "Shared L2 cache slice on die 1.",
+      "role": "l2-cache"
     },
     {
       "id": "mc-die0",
@@ -234,7 +245,8 @@
         "pos": [-3.6, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Memory controllers + HBM PHY: turn read/write requests into signals for the 4 HBM stacks next to this die."
+      "desc": "Memory controllers + HBM PHY: turn read/write requests into signals for the 4 HBM stacks next to this die.",
+      "role": "memory-controller"
     },
     {
       "id": "mc-die1",
@@ -247,7 +259,8 @@
         "pos": [3.6, 1.04, 0]
       },
       "explode": 3.2,
-      "desc": "Memory controllers + HBM PHY for die 1."
+      "desc": "Memory controllers + HBM PHY for die 1.",
+      "role": "memory-controller"
     },
     {
       "id": "nvlink-die0",
@@ -265,9 +278,10 @@
         {
           "label": "NVLink bandwidth (per GPU)",
           "value": "1.8 TB/s",
-          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+          "source": "https://www.nvidia.com/en-us/data-center/hgx/"
         }
-      ]
+      ],
+      "role": "nvlink"
     },
     {
       "id": "nvlink-die1",
@@ -280,7 +294,8 @@
         "pos": [1.95, 1.04, 2.68]
       },
       "explode": 3.2,
-      "desc": "Off-chip I/O ports on die 1."
+      "desc": "Off-chip I/O ports on die 1.",
+      "role": "nvlink"
     },
     {
       "id": "sm-die0-a",
@@ -306,7 +321,8 @@
           "value": "not modeled (symbolic grid)",
           "estimate": true
         }
-      ]
+      ],
+      "role": "sm-array"
     },
     {
       "id": "sm-die0-b",
@@ -325,7 +341,8 @@
       },
       "explode": 3.2,
       "drill": "sm-detail",
-      "desc": "Streaming Multiprocessors (symbolic grid)."
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
     },
     {
       "id": "sm-die1-a",
@@ -344,7 +361,8 @@
       },
       "explode": 3.2,
       "drill": "sm-detail",
-      "desc": "Streaming Multiprocessors (symbolic grid)."
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
     },
     {
       "id": "sm-die1-b",
@@ -363,7 +381,8 @@
       },
       "explode": 3.2,
       "drill": "sm-detail",
-      "desc": "Streaming Multiprocessors (symbolic grid)."
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
     }
   ],
   "scenes": {
@@ -388,7 +407,8 @@
               "value": "~256 KB",
               "estimate": true
             }
-          ]
+          ],
+          "role": "shared-memory"
         },
         {
           "id": "tmem",
@@ -406,9 +426,10 @@
             {
               "label": "Size (per SM)",
               "value": "256 KB (128 lanes × 512 columns × 32-bit)",
-              "source": "https://docs.nvidia.com/cuda/parallel-thread-execution/"
+              "estimate": true
             }
-          ]
+          ],
+          "role": "tensor-memory"
         },
         {
           "id": "tensor-core",
@@ -432,7 +453,8 @@
               "value": "FP4, FP6",
               "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
             }
-          ]
+          ],
+          "role": "tensor-core"
         },
         {
           "id": "register-file",
@@ -456,7 +478,8 @@
               "value": "256 KB (4 × 64 KB)",
               "estimate": true
             }
-          ]
+          ],
+          "role": "register-file"
         },
         {
           "id": "warp-scheduler",
@@ -472,7 +495,8 @@
             "count": [4, 1, 1],
             "step": [0.83, 0, 0]
           },
-          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization."
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
         },
         {
           "id": "tma",
@@ -484,7 +508,8 @@
             "size": [1.6, 0.15, 0.4],
             "pos": [-0.9, -0.25, 1.4]
           },
-          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads."
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads.",
+          "role": "tma"
         }
       ]
     }
@@ -518,58 +543,142 @@
       "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
       "dot": "hbm-dram-left",
       "explode": 0.6,
-      "drill": null
+      "drill": null,
+      "stage": "hbm"
     },
     {
       "text": "2. A memory controller reads the HBM stack attached to its die.",
       "focus": ["mc-die0"],
-      "dot": "mc-die0"
+      "dot": "mc-die0",
+      "stage": "memory-controller"
     },
     {
       "text": "3. If the data lives in the other die's HBM, it crosses NV-HBI at 10 TB/s — invisible to software.",
       "focus": ["nv-hbi"],
-      "dot": "nv-hbi"
+      "dot": "nv-hbi",
+      "stage": "die-to-die"
     },
     {
       "text": "4. Data lands in the shared L2 cache.",
       "focus": ["l2-die0"],
-      "dot": "l2-die0"
+      "dot": "l2-die0",
+      "stage": "l2"
     },
     {
       "text": "5. TMA copies A and B tiles from L2 into shared memory, asynchronously.",
       "focus": ["tma"],
       "dot": "tma",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "tma"
     },
     {
       "text": "6. Tiles sit in shared memory, ready for the Tensor Cores.",
       "focus": ["smem"],
       "dot": "smem",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "shared-memory"
     },
     {
       "text": "7. One thread issues tcgen05.mma: the 4 Tensor Cores multiply the tiles (e.g. in FP4).",
       "focus": ["tensor-core"],
       "dot": "tensor-core",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "tensor-core"
     },
     {
       "text": "8. Partial sums accumulate in TMEM, not in registers. Steps 5–8 repeat along K.",
       "focus": ["tmem"],
       "dot": "tmem",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "accumulate"
     },
     {
       "text": "9. Epilogue: results move TMEM → registers; CUDA cores add bias, apply activation, quantize.",
       "focus": ["register-file", "warp-scheduler"],
       "dot": "register-file",
-      "drill": "sm-detail"
+      "drill": "sm-detail",
+      "stage": "epilogue"
     },
     {
       "text": "10. Results go back to HBM via TMA; with tensor parallelism, NVLink all-reduces with other GPUs.",
       "focus": ["nvlink-die0"],
       "dot": "nvlink-die0",
-      "drill": null
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "208 billion (two dies)",
+      "number": 208,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "dies",
+      "value": "2, joined by a 10 TB/s link",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4NP",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "180 GB HBM3e (1,440 GB / 8)",
+      "number": 180,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "8 TB/s (64 TB/s / 8)",
+      "number": 8,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "nvlink_bandwidth",
+      "value": "1.8 TB/s (NVLink 5)",
+      "number": 1800,
+      "role": "nvlink",
+      "source": "https://www.nvidia.com/en-us/data-center/hgx/"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "9 PFLOPS (72 PFLOPS sparse per 8-GPU DGX B200 / 8)",
+      "number": 9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "9 PFLOPS (72 PFLOPS dense / 8)",
+      "number": 9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP4",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS-L",
+      "role": "interposer",
+      "estimate": true
     }
   ]
 }

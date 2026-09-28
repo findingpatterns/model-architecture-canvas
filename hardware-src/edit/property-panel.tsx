@@ -23,6 +23,7 @@ export function PropertyPanel() {
     <div className="panel-body edit" key={k}>
       <div className="panel-kicker mono">{c.id}{loc.scene && ` · inside ${loc.scene}`}</div>
       <TextField label="Name" value={c.name} onCommit={(name) => commit({ name })} />
+      <TextField label="Role (for comparing chips, kebab-case)" value={c.role ?? ""} onCommit={(role) => commit({ role: role.trim() || undefined })} />
       <label className="field">
         <span>Group</span>
         <select value={c.group} onChange={(e) => commit({ group: e.target.value })}>

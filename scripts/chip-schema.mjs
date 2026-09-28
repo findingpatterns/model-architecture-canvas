@@ -9,6 +9,24 @@
 export const SCHEMA_VERSION = 1;
 export const GEOM_TYPES = ["box", "cylinder"];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+// Standard chip-level spec keys, so `summary` rows line up when comparing chips.
+// unit: shown after `number`; higherIsBetter drives the ratio highlight (null = not comparable).
+export const SUMMARY_KEYS = {
+  transistors: { label: "Transistors", unit: "B", higherIsBetter: null },
+  dies: { label: "Compute dies", unit: "", higherIsBetter: null },
+  process: { label: "Process", unit: null, higherIsBetter: null },
+  hbm_capacity: { label: "HBM capacity (per GPU)", unit: "GB", higherIsBetter: true },
+  hbm_bandwidth: { label: "HBM bandwidth (per GPU)", unit: "TB/s", higherIsBetter: true },
+  nvlink_bandwidth: { label: "NVLink bandwidth (per GPU)", unit: "GB/s", higherIsBetter: true },
+  fp8_sparse: { label: "FP8 Tensor, with sparsity (per GPU)", unit: "PFLOPS", higherIsBetter: true },
+  fp4_dense: { label: "FP4 Tensor, dense (per GPU)", unit: "PFLOPS", higherIsBetter: true },
+  sm_count: { label: "SMs enabled", unit: "", higherIsBetter: true },
+  l2_cache: { label: "L2 cache", unit: "MB", higherIsBetter: true },
+  tensor_core_gen: { label: "Tensor Core generation", unit: null, higherIsBetter: null },
+  lowest_precision: { label: "Lowest Tensor precision", unit: null, higherIsBetter: null },
+  packaging: { label: "Packaging", unit: null, higherIsBetter: null },
+};
 const colorPattern = /^#[0-9a-fA-F]{6}$/;
 
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -23,6 +41,13 @@ function isHttpUrl(value) {
   } catch {
     return false;
   }
+}
+
+// A spec-like row needs an http(s) source or an explicit estimate flag.
+function checkSourced(s, w, errs) {
+  const sourced = typeof s.source === "string" && isHttpUrl(s.source);
+  if (s.source !== undefined && !sourced) errs.push(`${w}: source must be an http(s) URL`);
+  if (!sourced && s.estimate !== true) errs.push(`${w}: needs a source URL or estimate: true`);
 }
 
 // All components across the main tree and every drill-down scene, tagged with their scene.
@@ -54,15 +79,14 @@ function checkComponent(c, where, groups, sceneIds, errs) {
     else if (r.spread !== undefined && !isNum(r.spread)) errs.push(`${where}: repeat.spread must be a number`);
   }
   if (c.desc !== undefined && typeof c.desc !== "string") errs.push(`${where}: desc must be a string`);
+  if (c.role !== undefined && !(isStr(c.role) && idPattern.test(c.role))) errs.push(`${where}: role must be kebab-case`);
   if (c.drill !== undefined && !sceneIds.has(c.drill)) errs.push(`${where}: drill "${c.drill}" is not a declared scene`);
   if (c.specs !== undefined) {
     if (!Array.isArray(c.specs)) errs.push(`${where}: specs must be an array`);
     else c.specs.forEach((s, i) => {
       const w = `${where}.specs[${i}]`;
       if (!isObj(s) || !isStr(s.label) || !isStr(s.value)) { errs.push(`${w}: needs label and value strings`); return; }
-      const sourced = typeof s.source === "string" && isHttpUrl(s.source);
-      if (s.source !== undefined && !sourced) errs.push(`${w}: source must be an http(s) URL`);
-      if (!sourced && s.estimate !== true) errs.push(`${w}: needs a source URL or estimate: true`);
+      checkSourced(s, w, errs);
     });
   }
 }
@@ -116,6 +140,26 @@ export function validateChip(chip) {
     if (s.dot !== undefined && !ids.has(s.dot)) errs.push(`${w}: dot id "${s.dot}" not found`);
     if (s.drill !== undefined && s.drill !== null && !sceneIds.has(s.drill)) errs.push(`${w}: drill "${s.drill}" not a scene`);
     if (s.explode !== undefined && !(isNum(s.explode) && s.explode >= 0 && s.explode <= 1)) errs.push(`${w}: explode must be 0..1`);
+    if (s.stage !== undefined && !(isStr(s.stage) && idPattern.test(s.stage))) errs.push(`${w}: stage must be kebab-case`);
   });
+  const stages = (chip.steps ?? []).map((s) => s?.stage).filter(Boolean);
+  if (new Set(stages).size !== stages.length) errs.push("steps: stage values must be unique");
+  if (chip.summary !== undefined) {
+    if (!Array.isArray(chip.summary)) errs.push("summary must be an array");
+    else {
+      const seen = new Set();
+      chip.summary.forEach((r, i) => {
+        const w = `summary[${i}]`;
+        if (!isObj(r) || !isStr(r.value)) { errs.push(`${w}: needs key and value`); return; }
+        if (!Object.hasOwn(SUMMARY_KEYS, r.key)) errs.push(`${w}: unknown key "${r.key}" (see SUMMARY_KEYS)`);
+        if (seen.has(r.key)) errs.push(`${w}: duplicate key "${r.key}"`);
+        seen.add(r.key);
+        if (r.number !== undefined && !isNum(r.number)) errs.push(`${w}: number must be finite`);
+        if (r.role !== undefined && !(isStr(r.role) && idPattern.test(r.role))) errs.push(`${w}: role must be kebab-case`);
+        else if (r.role !== undefined && !all.some(({ c }) => c?.role === r.role)) errs.push(`${w}: no component has role "${r.role}"`);
+        checkSourced(r, w, errs);
+      });
+    }
+  }
   return errs;
 }

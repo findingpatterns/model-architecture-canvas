@@ -78,4 +78,10 @@ export function renderGallery(catalog, els) {
   els.hardwareSection.hidden = chips.length === 0;
   els.modelsHeading.hidden = chips.length === 0;
   for (const c of chips) els.hardwareGrid.appendChild(card(c));
+  // One-click comparison of the first two chips (the 3D view lets you pick any pair).
+  els.compareLink.hidden = chips.length < 2;
+  if (chips.length >= 2) {
+    els.compareLink.href = `hardware/?compare=${encodeURIComponent(chips[0].id)},${encodeURIComponent(chips[1].id)}`;
+    els.compareLink.textContent = `Compare ${chips[0].name} vs ${chips[1].name} →`;
+  }
 }
