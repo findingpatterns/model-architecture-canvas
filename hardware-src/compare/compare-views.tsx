@@ -16,9 +16,10 @@ interface Props {
   highlightRole: string | null;
   reducedMotion: boolean;
   viewKey: number; // bump to reset both cameras
+  scales: [number, number]; // per-chip world scale (fit vs real size)
 }
 
-export function CompareViews({ stores, highlightRole, reducedMotion, viewKey }: Props) {
+export function CompareViews({ stores, highlightRole, reducedMotion, viewKey, scales }: Props) {
   const container = useRef<HTMLDivElement>(null!);
   const tracks = [useRef<HTMLDivElement>(null!), useRef<HTMLDivElement>(null!)];
   const [tip, setTip] = useState<{ name: string; x: number; y: number } | null>(null);
@@ -41,7 +42,7 @@ export function CompareViews({ stores, highlightRole, reducedMotion, viewKey }: 
             <ChipStoreBridge store={store}>
               <PerspectiveCamera makeDefault position={CAMERA_POS} fov={40} />
               <OrbitControls makeDefault minDistance={3} maxDistance={60} />
-              <ChipScene compare onHover={onHover} reducedMotion={reducedMotion} highlightRole={highlightRole} />
+              <ChipScene compare onHover={onHover} reducedMotion={reducedMotion} highlightRole={highlightRole} worldScale={scales[i]} />
             </ChipStoreBridge>
           </View>
         ))}

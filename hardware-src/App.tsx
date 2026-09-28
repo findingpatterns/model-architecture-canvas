@@ -1,6 +1,7 @@
 // 3D chip explorer: loads hardware-data/<id>.json (?chip=<id>), validates it,
 // then renders the scene + toolbar + side panel (inspector, or editors in Edit mode).
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { worldScales } from "./chip-geometry.ts";
 import { Canvas, type ThreeEvent } from "@react-three/fiber";
 import type { Chip } from "./chip-types.ts";
 import { loadChip } from "./chip-loader.ts";
@@ -55,6 +56,9 @@ function Explorer() {
   const [tip, setTip] = useState<{ name: string; x: number; y: number } | null>(null);
   const [tab, setTab] = useState<"part" | "steps">("part");
   useApplyStep();
+  // Fit scale is frozen per published chip: edits that grow the footprint must
+  // not rescale the whole scene under the user's gizmo.
+  const worldScale = useMemo(() => worldScales([state.published], "fit")[0], [state.published]);
 
   const dirty = state.chip !== state.published;
   useEffect(() => {
@@ -74,7 +78,7 @@ function Explorer() {
       <main className="stage">
         <div className="canvas-wrap" onPointerLeave={() => setTip(null)}>
           <Canvas key={viewKey} camera={{ position: [14, 13, 16], fov: 40 }} dpr={[1, 2]}>
-            <ChipScene onHover={onHover} reducedMotion={reducedMotion} />
+            <ChipScene onHover={onHover} reducedMotion={reducedMotion} worldScale={worldScale} />
           </Canvas>
           {tip && <div className="tip" style={{ left: tip.x + 14, top: tip.y + 14 }}>{tip.name}</div>}
           <p className="hint mono">Drag to rotate · scroll / pinch to zoom · right-drag to pan · click a part</p>

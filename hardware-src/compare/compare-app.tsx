@@ -8,6 +8,7 @@ import { initialState, useChipReducer, ChipStoreBridge, type ChipStore } from ".
 import { useTheme } from "../use-theme.ts";
 import { InspectorPanel } from "../ui/inspector-panel.tsx";
 import { alignStages, effectiveStepView } from "./compare-diff.ts";
+import { worldScales } from "../chip-geometry.ts";
 import { CompareViews } from "./compare-views.tsx";
 import { CompareTable } from "./compare-table.tsx";
 import { RoleDiffList } from "./role-diff-list.tsx";
@@ -46,6 +47,11 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
   const [stage, setStage] = useState({ index: -1, playing: false });
   const [viewKey, setViewKey] = useState(0);
   const pairs = useMemo(() => alignStages(a, b), [a, b]);
+  // "real": both chips share one mm scale, so the bigger chip really looks bigger.
+  // Needs scale.mmPerUnit on both chips; otherwise only "fit" is available.
+  const canLock = !!(a.scale && b.scale);
+  const [realSize, setRealSize] = useState(canLock);
+  const scales = useMemo(() => worldScales([a, b], realSize && canLock ? "real" : "fit") as [number, number], [a, b, realSize, canLock]);
 
   const broadcast = (patch: Parameters<ChipStore["dispatch"]>[0]) => { storeA.dispatch(patch); storeB.dispatch(patch); };
   useEffect(() => broadcast({ type: "set", patch: { explode } }), [explode]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -81,7 +87,9 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
         <a className="btn ghost" href="../">← Gallery</a>
         <div className="title">
           <span className="title-name">{a.name} vs {b.name}</span>
-          <span className="title-sub mono">Compare · structure, not scale</span>
+          <span className="title-sub mono">
+            {realSize && canLock ? "Compare · true relative size (die & HBM, estimates)" : "Compare · each fitted to frame — structure, not scale"}
+          </span>
         </div>
         <a className="btn icon" href={`?compare=${b.id},${a.id}`} aria-label="Swap sides" title="Swap sides">⇄</a>
         <label className="slider">
@@ -89,6 +97,15 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
           <input type="range" min={0} max={1} step={0.01} value={explode} onChange={(e) => setExplode(Number(e.target.value))} aria-label="Explode layers" />
         </label>
         <button className={`btn ${flows ? "on" : ""}`} aria-pressed={flows} onClick={() => setFlows(!flows)}>Data flow</button>
+        <button
+          className={`btn ${realSize && canLock ? "on" : ""}`}
+          aria-pressed={realSize && canLock}
+          disabled={!canLock}
+          title={canLock ? "Lock both chips to the same millimetre scale" : "Both chips need scale.mmPerUnit to compare real size"}
+          onClick={() => setRealSize(!realSize)}
+        >
+          ⚖ Real size
+        </button>
         <button className="btn" onClick={() => setViewKey((k) => k + 1)}>Reset view</button>
         <span className="spacer" />
         <a className="btn" href={`?chip=${a.id}`}>Open {a.name}</a>
@@ -96,7 +113,7 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
         <button className="btn icon" aria-label="Toggle dark / light theme" onClick={toggleTheme}>{theme === "light" ? "🌙" : "☀"}</button>
       </header>
 
-      <CompareViews stores={stores} highlightRole={role} reducedMotion={reducedMotion} viewKey={viewKey} />
+      <CompareViews stores={stores} highlightRole={role} reducedMotion={reducedMotion} viewKey={viewKey} scales={scales} />
       <CompareStepBar pairs={pairs} names={[a.name, b.name]} index={stage.index} playing={stage.playing} onChange={onStage} />
 
       <main className="compare-body">

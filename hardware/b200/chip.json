@@ -4,7 +4,7 @@
   "name": "NVIDIA B200",
   "vendor": "NVIDIA",
   "arch": "Blackwell",
-  "disclaimer": "Illustrative geometry, not to scale. SM grid and DRAM layer counts are symbolic.",
+  "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
   "groups": {
     "compute": "#3b6fd1",
     "memory": "#d9822b",
@@ -19,7 +19,7 @@
       "group": "substrate",
       "geom": {
         "type": "box",
-        "size": [15, 0.6, 10.5],
+        "size": [24, 0.6, 16],
         "pos": [0, 0, 0]
       },
       "explode": 0,
@@ -34,7 +34,7 @@
       "color": "#b8b2a4",
       "geom": {
         "type": "box",
-        "size": [12, 0.3, 7.4],
+        "size": [20, 0.3, 12.4],
         "pos": [0, 0.45, 0]
       },
       "explode": 1,
@@ -55,8 +55,8 @@
       "group": "compute",
       "geom": {
         "type": "box",
-        "size": [3.7, 0.4, 5.6],
-        "pos": [-1.95, 0.8, 0]
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-3.4, 0.8, 0]
       },
       "explode": 2.2,
       "desc": "One of two reticle-limited Blackwell dies (TSMC 4NP). Holds GPCs/SMs, L2 cache, memory controllers and I/O. Software sees both dies as a single GPU.",
@@ -70,6 +70,11 @@
           "label": "Process",
           "value": "TSMC 4NP",
           "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        },
+        {
+          "label": "Die size",
+          "value": "~26 × 33 mm (reticle-limited; exact size not published)",
+          "estimate": true
         }
       ],
       "role": "compute-die"
@@ -81,8 +86,8 @@
       "group": "compute",
       "geom": {
         "type": "box",
-        "size": [3.7, 0.4, 5.6],
-        "pos": [1.95, 0.8, 0]
+        "size": [6.5, 0.4, 8.25],
+        "pos": [3.4, 0.8, 0]
       },
       "explode": 2.2,
       "desc": "Second Blackwell die, identical to die 0.",
@@ -95,7 +100,7 @@
       "group": "io",
       "geom": {
         "type": "box",
-        "size": [0.2, 0.35, 4.2],
+        "size": [0.3, 0.35, 6],
         "pos": [0, 0.8, 0]
       },
       "explode": 2.2,
@@ -117,12 +122,12 @@
       "color": "#8a5a1c",
       "geom": {
         "type": "box",
-        "size": [1.3, 0.12, 1.3],
-        "pos": [-4.85, 0.66, -2.55]
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-8.325, 0.66, -4.425]
       },
       "repeat": {
         "count": [1, 1, 4],
-        "step": [0, 0, 1.7]
+        "step": [0, 0, 2.95]
       },
       "explode": 2,
       "desc": "Logic base die at the bottom of each HBM stack: the PHY that talks to the memory controller through the interposer.",
@@ -136,12 +141,12 @@
       "color": "#c98a2e",
       "geom": {
         "type": "box",
-        "size": [1.3, 0.1, 1.3],
-        "pos": [-4.85, 0.78, -2.55]
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-8.325, 0.78, -4.425]
       },
       "repeat": {
         "count": [1, 8, 4],
-        "step": [0, 0.11, 1.7],
+        "step": [0, 0.11, 2.95],
         "spread": 0.28
       },
       "explode": 2.3,
@@ -173,12 +178,12 @@
       "color": "#8a5a1c",
       "geom": {
         "type": "box",
-        "size": [1.3, 0.12, 1.3],
-        "pos": [4.85, 0.66, -2.55]
+        "size": [2.75, 0.12, 2.75],
+        "pos": [8.325, 0.66, -4.425]
       },
       "repeat": {
         "count": [1, 1, 4],
-        "step": [0, 0, 1.7]
+        "step": [0, 0, 2.95]
       },
       "explode": 2,
       "desc": "Logic base die at the bottom of each HBM stack.",
@@ -192,12 +197,12 @@
       "color": "#c98a2e",
       "geom": {
         "type": "box",
-        "size": [1.3, 0.1, 1.3],
-        "pos": [4.85, 0.78, -2.55]
+        "size": [2.75, 0.1, 2.75],
+        "pos": [8.325, 0.78, -4.425]
       },
       "repeat": {
         "count": [1, 8, 4],
-        "step": [0, 0.11, 1.7],
+        "step": [0, 0.11, 2.95],
         "spread": 0.28
       },
       "explode": 2.3,
@@ -212,8 +217,8 @@
       "color": "#e0a33a",
       "geom": {
         "type": "box",
-        "size": [3.3, 0.08, 0.5],
-        "pos": [-1.95, 1.04, 0]
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-3.4, 1.04, 0]
       },
       "explode": 3.2,
       "desc": "Shared L2 cache, coherent across both dies. Buffers data between HBM and all SMs; hot weights and KV cache stay here instead of going back to HBM.",
@@ -227,8 +232,8 @@
       "color": "#e0a33a",
       "geom": {
         "type": "box",
-        "size": [3.3, 0.08, 0.5],
-        "pos": [1.95, 1.04, 0]
+        "size": [5.797, 0.08, 0.737],
+        "pos": [3.4, 1.04, 0]
       },
       "explode": 3.2,
       "desc": "Shared L2 cache slice on die 1.",
@@ -241,8 +246,8 @@
       "group": "memory",
       "geom": {
         "type": "box",
-        "size": [0.25, 0.08, 5.2],
-        "pos": [-3.6, 1.04, 0]
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-6.299, 1.04, 0]
       },
       "explode": 3.2,
       "desc": "Memory controllers + HBM PHY: turn read/write requests into signals for the 4 HBM stacks next to this die.",
@@ -255,8 +260,8 @@
       "group": "memory",
       "geom": {
         "type": "box",
-        "size": [0.25, 0.08, 5.2],
-        "pos": [3.6, 1.04, 0]
+        "size": [0.439, 0.08, 7.661],
+        "pos": [6.299, 1.04, 0]
       },
       "explode": 3.2,
       "desc": "Memory controllers + HBM PHY for die 1.",
@@ -269,8 +274,8 @@
       "group": "io",
       "geom": {
         "type": "box",
-        "size": [1.4, 0.08, 0.14],
-        "pos": [-1.95, 1.04, -2.68]
+        "size": [2.459, 0.08, 0.206],
+        "pos": [-3.4, 1.04, -3.978]
       },
       "explode": 3.2,
       "desc": "Off-chip I/O. NVLink 5 connects GPUs through NVSwitch (HGX 8-GPU or NVL72); PCIe connects the host CPU.",
@@ -290,8 +295,8 @@
       "group": "io",
       "geom": {
         "type": "box",
-        "size": [1.4, 0.08, 0.14],
-        "pos": [1.95, 1.04, 2.68]
+        "size": [2.459, 0.08, 0.206],
+        "pos": [3.4, 1.04, 3.978]
       },
       "explode": 3.2,
       "desc": "Off-chip I/O ports on die 1.",
@@ -305,12 +310,12 @@
       "color": "#6f9ef0",
       "geom": {
         "type": "box",
-        "size": [0.26, 0.14, 0.44],
-        "pos": [-3.2, 1.07, -2.4]
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-5.596, 1.07, -3.536]
       },
       "repeat": {
         "count": [8, 1, 4],
-        "step": [0.33, 0, 0.55]
+        "step": [0.58, 0, 0.81]
       },
       "explode": 3.2,
       "drill": "sm-detail",
@@ -332,12 +337,12 @@
       "color": "#6f9ef0",
       "geom": {
         "type": "box",
-        "size": [0.26, 0.14, 0.44],
-        "pos": [-3.2, 1.07, 0.6]
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-5.596, 1.07, 0.884]
       },
       "repeat": {
         "count": [8, 1, 4],
-        "step": [0.33, 0, 0.55]
+        "step": [0.58, 0, 0.81]
       },
       "explode": 3.2,
       "drill": "sm-detail",
@@ -352,12 +357,12 @@
       "color": "#6f9ef0",
       "geom": {
         "type": "box",
-        "size": [0.26, 0.14, 0.44],
-        "pos": [0.7, 1.07, -2.4]
+        "size": [0.457, 0.14, 0.648],
+        "pos": [1.204, 1.07, -3.536]
       },
       "repeat": {
         "count": [8, 1, 4],
-        "step": [0.33, 0, 0.55]
+        "step": [0.58, 0, 0.81]
       },
       "explode": 3.2,
       "drill": "sm-detail",
@@ -372,12 +377,12 @@
       "color": "#6f9ef0",
       "geom": {
         "type": "box",
-        "size": [0.26, 0.14, 0.44],
-        "pos": [0.7, 1.07, 0.6]
+        "size": [0.457, 0.14, 0.648],
+        "pos": [1.204, 1.07, 0.884]
       },
       "repeat": {
         "count": [8, 1, 4],
-        "step": [0.33, 0, 0.55]
+        "step": [0.58, 0, 0.81]
       },
       "explode": 3.2,
       "drill": "sm-detail",
@@ -628,6 +633,20 @@
       "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
     },
     {
+      "key": "die_area",
+      "value": "~858 mm² per die (reticle limit; NVIDIA says only “reticle-limited”)",
+      "number": 858,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~1,716 mm² (2 dies)",
+      "number": 1716,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
       "key": "hbm_capacity",
       "value": "180 GB HBM3e (1,440 GB / 8)",
       "number": 180,
@@ -680,5 +699,10 @@
       "role": "interposer",
       "estimate": true
     }
-  ]
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die ≈ 26 × 33 mm (reticle limit, estimate); HBM stack ≈ 11 × 11 mm (estimate)",
+    "estimate": true
+  }
 }

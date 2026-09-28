@@ -47,4 +47,29 @@ export function worldCenter(chip: Chip, id: string, explode: number): Vec3 | nul
   return null;
 }
 
+// Largest horizontal extent (x or z) of the main scene, in scene units.
+export function footprint(chip: Chip): number {
+  let m = 0;
+  for (const c of chip.components) {
+    const r = c.repeat;
+    for (const axis of [0, 2] as const) {
+      const lo = c.geom.pos[axis] - c.geom.size[axis] / 2 + Math.min(0, r ? r.step[axis] * (r.count[axis] - 1) : 0);
+      const hi = c.geom.pos[axis] + c.geom.size[axis] / 2 + Math.max(0, r ? r.step[axis] * (r.count[axis] - 1) : 0);
+      m = Math.max(m, Math.abs(lo), Math.abs(hi));
+    }
+  }
+  return 2 * m;
+}
+
+// World scale per chip. "fit": each chip fills the same frame (structure view).
+// "real": one shared mm-per-pixel so sizes are comparable; requires every chip
+// to declare scale.mmPerUnit (otherwise falls back to fit).
+export const FRAME = 15;
+export function worldScales(chips: Chip[], mode: "fit" | "real"): number[] {
+  const fit = chips.map((c) => FRAME / (footprint(c) || 1));
+  if (mode === "fit" || chips.some((c) => !c.scale)) return fit;
+  const biggestMm = Math.max(...chips.map((c) => footprint(c) * c.scale!.mmPerUnit));
+  return chips.map((c) => (FRAME * c.scale!.mmPerUnit) / biggestMm);
+}
+
 export const round3 = (n: number) => Math.round(n * 1000) / 1000;

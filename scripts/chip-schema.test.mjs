@@ -63,3 +63,13 @@ test("roles and stages must be kebab-case; stages unique", () => {
   assert.match(errs, /role must be kebab-case/);
   assert.match(errs, /stage values must be unique/);
 });
+
+test("scale needs mmPerUnit > 0, a basis, and a source or estimate", () => {
+  const c = template();
+  c.scale = { mmPerUnit: 0, basis: "x" };
+  assert.match(validateChip(c).join("\n"), /scale must be/);
+  c.scale = { mmPerUnit: 4, basis: "die photo" };
+  assert.match(validateChip(c).join("\n"), /scale: needs a source URL or estimate/);
+  c.scale.estimate = true;
+  assert.deepEqual(validateChip(c), []);
+});

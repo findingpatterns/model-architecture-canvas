@@ -43,3 +43,16 @@ test("repeat expands to count instances and spread lifts upper layers", () => {
   assert.equal(inst.length, 32);
   assert.ok(liftOf(dram, 1, 7) > liftOf(dram, 1, 0));
 });
+
+test("real-size scales keep the same mm per unit; fit scales fill the frame", async () => {
+  const { worldScales, footprint, FRAME } = await import("./chip-geometry.ts");
+  const b = load("b200");
+  const h = load("h200");
+  const [sh, sb] = worldScales([h, b], "real");
+  assert.ok(Math.abs(sh - sb) < 1e-9, "same mm scale → same world scale");
+  assert.ok(footprint(b) * sb > footprint(h) * sh, "B200 is drawn larger than H200");
+  const [fh, fb] = worldScales([h, b], "fit");
+  assert.ok(Math.abs(footprint(h) * fh - FRAME) < 1e-9 && Math.abs(footprint(b) * fb - FRAME) < 1e-9);
+  delete (h as { scale?: unknown }).scale;
+  assert.deepEqual(worldScales([h, b], "real"), worldScales([h, b], "fit"), "no scale info → fall back to fit");
+});

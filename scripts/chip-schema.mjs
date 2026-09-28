@@ -15,6 +15,8 @@ const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const SUMMARY_KEYS = {
   transistors: { label: "Transistors", unit: "B", higherIsBetter: null },
   dies: { label: "Compute dies", unit: "", higherIsBetter: null },
+  die_area: { label: "Die area (per die)", unit: "mm²", higherIsBetter: null },
+  compute_silicon: { label: "Compute silicon (all dies)", unit: "mm²", higherIsBetter: null },
   process: { label: "Process", unit: null, higherIsBetter: null },
   hbm_capacity: { label: "HBM capacity (per GPU)", unit: "GB", higherIsBetter: true },
   hbm_bandwidth: { label: "HBM bandwidth (per GPU)", unit: "TB/s", higherIsBetter: true },
@@ -101,6 +103,13 @@ export function validateChip(chip) {
     errs.push("groups must map names to #rrggbb colors");
   if (!Array.isArray(chip.components) || chip.components.length === 0) errs.push("components must be a non-empty array");
   if (chip.scenes !== undefined && !isObj(chip.scenes)) errs.push("scenes must be an object");
+  // Optional physical scale: how many millimetres one scene unit represents.
+  // Enables "real size" comparison between chips drawn on the same basis.
+  if (chip.scale !== undefined) {
+    if (!isObj(chip.scale) || !isNum(chip.scale.mmPerUnit) || chip.scale.mmPerUnit <= 0 || !isStr(chip.scale.basis))
+      errs.push("scale must be { mmPerUnit: number > 0, basis: string, source?, estimate? }");
+    else checkSourced(chip.scale, "scale", errs);
+  }
   if (errs.length) return errs;
 
   const groups = new Set(Object.keys(chip.groups));

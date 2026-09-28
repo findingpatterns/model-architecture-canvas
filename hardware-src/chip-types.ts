@@ -68,6 +68,7 @@ export interface Chip {
   flows?: Flow[];
   steps?: Step[];
   summary?: SummaryRow[];
+  scale?: { mmPerUnit: number; basis: string; source?: string; estimate?: boolean };
 }
 
 // Where a component lives: the main scene (null) or a drill-down scene id.

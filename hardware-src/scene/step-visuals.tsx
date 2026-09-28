@@ -35,9 +35,9 @@ export function TravelDot({ chip, step, explode, instant }: { chip: Chip; step: 
 }
 
 // Eases OrbitControls' target toward the active step's focus (no-op when no step).
-export function CameraRig({ chip, step, explode, instant }: { chip: Chip; step: Step | null; explode: number; instant: boolean }) {
+export function CameraRig({ chip, step, explode, instant, scale }: { chip: Chip; step: Step | null; explode: number; instant: boolean; scale: number }) {
   const controls = useThree((s) => s.controls) as unknown as { target: THREE.Vector3; update: () => void } | null;
-  const goal = focusCenter(chip, step, explode);
+  const goal = focusCenter(chip, step, explode)?.multiplyScalar(scale) ?? null; // scene is drawn inside a scaled group
   useFrame((_, dt) => {
     if (!controls || !goal) return;
     if (instant) controls.target.copy(goal);

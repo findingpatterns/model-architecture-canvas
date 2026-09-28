@@ -3,7 +3,7 @@
 import { OrbitControls, Line } from "@react-three/drei";
 import type { ThreeEvent } from "@react-three/fiber";
 import { useChipStore } from "../chip-store.tsx";
-import { groupPosition, sceneOrigin } from "../chip-geometry.ts";
+import { groupPosition, sceneOrigin, worldScales } from "../chip-geometry.ts";
 import { ComponentMesh } from "./component-mesh.tsx";
 import { FlowParticles } from "./flow-particles.tsx";
 import { TravelDot, CameraRig } from "./step-visuals.tsx";
@@ -15,11 +15,13 @@ interface Props {
   // and can highlight every part with a given role.
   compare?: boolean;
   highlightRole?: string | null;
+  worldScale?: number; // defaults to "fit this chip in the frame"
 }
 
-export function ChipScene({ onHover, reducedMotion, compare = false, highlightRole = null }: Props) {
+export function ChipScene({ onHover, reducedMotion, compare = false, highlightRole = null, worldScale }: Props) {
   const { state, dispatch } = useChipStore();
   const { chip, explode, drill } = state;
+  const s = worldScale ?? worldScales([chip], "fit")[0];
   const step = state.step >= 0 ? chip.steps?.[state.step] ?? null : null;
   const focus = step?.focus?.length ? new Set(step.focus) : null;
   const scene = drill ? chip.scenes?.[drill] : undefined;
@@ -33,6 +35,7 @@ export function ChipScene({ onHover, reducedMotion, compare = false, highlightRo
         <OrbitControls makeDefault enableDamping autoRotate={state.autoRotate && !reducedMotion} autoRotateSpeed={0.6} minDistance={3} maxDistance={60} />
       )}
 
+      <group scale={s}>
       <group onPointerMissed={() => dispatch({ type: "set", patch: { selected: null } })}>
         {chip.components.map((c) => (
           <ComponentMesh key={c.id} chip={chip} comp={c} scene={null} dimmed={!!focus && !focus.has(c.id)} highlighted={!!highlightRole && c.role === highlightRole} onHover={onHover} />
@@ -57,7 +60,8 @@ export function ChipScene({ onHover, reducedMotion, compare = false, highlightRo
 
       {state.flows && !reducedMotion && <FlowParticles chip={chip} explode={explode} />}
       <TravelDot chip={chip} step={step} explode={explode} instant={reducedMotion} />
-      {!compare && <CameraRig chip={chip} step={step} explode={explode} instant={reducedMotion} />}
+      </group>
+      {!compare && <CameraRig chip={chip} step={step} explode={explode} instant={reducedMotion} scale={s} />}
     </>
   );
 }
