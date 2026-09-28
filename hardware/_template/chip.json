@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "id": "my-chip",
+  "name": "My Chip",
+  "vendor": "Vendor",
+  "arch": "Architecture",
+  "disclaimer": "Illustrative geometry, not to scale.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [8, 0.5, 6],
+        "pos": [0, 0, 0]
+      },
+      "desc": "Package substrate."
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "Compute die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [3, 0.4, 3],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 1.5,
+      "desc": "Main compute die.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "10 billion",
+          "source": "https://example.com/datasheet"
+        },
+        {
+          "label": "Cores",
+          "value": "~64",
+          "estimate": true
+        }
+      ]
+    },
+    {
+      "id": "hbm",
+      "parent": "package",
+      "name": "HBM stack",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.1, 1],
+        "pos": [-3, 0.4, -1]
+      },
+      "repeat": {
+        "count": [1, 4, 2],
+        "step": [0, 0.12, 2],
+        "spread": 0.2
+      },
+      "explode": 1.5,
+      "desc": "Stacked DRAM."
+    }
+  ],
+  "flows": [
+    {
+      "id": "hbm-to-die",
+      "from": "hbm",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "Data starts in HBM.",
+      "focus": ["hbm"],
+      "dot": "hbm"
+    },
+    {
+      "text": "The die computes on it.",
+      "focus": ["die"],
+      "dot": "die"
+    }
+  ]
+}

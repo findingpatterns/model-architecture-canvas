@@ -54,7 +54,12 @@
         <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
       </div>
     </header>
+    <h2 id="models-heading" class="gallery-section-title mono" hidden>Models</h2>
     <nav id="gallery-grid" class="gallery-grid" aria-label="Models"></nav>
+    <section id="hardware-section" class="gallery-section" aria-labelledby="hardware-heading" hidden>
+      <h2 id="hardware-heading" class="gallery-section-title mono">Hardware · explore in 3D</h2>
+      <nav id="hardware-grid" class="gallery-grid" aria-label="Hardware"></nav>
+    </section>
     <footer class="gallery-foot">
       <p class="foot-note">
         Open a model to preview its architecture, edit it in the browser, or download the
@@ -71,6 +76,7 @@
       <div id="level-tabs" class="level-tabs" role="tablist" hidden></div>
       <a id="source" class="source-link mono" target="_blank" rel="noopener noreferrer" hidden>↗ source</a>
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+      <a id="open-3d" class="edit-btn mono" hidden>◆ Open 3D</a>
       <a id="edit" class="edit-btn mono" hidden>✎ Edit</a>
       <a id="download" class="download-btn" download hidden>⬇ Download <span class="mono">.canvas</span></a>
     </div>

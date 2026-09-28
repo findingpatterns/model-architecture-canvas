@@ -218,6 +218,25 @@ html, body {
 .card-author { color: var(--mute-paper); }
 .card-open { color: var(--green); margin-left: auto; }
 
+.gallery-section { margin-top: 40px; }
+.gallery-section-title {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mute-paper);
+  margin: 0 0 14px;
+}
+.card-3d {
+  margin-left: auto;
+  align-self: flex-start;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--orange);
+  border: 1px solid color-mix(in srgb, var(--orange) 50%, transparent);
+}
+
 .gallery-empty { color: var(--mute-paper); font-size: 14px; line-height: 1.5; grid-column: 1 / -1; }
 
 .gallery-foot { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--hair-paper); }

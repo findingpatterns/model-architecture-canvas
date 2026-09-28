@@ -18,15 +18,21 @@ import {
   Minimap,
   Controls,
 } from "https://unpkg.com/json-canvas-viewer@4.3.2";
+import { el, renderGallery as renderGalleryView, isHardware } from "./gallery.js";
 
 // Generated from models/ by scripts/build-catalog.mjs → ./catalog.json.
-// Entry: { id, file, name, description, author, tags, source }
+// Entry: { id, file, name, description, author, tags, source, kind?, chip? }
+// kind: "hardware" entries also have a 3D explorer at hardware/?chip=<id>.
 let CATALOG = [];
 
 const els = {
   galleryView: document.getElementById("gallery-view"),
   galleryGrid: document.getElementById("gallery-grid"),
   galleryLead: document.getElementById("gallery-lead"),
+  hardwareGrid: document.getElementById("hardware-grid"),
+  hardwareSection: document.getElementById("hardware-section"),
+  modelsHeading: document.getElementById("models-heading"),
+  open3d: document.getElementById("open-3d"),
   canvasView: document.getElementById("canvas-view"),
   viewer: document.getElementById("viewer"),
   download: document.getElementById("download"),
@@ -42,86 +48,11 @@ let viewer = null;       // single reused JSONCanvasViewer instance
 let currentTheme = "dark";
 let loadSeq = 0;         // guards against out-of-order level fetches
 
-// Build an element with a class + text. textContent only (no innerHTML interpolation).
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text != null) node.textContent = text;
-  return node;
-}
-
 function showViewerMessage(text) {
   if (viewer) { viewer.dispose(); viewer = null; }
   els.viewer.replaceChildren();
   const p = el("p", "viewer-message", text);
   els.viewer.appendChild(p);
-}
-
-// ---- Gallery ----
-// Build a model's logo badge: image (path/URL), else a glyph/emoji, else its initial.
-function modelBadge(entry) {
-  const logo = entry.logo;
-  const isImage = typeof logo === "string" && /^(https?:\/\/|logos\/|\/)|\.(svg|png|jpe?g|webp|gif)$/i.test(logo);
-  if (isImage) {
-    const img = el("img", "card-badge card-badge-img");
-    img.src = logo;
-    img.alt = `${entry.name} logo`;
-    img.loading = "lazy";
-    return img;
-  }
-  const badge = el("span", "card-badge");
-  badge.textContent = logo && logo.trim() ? logo.trim() : entry.name.charAt(0).toUpperCase();
-  return badge;
-}
-
-// One-line intro to the model lines currently in the catalog (auto-updates as models are added).
-function renderLead() {
-  const names = CATALOG.map((m) => m.name);
-  if (names.length === 0) { els.galleryLead.textContent = ""; return; }
-  els.galleryLead.textContent =
-    names.length === 1
-      ? `Currently featuring the ${names[0]} architecture.`
-      : `Currently featuring ${names.length} architectures — ${names.join(", ")}.`;
-}
-
-function renderGallery() {
-  renderLead();
-  els.galleryGrid.replaceChildren();
-  if (CATALOG.length === 0) {
-    els.galleryGrid.appendChild(
-      el("p", "gallery-empty", "No models yet — open a PR adding a folder under models/ to contribute one."),
-    );
-    return;
-  }
-  for (const entry of CATALOG) {
-    const card = el("a", "model-card");
-    card.href = `?model=${encodeURIComponent(entry.id)}`;
-
-    // Header: logo badge + name/id. Logo can be an image path/URL, a glyph/emoji,
-    // or absent (falls back to the model's first initial).
-    const head = el("div", "card-head");
-    head.appendChild(modelBadge(entry));
-    const titles = el("div", "card-titles");
-    titles.appendChild(el("div", "card-name", entry.name));
-    titles.appendChild(el("span", "card-id mono", entry.id));
-    head.appendChild(titles);
-    card.appendChild(head);
-
-    card.appendChild(el("p", "card-note", entry.description));
-
-    if (Array.isArray(entry.tags) && entry.tags.length) {
-      const tags = el("div", "card-tags");
-      for (const t of entry.tags) tags.appendChild(el("span", "tag", t));
-      card.appendChild(tags);
-    }
-
-    const foot = el("div", "card-foot");
-    if (entry.author?.name) foot.appendChild(el("span", "card-author mono", `by ${entry.author.name}`));
-    foot.appendChild(el("span", "card-open mono", "Open →"));
-    card.appendChild(foot);
-
-    els.galleryGrid.appendChild(card);
-  }
 }
 
 // ---- Canvas (full viewer for one model, with detail-level tabs) ----
@@ -191,7 +122,7 @@ function slugify(s) {
 function showGallery() {
   els.canvasView.hidden = true;
   els.galleryView.hidden = false;
-  renderGallery();
+  renderGalleryView(CATALOG, els);
 }
 
 function showCanvas(entry, levelIdx) {
@@ -199,6 +130,8 @@ function showCanvas(entry, levelIdx) {
   els.galleryView.hidden = true;
   els.canvasView.hidden = false;
   els.activeTitle.textContent = entry.name;
+  if (isHardware(entry)) { els.open3d.href = `hardware/?chip=${encodeURIComponent(entry.id)}`; els.open3d.hidden = false; }
+  else els.open3d.hidden = true;
   if (entry.source) { els.source.href = entry.source; els.source.hidden = false; }
   else { els.source.hidden = true; els.source.removeAttribute("href"); }
   loadLevel(levelIdx || 0);

@@ -13,6 +13,8 @@ const required = [
   "web/styles.css",
   "web/canvases",
   "web/editor/index.html",
+  "web/hardware/index.html",
+  "web/hardware-data",
 ];
 
 const missing = required.filter((p) => !existsSync(join(ROOT, p)));

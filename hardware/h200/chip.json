@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "id": "h200",
+  "name": "NVIDIA H200",
+  "vendor": "NVIDIA",
+  "arch": "Hopper",
+  "disclaimer": "Illustrative geometry, not to scale. SM grid and DRAM layer counts are symbolic.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [13, 0.6, 10.5],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls."
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer (CoWoS-S)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [10, 0.3, 7.4],
+        "pos": [0, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "TSMC CoWoS-S: a single large silicon interposer carrying the wiring between the GPU die and the HBM stacks.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-S",
+          "estimate": true
+        }
+      ]
+    },
+    {
+      "id": "die",
+      "parent": "interposer",
+      "name": "GH100 die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [4.6, 0.4, 5.8],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "The same GH100 die as H100 (TSMC 4N). H200 differs from H100 only in memory: HBM3e, larger and faster.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "80 billion",
+          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+        },
+        {
+          "label": "SMs enabled (SXM)",
+          "value": "132 of 144",
+          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+        }
+      ]
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.12, 1.5],
+        "pos": [-3.85, 0.66, -2.1]
+      },
+      "repeat": {
+        "count": [1, 1, 3],
+        "step": [0, 0, 2.1]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack."
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.1, 1.5],
+        "pos": [-3.85, 0.78, -2.1]
+      },
+      "repeat": {
+        "count": [1, 8, 3],
+        "step": [0, 0.11, 2.1],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die. H200 upgraded these from HBM3 to HBM3e — same compute as H100, much more memory bandwidth, which is what LLM decoding needs.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "141 GB",
+          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+        },
+        {
+          "label": "Bandwidth",
+          "value": "4.8 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+        }
+      ]
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.12, 1.5],
+        "pos": [3.85, 0.66, -2.1]
+      },
+      "repeat": {
+        "count": [1, 1, 3],
+        "step": [0, 0, 2.1]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack."
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.1, 1.5],
+        "pos": [3.85, 0.78, -2.1]
+      },
+      "repeat": {
+        "count": [1, 8, 3],
+        "step": [0, 0.11, 2.1],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die."
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [4.2, 0.08, 0.5],
+        "pos": [0, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache, split into two partitions.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "50 MB",
+          "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+        }
+      ]
+    },
+    {
+      "id": "mc-left",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.25, 0.08, 5.4],
+        "pos": [-2.15, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for the stacks on this side."
+    },
+    {
+      "id": "mc-right",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.25, 0.08, 5.4],
+        "pos": [2.15, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for the stacks on this side."
+    },
+    {
+      "id": "nvlink",
+      "parent": "die",
+      "name": "NVLink 4 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [1.6, 0.08, 0.14],
+        "pos": [0, 1.04, -2.78]
+      },
+      "explode": 3.2,
+      "desc": "NVLink 4 connects GPUs through NVSwitch; PCIe connects the host CPU.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth",
+          "value": "900 GB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+        }
+      ]
+    },
+    {
+      "id": "gigathread",
+      "parent": "die",
+      "name": "GigaThread engine",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [1.6, 0.08, 0.14],
+        "pos": [0, 1.04, 2.78]
+      },
+      "explode": 3.2,
+      "desc": "Distributes thread blocks (CTAs) from launched kernels to idle SMs."
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [-1.85, 1.07, -2.5]
+      },
+      "repeat": {
+        "count": [11, 1, 4],
+        "step": [0.335, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside."
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [-1.85, 1.07, 0.55]
+      },
+      "repeat": {
+        "count": [11, 1, 4],
+        "step": [0.335, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid). Click **Open SM** to look inside."
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here.",
+          "specs": [
+            {
+              "label": "L1 + shared (per SM)",
+              "value": "256 KB",
+              "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+            }
+          ]
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (4th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.5, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies matrix tiles per warpgroup instruction (wgmma), FP8 via the Transformer Engine. Accumulators live in registers — Hopper has no TMEM.",
+          "specs": [
+            {
+              "label": "Low-precision format",
+              "value": "FP8",
+              "source": "https://resources.nvidia.com/en-us-tensor-core/gtc22-whitepaper-hopper"
+            }
+          ]
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.45, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers. On Hopper they also hold Tensor Core accumulators.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 × 64 KB)",
+              "estimate": true
+            }
+          ]
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 0.75, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization."
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads."
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-left",
+      "from": "hbm-dram-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-right",
+      "from": "hbm-dram-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights sit in HBM3e (141 GB, 4.8 TB/s).",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null
+    },
+    {
+      "text": "2. Memory controllers read the HBM stacks.",
+      "focus": ["mc-left"],
+      "dot": "mc-left"
+    },
+    {
+      "text": "3. Data lands in the 50 MB L2 cache.",
+      "focus": ["l2"],
+      "dot": "l2"
+    },
+    {
+      "text": "4. TMA copies tiles into shared memory.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "5. Tensor Cores multiply tiles (wgmma, FP8); accumulators stay in registers.",
+      "focus": ["tensor-core", "register-file"],
+      "dot": "tensor-core",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "6. Epilogue in CUDA cores, results back to HBM; NVLink all-reduce across GPUs.",
+      "focus": ["nvlink"],
+      "dot": "nvlink",
+      "drill": null
+    }
+  ]
+}

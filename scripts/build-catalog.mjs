@@ -13,9 +13,11 @@
 import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
 import { join, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { processHardware, listHardwareIds, emitHardware, resetHardwareData } from "./build-hardware-entries.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MODELS_DIR = join(ROOT, "models");
+const HARDWARE_DIR = join(ROOT, "hardware");
 const WEB_DIR = join(ROOT, "web");
 const OUT_CANVASES = join(WEB_DIR, "canvases");
 const OUT_LOGOS = join(WEB_DIR, "logos");
@@ -172,6 +174,10 @@ try {
 
 const entries = modelIds.map(processModel).filter(Boolean);
 entries.sort((a, b) => a.name.localeCompare(b.name));
+const hardware = listHardwareIds(HARDWARE_DIR).map((id) => processHardware(HARDWARE_DIR, id, fail)).filter(Boolean);
+hardware.sort((a, b) => a.name.localeCompare(b.name));
+// Models and chips share catalog ids, ?model= links and canvases/<id>.canvas.
+for (const hw of hardware) if (modelIds.includes(hw.id)) fail(hw.id, "id is already used by a model in models/");
 
 if (errors.length) {
   console.error(`\nCatalog validation failed (${errors.length} issue${errors.length > 1 ? "s" : ""}):`);
@@ -180,6 +186,7 @@ if (errors.length) {
 }
 
 console.log(`Validated ${entries.length} model${entries.length === 1 ? "" : "s"}: ${entries.map((e) => e.id).join(", ") || "(none)"}`);
+console.log(`Validated ${hardware.length} chip${hardware.length === 1 ? "" : "s"}: ${hardware.map((e) => e.id).join(", ") || "(none)"}`);
 
 if (checkOnly) {
   console.log("--check passed (no files written).");
@@ -189,6 +196,7 @@ if (checkOnly) {
 // Emit: fresh canvases/ + logos/ + catalog.json
 rmSync(OUT_CANVASES, { recursive: true, force: true });
 rmSync(OUT_LOGOS, { recursive: true, force: true });
+resetHardwareData(WEB_DIR);
 mkdirSync(OUT_CANVASES, { recursive: true });
 mkdirSync(OUT_LOGOS, { recursive: true });
 const catalog = entries.map(({ _levels, _logoFile, ...entry }) => {
@@ -200,5 +208,6 @@ const catalog = entries.map(({ _levels, _logoFile, ...entry }) => {
   }
   return entry;
 });
+for (const hw of hardware) catalog.push(emitHardware(hw, WEB_DIR));
 writeFileSync(OUT_CATALOG, JSON.stringify(catalog, null, 2) + "\n");
 console.log(`Wrote ${OUT_CATALOG}, ${catalog.length} canvas file(s), and logos to ${WEB_DIR}`);

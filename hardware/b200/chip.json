@@ -1,0 +1,575 @@
+{
+  "schemaVersion": 1,
+  "id": "b200",
+  "name": "NVIDIA B200",
+  "vendor": "NVIDIA",
+  "arch": "Blackwell",
+  "disclaimer": "Illustrative geometry, not to scale. SM grid and DRAM layer counts are symbolic.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [15, 0.6, 10.5],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls."
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer (CoWoS-L)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [12, 0.3, 7.4],
+        "pos": [0, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "TSMC CoWoS-L: local silicon bridges embedded in an organic interposer. Carries the ultra-fine wiring between the dies and the HBM stacks, and lets the package exceed one reticle.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-L",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "die0",
+      "parent": "interposer",
+      "name": "Die 0",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [3.7, 0.4, 5.6],
+        "pos": [-1.95, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two reticle-limited Blackwell dies (TSMC 4NP). Holds GPCs/SMs, L2 cache, memory controllers and I/O. Software sees both dies as a single GPU.",
+      "specs": [
+        {
+          "label": "Transistors (both dies)",
+          "value": "208 billion",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4NP",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "die1",
+      "parent": "interposer",
+      "name": "Die 1",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [3.7, 0.4, 5.6],
+        "pos": [1.95, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second Blackwell die, identical to die 0."
+    },
+    {
+      "id": "nv-hbi",
+      "parent": "interposer",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.2, 0.35, 4.2],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NV-High Bandwidth Interface between the two dies. Fast and coherent enough that CUDA code sees one GPU — no code changes needed.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "10 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.12, 1.3],
+        "pos": [-4.85, 0.66, -2.55]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 1.7]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack: the PHY that talks to the memory controller through the interposer."
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.1, 1.3],
+        "pos": [-4.85, 0.78, -2.55]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 1.7],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by through-silicon vias (TSVs). 8 stacks surround the two dies. LLM decoding is usually bound by this bandwidth: every token re-reads the weights.",
+      "specs": [
+        {
+          "label": "Capacity (HGX B200, per GPU)",
+          "value": "180 GB",
+          "source": "https://www.nvidia.com/en-us/data-center/hgx/"
+        },
+        {
+          "label": "Bandwidth (per GPU)",
+          "value": "~8 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/hgx/"
+        },
+        {
+          "label": "Stacks",
+          "value": "8",
+          "estimate": true
+        }
+      ]
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.12, 1.3],
+        "pos": [4.85, 0.66, -2.55]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 1.7]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack."
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1.3, 0.1, 1.3],
+        "pos": [4.85, 0.78, -2.55]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 1.7],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs, feeding die 1."
+    },
+    {
+      "id": "l2-die0",
+      "parent": "die0",
+      "name": "L2 cache (die 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [3.3, 0.08, 0.5],
+        "pos": [-1.95, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache, coherent across both dies. Buffers data between HBM and all SMs; hot weights and KV cache stay here instead of going back to HBM."
+    },
+    {
+      "id": "l2-die1",
+      "parent": "die1",
+      "name": "L2 cache (die 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [3.3, 0.08, 0.5],
+        "pos": [1.95, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice on die 1."
+    },
+    {
+      "id": "mc-die0",
+      "parent": "die0",
+      "name": "Memory controllers (die 0)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.25, 0.08, 5.2],
+        "pos": [-3.6, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY: turn read/write requests into signals for the 4 HBM stacks next to this die."
+    },
+    {
+      "id": "mc-die1",
+      "parent": "die1",
+      "name": "Memory controllers (die 1)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.25, 0.08, 5.2],
+        "pos": [3.6, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 1."
+    },
+    {
+      "id": "nvlink-die0",
+      "parent": "die0",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [1.4, 0.08, 0.14],
+        "pos": [-1.95, 1.04, -2.68]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O. NVLink 5 connects GPUs through NVSwitch (HGX 8-GPU or NVL72); PCIe connects the host CPU.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth (per GPU)",
+          "value": "1.8 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ]
+    },
+    {
+      "id": "nvlink-die1",
+      "parent": "die1",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [1.4, 0.08, 0.14],
+        "pos": [1.95, 1.04, 2.68]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O ports on die 1."
+    },
+    {
+      "id": "sm-die0-a",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [-3.2, 1.07, -2.4]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.33, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors — the basic compute unit. Each SM has 4 fifth-generation Tensor Cores, Tensor Memory and L1/shared memory. The grid is symbolic: this model does not claim an exact SM count. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "not modeled (symbolic grid)",
+          "estimate": true
+        }
+      ]
+    },
+    {
+      "id": "sm-die0-b",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [-3.2, 1.07, 0.6]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.33, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid)."
+    },
+    {
+      "id": "sm-die1-a",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [0.7, 1.07, -2.4]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.33, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid)."
+    },
+    {
+      "id": "sm-die1-b",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.26, 0.14, 0.44],
+        "pos": [0.7, 1.07, 0.6]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.33, 0, 0.55]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid)."
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-die0-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here.",
+          "specs": [
+            {
+              "label": "Size (L1 + shared, per SM)",
+              "value": "~256 KB",
+              "estimate": true
+            }
+          ]
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0.35, 0]
+          },
+          "desc": "New in Blackwell: dedicated memory where Tensor Cores keep their accumulators instead of registers. Frees registers for other work and allows larger tiles.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (128 lanes × 512 columns × 32-bit)",
+              "source": "https://docs.nvidia.com/cuda/parallel-thread-execution/"
+            }
+          ]
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Tensor Core (5th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies whole matrix tiles in one `tcgen05.mma` instruction, with FP4/FP6/FP8/BF16 inputs and micro-tensor scaling. A single thread issues the MMA; two SMs can pair up for a larger MMA. Almost all AI FLOPs happen here.",
+          "specs": [
+            {
+              "label": "New low-precision formats",
+              "value": "FP4, FP6",
+              "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+            }
+          ]
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage. One slice per SM sub-partition.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 × 64 KB)",
+              "estimate": true
+            }
+          ]
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization."
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads."
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-to-die0",
+      "from": "hbm-dram-left",
+      "to": "die0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-die1",
+      "from": "hbm-dram-right",
+      "to": "die1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-die",
+      "from": "die0",
+      "to": "die1",
+      "group": "io",
+      "particles": 4
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights W and activations X sit in HBM3e.",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null
+    },
+    {
+      "text": "2. A memory controller reads the HBM stack attached to its die.",
+      "focus": ["mc-die0"],
+      "dot": "mc-die0"
+    },
+    {
+      "text": "3. If the data lives in the other die's HBM, it crosses NV-HBI at 10 TB/s — invisible to software.",
+      "focus": ["nv-hbi"],
+      "dot": "nv-hbi"
+    },
+    {
+      "text": "4. Data lands in the shared L2 cache.",
+      "focus": ["l2-die0"],
+      "dot": "l2-die0"
+    },
+    {
+      "text": "5. TMA copies A and B tiles from L2 into shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "6. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "7. One thread issues tcgen05.mma: the 4 Tensor Cores multiply the tiles (e.g. in FP4).",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "8. Partial sums accumulate in TMEM, not in registers. Steps 5–8 repeat along K.",
+      "focus": ["tmem"],
+      "dot": "tmem",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "9. Epilogue: results move TMEM → registers; CUDA cores add bias, apply activation, quantize.",
+      "focus": ["register-file", "warp-scheduler"],
+      "dot": "register-file",
+      "drill": "sm-detail"
+    },
+    {
+      "text": "10. Results go back to HBM via TMA; with tensor parallelism, NVLink all-reduces with other GPUs.",
+      "focus": ["nvlink-die0"],
+      "dot": "nvlink-die0",
+      "drill": null
+    }
+  ]
+}

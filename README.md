@@ -38,6 +38,8 @@ point to think with, not a finished poster.
 - ✏️ **Edit in the browser** — drag, add nodes, draw edges, resize, recolor, delete, and edit text, then download the result. Fully client-side; nothing is saved server-side.
 - ⬇️ **Download any `.canvas`** and open it in your note editor (e.g. Obsidian) to edit, re-layout, and annotate.
 - 🖼️ **Gallery landing** — browse all models as a responsive grid; click one to open its full canvas.
+- 🧊 **Hardware in 3D** — explore GPU chips (NVIDIA B200, H200) as interactive 3D models: rotate, zoom, explode the package into layers, click any part for specs with sources, drill into an SM, and play a guided "how a matmul flows through the chip" walkthrough.
+- 🛠️ **Edit chips visually** — move/resize parts with a gizmo, edit specs and walkthrough steps, undo/redo, then download `chip.json`. Every chip also gets a generated 2D `.canvas`.
 - 🌗 **Light / dark** theme (dark by default), shared across gallery, viewer, and editor.
 - 🔗 **Shareable deep links** — `?model=<id>` opens straight to a diagram.
 - 🤝 **Community-driven** — add a model with a single Pull Request. No code, no merge conflicts.
@@ -63,6 +65,10 @@ cp -r models/_template models/your-model-id
 }
 ```
 
+Adding a **chip** works the same way: copy `hardware/_template/` to `hardware/<chip-id>/`, edit
+`chip.json` (component tree, illustrative 3D geometry, specs with sources, walkthrough steps) and
+`meta.json` — or build it visually in the 3D editor and download the JSON. Schema: [`hardware/_template/README.md`](./hardware/_template/README.md).
+
 A maintainer reviews it (Vercel posts a live preview on the PR), merges, and the site redeploys
 automatically. **Full guide → [`CONTRIBUTING.md`](./CONTRIBUTING.md).**
 
@@ -81,14 +87,16 @@ React/Vite app (the only npm dependencies) built into `web/editor/`.
 
 ```
 models/<id>/ { model.canvas, meta.json }     ← source of truth (your PRs)
+hardware/<id>/ { chip.json, meta.json }      ← chips: validated, 2D .canvas generated
         │   scripts/build-catalog.mjs  +  vite build   (validate + generate)
         ▼
-web/catalog.json + web/canvases/ + web/editor/   ← built in CI, never committed
+web/catalog.json + canvases/ + editor/ + hardware/ + hardware-data/   ← built in CI, never committed
         │   fetched at runtime
         ▼
 web/  static site
    ├─ json-canvas-viewer (CDN)  →  catalog preview + download
-   └─ /editor/  React Flow app  →  in-browser edit + download (client-side, no DB)
+   ├─ /editor/  React Flow app  →  in-browser edit + download (client-side, no DB)
+   └─ /hardware/  React Three Fiber app  →  3D chip explorer + visual chip editor
 ```
 
 `models/` is the only thing contributors edit. CI validates every submission, builds the editor, and
@@ -102,6 +110,7 @@ Vercel regenerates everything on each deploy — which is why two people adding 
 
 - [json-canvas-viewer](https://github.com/hesprs/json-canvas-viewer) by Hesprs (MIT) — renders the catalog preview
 - [React Flow](https://reactflow.dev/) (`@xyflow/react`, MIT) — powers the in-browser editor
+- [three.js](https://threejs.org/) + [React Three Fiber](https://r3f.docs.pmnd.rs/) / drei (MIT) — power the 3D hardware explorer
 - [JSON Canvas](https://jsoncanvas.org/) — the open `.canvas` format (used by note editors like Obsidian)
 
 <div align="center"><sub>Made for people who learn by drawing on the diagram.</sub></div>

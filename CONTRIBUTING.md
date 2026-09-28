@@ -51,6 +51,18 @@ Multiple detail levels (tabs appear automatically when there are 2+):
 }
 ```
 
+## Contributing a chip (hardware)
+
+1. `cp -r hardware/_template hardware/your-chip-id` (kebab-case; must match `id` in `chip.json`).
+2. Write `meta.json`: `{ "name", "description", "kind": "hardware", "tags"?, "source"?, "author"? }`.
+3. Edit `chip.json` — fields are documented in [`hardware/_template/README.md`](./hardware/_template/README.md).
+   Geometry is illustrative (not to scale); use `repeat` for grids such as SMs or DRAM layers.
+4. Every spec needs a `source` URL **or** `"estimate": true` — never ship an uncited number as fact.
+5. Optional: add `scenes` (drill-down views) and `steps` (guided walkthrough).
+6. Or do it visually: open any chip in 3D → **✎ Edit** → change parts / specs / steps → **Download chip.json**.
+7. Run `npm run validate`, then `npm run serve` and check your chip at `/hardware/?chip=your-chip-id`.
+8. Open a PR. A 2D `.canvas` is generated from your chip automatically.
+
 ## Validation
 
 Every PR runs `npm run validate` (GitHub Action). It fails — with a red ✗ on your PR — if:
@@ -58,7 +70,8 @@ Every PR runs `npm run validate` (GitHub Action). It fails — with a red ✗ on
 - the folder name isn't kebab-case or isn't unique,
 - `meta.json` is missing/invalid or lacks `name`/`description`,
 - `tags`/`source`/`author` have the wrong shape (`source` must be an `http(s)` URL),
-- there isn't exactly one `.canvas` file, or it isn't valid JSON Canvas (no `nodes` array).
+- there isn't exactly one `.canvas` file, or it isn't valid JSON Canvas (no `nodes` array),
+- for chips: `chip.json` fails the schema (bad ids/refs/vectors, undeclared groups, or a spec without a source or estimate flag).
 
 Run it locally before pushing:
 
