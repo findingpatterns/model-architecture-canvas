@@ -1,0 +1,103 @@
+{
+  "name": "DeepSeek-V4.1-Flash",
+  "description": "Multimodal MoE (552B, 8B/16B active) as a Causal Encoder-Decoder with CSA2 sparse attention (Full / Reindex / Reuse layers), Single-Pass mHC, Engram memory and DSpark speculative decoding. Traced from the repo's inference/model.py and checked against checkpoint tensor names.",
+  "logo": "logo.svg",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "deepseek",
+    "moe",
+    "multimodal",
+    "sparse-attention"
+  ],
+  "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    },
+    {
+      "label": "Attention",
+      "file": "attention.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "763B",
+      "number": 763.21,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "16.1B",
+      "number": 16.13,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "40",
+      "number": 40,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "5,120",
+      "number": 5120,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "CSA2 sparse attention (Full / Reindex / Reuse), 64 heads",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "384 (+1 shared)",
+      "number": 384,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-6",
+      "number": 6,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "129,280",
+      "number": 129280,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/config.json",
+      "note": "original_seq_len 65,536 × YaRN rope_factor 16"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "FP4 experts + FP8",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+    },
+    {
+      "key": "drafting",
+      "value": "DSpark ×3 (block drafter)",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+    }
+  ]
+}

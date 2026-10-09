@@ -1,0 +1,812 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1500,
+   "y": -420,
+   "width": 1500,
+   "height": 170,
+   "text": "# LLaDA2.2-mini — one layer (L1–L19)  \nPre-norm block: **bidirectional GQA attention** then a **block-routed MoE**. Shapes per forward pass, T = tokens fed (multiple of 32). L0 is identical except its FFN is one dense SwiGLU 2048 → 5120 → 2048 (31.5M)."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 60,
+   "y": -420,
+   "width": 1400,
+   "height": 170,
+   "text": "Layer parameters: attention 10.5M · router 0.5M · shared expert 3.1M · 256 routed experts 805.3M.    \nFrom `LLaDA2MoeAttention`, `LLaDA2MoeGate.block_routing` and `LLaDA2MoeSparseMoeBlock` in modeling_llada2_moe.py; shapes from the checkpoint."
+  },
+  {
+   "id": "xin1",
+   "type": "text",
+   "x": -82,
+   "y": -180,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 170,
+   "y": -190,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2048]  (residual stream)`"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -150,
+   "y": -131,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (input_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "qkv4",
+   "type": "text",
+   "x": -150,
+   "y": -35,
+   "width": 300,
+   "height": 56,
+   "text": "**query_key_value** 2048 → 3072  \n6.3M · no bias",
+   "color": "5"
+  },
+  {
+   "id": "qkvt5",
+   "type": "text",
+   "x": -123,
+   "y": 61,
+   "width": 246,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl6",
+   "type": "text",
+   "x": 170,
+   "y": 31,
+   "width": 440,
+   "height": 34,
+   "text": "`qkv [T, 16+4+4 heads, 128]`"
+  },
+  {
+   "id": "qn7",
+   "type": "text",
+   "x": -1050,
+   "y": 190,
+   "width": 300,
+   "height": 56,
+   "text": "**Q** 16 heads · RMSNorm per head",
+   "color": "5"
+  },
+  {
+   "id": "qr8",
+   "type": "text",
+   "x": -1050,
+   "y": 286,
+   "width": 300,
+   "height": 66,
+   "text": "**RoPE** on 64 of 128 dims    \nθ = 3,000,000",
+   "color": "5"
+  },
+  {
+   "id": "qt9",
+   "type": "text",
+   "x": -982,
+   "y": 392,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl10",
+   "type": "text",
+   "x": -1510,
+   "y": 382,
+   "width": 440,
+   "height": 34,
+   "text": "`Q [T, 16, 128]`"
+  },
+  {
+   "id": "kn11",
+   "type": "text",
+   "x": -150,
+   "y": 190,
+   "width": 300,
+   "height": 56,
+   "text": "**K** 4 heads · RMSNorm per head",
+   "color": "5"
+  },
+  {
+   "id": "kr12",
+   "type": "text",
+   "x": -150,
+   "y": 286,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** on 64 of 128 dims",
+   "color": "5"
+  },
+  {
+   "id": "kt13",
+   "type": "text",
+   "x": -20,
+   "y": 382,
+   "width": 41,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl14",
+   "type": "text",
+   "x": 170,
+   "y": 372,
+   "width": 440,
+   "height": 34,
+   "text": "`K [T, 4, 128]`"
+  },
+  {
+   "id": "vt15",
+   "type": "text",
+   "x": 880,
+   "y": 190,
+   "width": 41,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl16",
+   "type": "text",
+   "x": 1070,
+   "y": 180,
+   "width": 440,
+   "height": 34,
+   "text": "`V [T, 4, 128]`"
+  },
+  {
+   "id": "attn",
+   "type": "text",
+   "x": -260,
+   "y": 461,
+   "width": 520,
+   "height": 116,
+   "text": "**attention** (SDPA, scale 1/√128)    \nGQA: each of 4 KV heads serves 4 query heads    \n**not causal** — mask = block-causal: full inside a 32-token block, earlier blocks visible",
+   "color": "5"
+  },
+  {
+   "id": "ao17",
+   "type": "text",
+   "x": -82,
+   "y": 617,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl18",
+   "type": "text",
+   "x": 170,
+   "y": 607,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 16·128]`"
+  },
+  {
+   "id": "o19",
+   "type": "text",
+   "x": -150,
+   "y": 666,
+   "width": 300,
+   "height": 56,
+   "text": "**dense** (o-proj) 2048 → 2048  \n4.2M",
+   "color": "5"
+  },
+  {
+   "id": "add120",
+   "type": "text",
+   "x": -150,
+   "y": 762,
+   "width": 300,
+   "height": 56,
+   "text": "**⊕ residual add**",
+   "color": "#64748b"
+  },
+  {
+   "id": "res1",
+   "type": "text",
+   "x": -640,
+   "y": -195,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "x221",
+   "type": "text",
+   "x": -82,
+   "y": 858,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": 170,
+   "y": 848,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2048]`"
+  },
+  {
+   "id": "n223",
+   "type": "text",
+   "x": -150,
+   "y": 907,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "hn24",
+   "type": "text",
+   "x": -82,
+   "y": 1003,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl25",
+   "type": "text",
+   "x": -610,
+   "y": 973,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 2048]`"
+  },
+  {
+   "id": "sh26",
+   "type": "text",
+   "x": -1050,
+   "y": 1072,
+   "width": 300,
+   "height": 96,
+   "text": "**shared expert**    \nSwiGLU 2048 → 512 → 2048  \n3.1M",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "sht27",
+   "type": "text",
+   "x": -982,
+   "y": 1208,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl28",
+   "type": "text",
+   "x": -1510,
+   "y": 1198,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 2048]`"
+  },
+  {
+   "id": "gate29",
+   "type": "text",
+   "x": -150,
+   "y": 1072,
+   "width": 300,
+   "height": 66,
+   "text": "**router** 2048 → 256 (fp32)    \nsigmoid scores",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "sc30",
+   "type": "text",
+   "x": -10,
+   "y": 1178,
+   "width": 20,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl31",
+   "type": "text",
+   "x": -610,
+   "y": 1168,
+   "width": 440,
+   "height": 34,
+   "text": "`scores [T, 256]`"
+  },
+  {
+   "id": "bias32",
+   "type": "text",
+   "x": -150,
+   "y": 1227,
+   "width": 300,
+   "height": 66,
+   "text": "**+ expert_bias**    \n(used for picking only)",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "blk33",
+   "type": "text",
+   "x": -210,
+   "y": 1333,
+   "width": 420,
+   "height": 76,
+   "text": "**block routing** — per 32-token block:    \nmax score over its tokens → keep top **48** of 256",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "al34",
+   "type": "text",
+   "x": -2,
+   "y": 1449,
+   "width": 4,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": -610,
+   "y": 1439,
+   "width": 440,
+   "height": 34,
+   "text": "`allowed experts [T/32, 48]`"
+  },
+  {
+   "id": "tk36",
+   "type": "text",
+   "x": -210,
+   "y": 1498,
+   "width": 420,
+   "height": 76,
+   "text": "**per token top-8** among the 48 allowed    \nweights = scores / sum × 2.5",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "ids37",
+   "type": "text",
+   "x": -20,
+   "y": 1614,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": -610,
+   "y": 1604,
+   "width": 440,
+   "height": 34,
+   "text": "`expert ids, weights [T, 8]`"
+  },
+  {
+   "id": "hrelay",
+   "type": "text",
+   "x": 790,
+   "y": 988,
+   "width": 220,
+   "height": 40,
+   "text": "h → routed experts",
+   "color": "4"
+  },
+  {
+   "id": "ex39",
+   "type": "text",
+   "x": 750,
+   "y": 1644,
+   "width": 300,
+   "height": 116,
+   "text": "**8 routed experts**    \neach SwiGLU 2048 → 512 → 2048    \nweighted sum  \n25.2M · active of 805.3M",
+   "color": "4"
+  },
+  {
+   "id": "ext40",
+   "type": "text",
+   "x": 818,
+   "y": 1800,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": 1070,
+   "y": 1790,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 2048]`"
+  },
+  {
+   "id": "sum42",
+   "type": "text",
+   "x": -150,
+   "y": 1869,
+   "width": 300,
+   "height": 56,
+   "text": "**sum** routed + shared",
+   "color": "4"
+  },
+  {
+   "id": "add243",
+   "type": "text",
+   "x": -150,
+   "y": 1965,
+   "width": 300,
+   "height": 56,
+   "text": "**⊕ residual add**",
+   "color": "#64748b"
+  },
+  {
+   "id": "res2",
+   "type": "text",
+   "x": -1640,
+   "y": 843,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "res3",
+   "type": "text",
+   "x": -1640,
+   "y": 1973,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "xout44",
+   "type": "text",
+   "x": -82,
+   "y": 2061,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl45",
+   "type": "text",
+   "x": 170,
+   "y": 2051,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2048]  → next layer`"
+  },
+  {
+   "id": "note-route",
+   "type": "text",
+   "x": 680,
+   "y": 2051,
+   "width": 700,
+   "height": 150,
+   "text": "**Block routing** (new in LLaDA2.2): all 32 tokens of a block may only use the same 48 experts, so a block's MoE touches ≤ 48 of 256 expert weight sets. config.json also lists `n_group` / `topk_group`, but this modeling code does not use them."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "xin1",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n13",
+   "toNode": "qkv4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "qkv4",
+   "toNode": "qkvt5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "qkvt5",
+   "toNode": "qn7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "qn7",
+   "toNode": "qr8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "qr8",
+   "toNode": "qt9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "qkvt5",
+   "toNode": "kn11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "kn11",
+   "toNode": "kr12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "kr12",
+   "toNode": "kt13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "qkvt5",
+   "toNode": "vt15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "qt9",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e11",
+   "fromNode": "kt13",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "vt15",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e13",
+   "fromNode": "attn",
+   "toNode": "ao17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "ao17",
+   "toNode": "o19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "o19",
+   "toNode": "add120",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "xin1",
+   "toNode": "res1",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#64748b"
+  },
+  {
+   "id": "e17",
+   "fromNode": "res1",
+   "toNode": "add120",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "color": "#64748b"
+  },
+  {
+   "id": "e18",
+   "fromNode": "add120",
+   "toNode": "x221",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "x221",
+   "toNode": "n223",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "n223",
+   "toNode": "hn24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "hn24",
+   "toNode": "sh26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "sh26",
+   "toNode": "sht27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "hn24",
+   "toNode": "gate29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "gate29",
+   "toNode": "sc30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "sc30",
+   "toNode": "bias32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "bias32",
+   "toNode": "blk33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "blk33",
+   "toNode": "al34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "al34",
+   "toNode": "tk36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "tk36",
+   "toNode": "ids37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "hn24",
+   "toNode": "hrelay",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "e31",
+   "fromNode": "hrelay",
+   "toNode": "ex39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "ids37",
+   "toNode": "ex39",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "which & how much"
+  },
+  {
+   "id": "e33",
+   "fromNode": "ex39",
+   "toNode": "ext40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "sht27",
+   "toNode": "sum42",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e35",
+   "fromNode": "ext40",
+   "toNode": "sum42",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e36",
+   "fromNode": "sum42",
+   "toNode": "add243",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "x221",
+   "toNode": "res2",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#64748b"
+  },
+  {
+   "id": "e38",
+   "fromNode": "res2",
+   "toNode": "res3",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "color": "#64748b"
+  },
+  {
+   "id": "e39",
+   "fromNode": "res3",
+   "toNode": "add243",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#64748b"
+  },
+  {
+   "id": "e40",
+   "fromNode": "add243",
+   "toNode": "xout44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

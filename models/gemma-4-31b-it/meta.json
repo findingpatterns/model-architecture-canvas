@@ -1,0 +1,99 @@
+{
+  "name": "Gemma 4 31B-it",
+  "description": "Google DeepMind's 31.3B dense vision-language decoder: 60 layers in a [5 × sliding-window (1024), 1 × full] pattern, GQA 32/16 × 256 on sliding layers and 32/4 × 512 with K = V on full layers, GeGLU 21,504, sandwich RMSNorms, a tied 262K-vocab head with logit softcap 30, and a 27-layer ViT (576M) for images and video frames; the 470M MTP drafter ships separately as gemma-4-31B-it-assistant. Traced from the transformers gemma4 / gemma4_assistant code and checked against checkpoint tensor shapes.",
+  "logo": "G4",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "gemma",
+    "google",
+    "dense",
+    "multimodal",
+    "sliding-window",
+    "speculative-decoding"
+  ],
+  "source": "https://huggingface.co/google/gemma-4-31B-it",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "31.3B",
+      "number": 31.27,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. The 0.47B MTP drafter ships in a separate repo (google/gemma-4-31B-it-assistant) and is not included."
+    },
+    {
+      "key": "params_active",
+      "value": "30.7B",
+      "number": 30.7,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. The lm head is tied to the embedding, so the same 1.41B table counts here as the head."
+    },
+    {
+      "key": "layers",
+      "value": "60",
+      "number": 60,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "5,376",
+      "number": 5376,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-1024 5 : 1 full, GQA 32 q / 16 kv (sliding) · 32 q / 4 kv, K = V (full)",
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "dense",
+      "number": 0,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "— (dense)",
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "262,144",
+      "number": 262144,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/google/gemma-4-31B-it/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/google/gemma-4-31B-it"
+    },
+    {
+      "key": "drafting",
+      "value": "none (MTP drafter ships separately: gemma-4-31B-it-assistant)",
+      "source": "https://huggingface.co/google/gemma-4-31B-it"
+    }
+  ]
+}

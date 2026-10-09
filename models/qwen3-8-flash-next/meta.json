@@ -1,0 +1,99 @@
+{
+  "name": "Qwen3.8-Flash-Next",
+  "description": "Qwen's 180B experimental preview of the Qwen4 architecture (Qwen4ExpForConditionalGeneration): 48 layers in a 3 : 1 rhythm of Gated DeltaNet and QSA sparse attention (top-2048 tokens in 4-token blocks), a 512-expert MoE (top-10 + 1 shared, ~6.7B active), a 4-lane gated residual stream, a 51B hashed n-gram embedding feeding one layer, one MTP layer and a ViT. Numbers from config.json and the safetensors headers.",
+  "logo": "Q",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "qwen",
+    "moe",
+    "linear-attention",
+    "sparse-attention",
+    "multimodal"
+  ],
+  "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "180.0B",
+      "number": 180.0,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. Includes the 51.2B n-gram embedding table."
+    },
+    {
+      "key": "params_active",
+      "value": "6.67B",
+      "number": 6.67,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. The n-gram table is a row lookup and is excluded like the embedding."
+    },
+    {
+      "key": "layers",
+      "value": "48",
+      "number": 48,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,560",
+      "number": 2560,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "36 Gated DeltaNet + 12 QSA (GQA 24q / 2kv, top-2048)",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "512 (+1 shared)",
+      "number": 512,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-10",
+      "number": 10,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "248,320",
+      "number": 248320,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "262K",
+      "number": 262144,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/config.json"
+    }
+  ]
+}

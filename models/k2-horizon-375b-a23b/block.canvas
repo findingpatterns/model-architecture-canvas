@@ -1,0 +1,856 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1300,
+   "y": -560,
+   "width": 1250,
+   "height": 170,
+   "text": "# One MoE layer (L3–60) — dataflow with shapes  \nGrey bars = tensors (length ∝ channels, 0.08 px/channel); boxes = operations with their weight count. T = sequence length. L0–2 are identical except the FFN (see bottom note)."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 0,
+   "y": -560,
+   "width": 1150,
+   "height": 170,
+   "text": "Attention = plain **GQA**: 48 query heads share 8 KV heads (6 queries per KV head), head_dim 128. **Partial RoPE**: the first 64 dims of each q/k head (interleaved layout) are rotated, the last 64 pass through unchanged. No QK-norm, no output gate, no sliding window (config)."
+  },
+  {
+   "id": "xin1",
+   "type": "text",
+   "x": -246,
+   "y": -300,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 266,
+   "y": -310,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]  from previous layer`"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -150,
+   "y": -251,
+   "width": 300,
+   "height": 56,
+   "text": "**input_layernorm** (RMSNorm)  \n6144 weights",
+   "color": "3"
+  },
+  {
+   "id": "xn4",
+   "type": "text",
+   "x": -246,
+   "y": -155,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 266,
+   "y": -165,
+   "width": 440,
+   "height": 34,
+   "text": "`x̂ [T, 6144]`"
+  },
+  {
+   "id": "q6",
+   "type": "text",
+   "x": -1050,
+   "y": 44,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 6144 → 48×128  \n37.7M",
+   "color": "5"
+  },
+  {
+   "id": "qt7",
+   "type": "text",
+   "x": -1146,
+   "y": 140,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1606,
+   "y": 130,
+   "width": 440,
+   "height": 34,
+   "text": "`q [T, 48, 128]`"
+  },
+  {
+   "id": "qr9",
+   "type": "text",
+   "x": -1050,
+   "y": 189,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** on dims 0–63  \n(θ = 1e+07); 64–127 untouched",
+   "color": "5"
+  },
+  {
+   "id": "qrt10",
+   "type": "text",
+   "x": -1146,
+   "y": 285,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl11",
+   "type": "text",
+   "x": -1606,
+   "y": 275,
+   "width": 440,
+   "height": 34,
+   "text": "`q [T, 48, 128]`"
+  },
+  {
+   "id": "k12",
+   "type": "text",
+   "x": -150,
+   "y": 44,
+   "width": 300,
+   "height": 56,
+   "text": "**k_proj** 6144 → 8×128  \n6.3M",
+   "color": "5"
+  },
+  {
+   "id": "kt13",
+   "type": "text",
+   "x": -41,
+   "y": 140,
+   "width": 82,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl14",
+   "type": "text",
+   "x": 170,
+   "y": 130,
+   "width": 440,
+   "height": 34,
+   "text": "`k [T, 8, 128]`"
+  },
+  {
+   "id": "kr15",
+   "type": "text",
+   "x": -150,
+   "y": 189,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** on dims 0–63",
+   "color": "5"
+  },
+  {
+   "id": "krt16",
+   "type": "text",
+   "x": -41,
+   "y": 285,
+   "width": 82,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl17",
+   "type": "text",
+   "x": 170,
+   "y": 275,
+   "width": 440,
+   "height": 34,
+   "text": "`k [T, 8, 128] → KV cache`"
+  },
+  {
+   "id": "v18",
+   "type": "text",
+   "x": 850,
+   "y": 44,
+   "width": 300,
+   "height": 56,
+   "text": "**v_proj** 6144 → 8×128  \n6.3M",
+   "color": "5"
+  },
+  {
+   "id": "vt19",
+   "type": "text",
+   "x": 959,
+   "y": 140,
+   "width": 82,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl20",
+   "type": "text",
+   "x": 1170,
+   "y": 130,
+   "width": 440,
+   "height": 34,
+   "text": "`v [T, 8, 128] → KV cache`"
+  },
+  {
+   "id": "att21",
+   "type": "text",
+   "x": -190,
+   "y": 334,
+   "width": 380,
+   "height": 70,
+   "text": "**causal GQA attention**  \nsoftmax(q·kᵀ / √128) · v, full context",
+   "color": "5"
+  },
+  {
+   "id": "ao22",
+   "type": "text",
+   "x": -246,
+   "y": 444,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl23",
+   "type": "text",
+   "x": 266,
+   "y": 434,
+   "width": 440,
+   "height": 34,
+   "text": "`attn [T, 48×128 = 6144]`"
+  },
+  {
+   "id": "o24",
+   "type": "text",
+   "x": -150,
+   "y": 493,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 6144 → 6144  \n37.7M",
+   "color": "5"
+  },
+  {
+   "id": "ot25",
+   "type": "text",
+   "x": -246,
+   "y": 589,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl26",
+   "type": "text",
+   "x": 266,
+   "y": 579,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "add127",
+   "type": "text",
+   "x": -280,
+   "y": 638,
+   "width": 560,
+   "height": 56,
+   "text": "**+ residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "h128",
+   "type": "text",
+   "x": -246,
+   "y": 734,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl29",
+   "type": "text",
+   "x": -706,
+   "y": 724,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 6144]`"
+  },
+  {
+   "id": "n230",
+   "type": "text",
+   "x": -150,
+   "y": 783,
+   "width": 300,
+   "height": 56,
+   "text": "**post_attention_layernorm**  \n6144 weights",
+   "color": "3"
+  },
+  {
+   "id": "hn31",
+   "type": "text",
+   "x": -246,
+   "y": 879,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": -706,
+   "y": 869,
+   "width": 440,
+   "height": 34,
+   "text": "`ĥ [T, 6144]`"
+  },
+  {
+   "id": "r33",
+   "type": "text",
+   "x": -1050,
+   "y": 1078,
+   "width": 300,
+   "height": 56,
+   "text": "**router** 6144 → 192, sigmoid  \n1.2M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "rs34",
+   "type": "text",
+   "x": -908,
+   "y": 1174,
+   "width": 15,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": -1510,
+   "y": 1164,
+   "width": 440,
+   "height": 34,
+   "text": "`scores [T, 192]`"
+  },
+  {
+   "id": "rk36",
+   "type": "text",
+   "x": -1050,
+   "y": 1223,
+   "width": 300,
+   "height": 56,
+   "text": "**top-8** of score + bias  \nnormalise, × 2.5",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "rw37",
+   "type": "text",
+   "x": -920,
+   "y": 1319,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": -1510,
+   "y": 1309,
+   "width": 440,
+   "height": 34,
+   "text": "`8 expert ids + weights per token`"
+  },
+  {
+   "id": "sh39",
+   "type": "text",
+   "x": 850,
+   "y": 1078,
+   "width": 300,
+   "height": 56,
+   "text": "**shared expert** 6144→1792→6144  \n33.0M",
+   "color": "#14b8a6"
+  },
+  {
+   "id": "sht40",
+   "type": "text",
+   "x": 754,
+   "y": 1174,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": 1266,
+   "y": 1164,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "eg42",
+   "type": "text",
+   "x": -150,
+   "y": 1078,
+   "width": 300,
+   "height": 56,
+   "text": "**gate, up** of the 8 picked  \nexperts: 6144 → 1792 each",
+   "color": "4"
+  },
+  {
+   "id": "et43",
+   "type": "text",
+   "x": -72,
+   "y": 1174,
+   "width": 143,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl44",
+   "type": "text",
+   "x": -610,
+   "y": 1164,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 8, 1792]  SiLU(gate) ⊙ up`"
+  },
+  {
+   "id": "ed45",
+   "type": "text",
+   "x": -150,
+   "y": 1223,
+   "width": 300,
+   "height": 56,
+   "text": "**down_proj** 1792 → 6144",
+   "color": "4"
+  },
+  {
+   "id": "eo46",
+   "type": "text",
+   "x": -246,
+   "y": 1319,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": -706,
+   "y": 1309,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 8, 6144]`"
+  },
+  {
+   "id": "ws48",
+   "type": "text",
+   "x": -150,
+   "y": 1368,
+   "width": 300,
+   "height": 56,
+   "text": "**weighted sum** over the 8",
+   "color": "4"
+  },
+  {
+   "id": "wst49",
+   "type": "text",
+   "x": -246,
+   "y": 1464,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl50",
+   "type": "text",
+   "x": -706,
+   "y": 1454,
+   "width": 440,
+   "height": 34,
+   "text": "`routed [T, 6144]`"
+  },
+  {
+   "id": "note-experts",
+   "type": "text",
+   "x": 1180,
+   "y": 1263,
+   "width": 520,
+   "height": 130,
+   "text": "**192 routed experts** per layer, each SwiGLU 6144→1792→6144 = 33.0M; 6.34B stored per layer, only 8 run per token (264.2M)."
+  },
+  {
+   "id": "sum51",
+   "type": "text",
+   "x": -150,
+   "y": 1513,
+   "width": 300,
+   "height": 56,
+   "text": "**routed + shared**",
+   "color": "4"
+  },
+  {
+   "id": "add252",
+   "type": "text",
+   "x": -280,
+   "y": 1609,
+   "width": 560,
+   "height": 56,
+   "text": "**+ residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "xout53",
+   "type": "text",
+   "x": -246,
+   "y": 1705,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl54",
+   "type": "text",
+   "x": 266,
+   "y": 1695,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]  to next layer`"
+  },
+  {
+   "id": "note-dense",
+   "type": "text",
+   "x": -640,
+   "y": 1764,
+   "width": 1280,
+   "height": 110,
+   "text": "**Dense layers L0–2**: same attention; the router / experts / shared expert above are replaced by one SwiGLU MLP 6144 → 16384 → 6144 (302.0M). Layer total: attention 88.1M + MoE 6.38B stored / 298.5M active."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "xin1",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n13",
+   "toNode": "xn4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "xn4",
+   "toNode": "q6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "q6",
+   "toNode": "qt7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "qt7",
+   "toNode": "qr9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "qr9",
+   "toNode": "qrt10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "xn4",
+   "toNode": "k12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "k12",
+   "toNode": "kt13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "kt13",
+   "toNode": "kr15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "kr15",
+   "toNode": "krt16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "xn4",
+   "toNode": "v18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "v18",
+   "toNode": "vt19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "qrt10",
+   "toNode": "att21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "krt16",
+   "toNode": "att21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vt19",
+   "toNode": "att21",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e15",
+   "fromNode": "att21",
+   "toNode": "ao22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "ao22",
+   "toNode": "o24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "o24",
+   "toNode": "ot25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "ot25",
+   "toNode": "add127",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "xin1",
+   "toNode": "add127",
+   "fromSide": "left",
+   "toSide": "left",
+   "label": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "e20",
+   "fromNode": "add127",
+   "toNode": "h128",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "h128",
+   "toNode": "n230",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "n230",
+   "toNode": "hn31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "hn31",
+   "toNode": "r33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "r33",
+   "toNode": "rs34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "rs34",
+   "toNode": "rk36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "rk36",
+   "toNode": "rw37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "hn31",
+   "toNode": "sh39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "sh39",
+   "toNode": "sht40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "hn31",
+   "toNode": "eg42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "eg42",
+   "toNode": "et43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "et43",
+   "toNode": "ed45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "ed45",
+   "toNode": "eo46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "eo46",
+   "toNode": "ws48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "rw37",
+   "toNode": "ws48",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e35",
+   "fromNode": "ws48",
+   "toNode": "wst49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "wst49",
+   "toNode": "sum51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "sht40",
+   "toNode": "sum51",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e38",
+   "fromNode": "sum51",
+   "toNode": "add252",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "h128",
+   "toNode": "add252",
+   "fromSide": "right",
+   "toSide": "right",
+   "label": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "e40",
+   "fromNode": "add252",
+   "toNode": "xout53",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

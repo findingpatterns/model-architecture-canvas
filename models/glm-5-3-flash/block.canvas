@@ -1,0 +1,1243 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1900,
+   "y": -600,
+   "width": 1500,
+   "height": 200,
+   "text": "# GLM-5.3-Flash — one decoder layer  \nmHC reads the 4 residual lanes → RMSNorm → **token mixer** → mHC writes back → mHC reads → RMSNorm → **MoE** → mHC writes back. Left four columns = the **MLA + DSA** mixer (11 layers: L3, L7, … L43); right column = the **KDA** mixer (34 layers). Grey bars = tensors (0.05 px/channel, long ones clipped); boxes = operations with their weights per layer."
+  },
+  {
+   "id": "cap-bnote",
+   "type": "text",
+   "x": -300,
+   "y": -600,
+   "width": 1500,
+   "height": 200,
+   "text": "**Layer variants.** L0–2 use a dense SwiGLU FFN 4096→12288→4096 (151.0M) instead of the MoE. Mixer weights per layer: KDA **137.7M**, MLA + indexer **124.9M**. The two mHC mixers are 393K each. Every DSA layer has its own indexer (indexer_types all \"full\"). Checkpoint stores q/k/v short convs and each expert as separate tensors; transformers fuses them on load."
+  },
+  {
+   "id": "bx1",
+   "type": "text",
+   "x": -240,
+   "y": -330,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 260,
+   "y": -342,
+   "width": 300,
+   "height": 34,
+   "text": "`X [T, 4, 4096] lanes from previous layer` — bar clipped (real 819px)"
+  },
+  {
+   "id": "bhc13",
+   "type": "text",
+   "x": -150,
+   "y": -281,
+   "width": 300,
+   "height": 80,
+   "text": "**mHC read** (attn_hc): RMSNorm(flatten 16384) → 24 weights; x = Σ pre·X  \n393K",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bxc4",
+   "type": "text",
+   "x": -102,
+   "y": -161,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 170,
+   "y": -173,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 4096]`"
+  },
+  {
+   "id": "bn16",
+   "type": "text",
+   "x": -150,
+   "y": -112,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (input_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "bxn7",
+   "type": "text",
+   "x": -102,
+   "y": -16,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": 170,
+   "y": -28,
+   "width": 300,
+   "height": 34,
+   "text": "`x̂ [T, 4096]`"
+  },
+  {
+   "id": "qa9",
+   "type": "text",
+   "x": -500,
+   "y": 73,
+   "width": 300,
+   "height": 56,
+   "text": "**q_a_proj** 4096→1536 + RMSNorm  \n6.3M",
+   "color": "#f97316"
+  },
+  {
+   "id": "cq10",
+   "type": "text",
+   "x": -388,
+   "y": 169,
+   "width": 77,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl11",
+   "type": "text",
+   "x": -180,
+   "y": 157,
+   "width": 300,
+   "height": 34,
+   "text": "`c_q [T, 1536]  query latent`"
+  },
+  {
+   "id": "qb12",
+   "type": "text",
+   "x": -500,
+   "y": 218,
+   "width": 300,
+   "height": 56,
+   "text": "**q_b_proj** 1536 → 64×256  \n25.2M",
+   "color": "#f97316"
+  },
+  {
+   "id": "qo13",
+   "type": "text",
+   "x": -590,
+   "y": 314,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl14",
+   "type": "text",
+   "x": -90,
+   "y": 302,
+   "width": 300,
+   "height": 34,
+   "text": "`q [T, 64, 256]  no RoPE` — bar clipped (real 819px)"
+  },
+  {
+   "id": "kva15",
+   "type": "text",
+   "x": 400,
+   "y": 73,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_a_proj_with_mqa** 4096→512  \n2.1M",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvl16",
+   "type": "text",
+   "x": 537,
+   "y": 169,
+   "width": 26,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl17",
+   "type": "text",
+   "x": 720,
+   "y": 157,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 512] latent (0 rope dims)`"
+  },
+  {
+   "id": "kvn18",
+   "type": "text",
+   "x": 400,
+   "y": 218,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (kv_a_layernorm)",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvc19",
+   "type": "text",
+   "x": 537,
+   "y": 314,
+   "width": 26,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl20",
+   "type": "text",
+   "x": 720,
+   "y": 302,
+   "width": 300,
+   "height": 34,
+   "text": "`cache: 512 values / token / layer`"
+  },
+  {
+   "id": "kvb21",
+   "type": "text",
+   "x": 400,
+   "y": 363,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_b_proj** 512 → 64×(256+256)  \n16.8M",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvo22",
+   "type": "text",
+   "x": 310,
+   "y": 459,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl23",
+   "type": "text",
+   "x": 810,
+   "y": 447,
+   "width": 300,
+   "height": 34,
+   "text": "`k [T,64,256] ‖ v [T,64,256]` — bar clipped (real 1638px)"
+  },
+  {
+   "id": "iwk24",
+   "type": "text",
+   "x": -1850,
+   "y": 73,
+   "width": 300,
+   "height": 80,
+   "text": "**wk** 4096→128 + LayerNorm · **weights_proj** 4096→32 · **pool gate** 4096→128  \n1.2M",
+   "color": "5"
+  },
+  {
+   "id": "ik25",
+   "type": "text",
+   "x": -1708,
+   "y": 193,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl26",
+   "type": "text",
+   "x": -2170,
+   "y": 181,
+   "width": 300,
+   "height": 34,
+   "text": "`k_I, gate [T, 128] each (cached) · w [T, 32]`"
+  },
+  {
+   "id": "ipool27",
+   "type": "text",
+   "x": -1850,
+   "y": 242,
+   "width": 300,
+   "height": 56,
+   "text": "**k-pool**: softmax(gate + ape) mean of every 4 keys",
+   "color": "5"
+  },
+  {
+   "id": "ipk28",
+   "type": "text",
+   "x": -1708,
+   "y": 338,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl29",
+   "type": "text",
+   "x": -2170,
+   "y": 326,
+   "width": 300,
+   "height": 34,
+   "text": "`pool keys [T/4, 128]`"
+  },
+  {
+   "id": "iwq30",
+   "type": "text",
+   "x": -1250,
+   "y": 218,
+   "width": 300,
+   "height": 56,
+   "text": "**wq_b** 1536 → 32×128  \n6.3M",
+   "color": "5"
+  },
+  {
+   "id": "iqt31",
+   "type": "text",
+   "x": -1202,
+   "y": 314,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": -930,
+   "y": 302,
+   "width": 300,
+   "height": 34,
+   "text": "`q_I [T, 32, 128]`"
+  },
+  {
+   "id": "isc33",
+   "type": "text",
+   "x": -1250,
+   "y": 363,
+   "width": 300,
+   "height": 80,
+   "text": "score = Σ_h w_h·ReLU(q_I,h · pool key)",
+   "color": "5"
+  },
+  {
+   "id": "isco34",
+   "type": "text",
+   "x": -1140,
+   "y": 483,
+   "width": 80,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": -930,
+   "y": 471,
+   "width": 300,
+   "height": 34,
+   "text": "`pool scores [T, T/4]  (causal)`"
+  },
+  {
+   "id": "itop36",
+   "type": "text",
+   "x": -1250,
+   "y": 532,
+   "width": 300,
+   "height": 56,
+   "text": "**top-512 pools** ×4 tokens + open tail",
+   "color": "5"
+  },
+  {
+   "id": "iids37",
+   "type": "text",
+   "x": -1180,
+   "y": 628,
+   "width": 160,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": -930,
+   "y": 616,
+   "width": 300,
+   "height": 34,
+   "text": "`ids [T, ≤2048+3]`"
+  },
+  {
+   "id": "att39",
+   "type": "text",
+   "x": -150,
+   "y": 737,
+   "width": 300,
+   "height": 80,
+   "text": "**sparse MLA attention** — 64 heads × 256; each query sees only its picked tokens",
+   "color": "#f97316"
+  },
+  {
+   "id": "ao40",
+   "type": "text",
+   "x": -240,
+   "y": 857,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": 260,
+   "y": 845,
+   "width": 300,
+   "height": 34,
+   "text": "`o [T, 64×256]` — bar clipped (real 819px)"
+  },
+  {
+   "id": "aop42",
+   "type": "text",
+   "x": -150,
+   "y": 906,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 16384 → 4096  \n67.1M",
+   "color": "#f97316"
+  },
+  {
+   "id": "ao243",
+   "type": "text",
+   "x": -102,
+   "y": 1002,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl44",
+   "type": "text",
+   "x": 170,
+   "y": 990,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 4096]`"
+  },
+  {
+   "id": "kqkv45",
+   "type": "text",
+   "x": 1550,
+   "y": 73,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj, k_proj, v_proj** 4096 → 8192 each  \n100.7M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kt146",
+   "type": "text",
+   "x": 1460,
+   "y": 169,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": 1960,
+   "y": 157,
+   "width": 300,
+   "height": 34,
+   "text": "`q, k, v [T, 24576]` — bar clipped (real 1229px)"
+  },
+  {
+   "id": "kconv48",
+   "type": "text",
+   "x": 1550,
+   "y": 218,
+   "width": 300,
+   "height": 56,
+   "text": "**short conv** (4 taps, per channel) + SiLU  \n98K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kt249",
+   "type": "text",
+   "x": 1460,
+   "y": 314,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl50",
+   "type": "text",
+   "x": 1960,
+   "y": 302,
+   "width": 300,
+   "height": 34,
+   "text": "`q, k, v [T, 64, 128] each · L2-norm q, k` — bar clipped (real 1229px)"
+  },
+  {
+   "id": "krule51",
+   "type": "text",
+   "x": 1550,
+   "y": 363,
+   "width": 300,
+   "height": 80,
+   "text": "**delta rule**, per-channel decay  \nS ← (I − β k kᵀ)·Diag(α)·S + β k vᵀ ;  o = Sᵀq",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kt352",
+   "type": "text",
+   "x": 1495,
+   "y": 483,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl53",
+   "type": "text",
+   "x": 1925,
+   "y": 471,
+   "width": 300,
+   "height": 34,
+   "text": "`o [T, 64, 128]   state S [64, 128, 128]`"
+  },
+  {
+   "id": "kgn54",
+   "type": "text",
+   "x": 1550,
+   "y": 532,
+   "width": 300,
+   "height": 56,
+   "text": "**gated RMSNorm** — norm(o) · σ(g)  \n0K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kt455",
+   "type": "text",
+   "x": 1495,
+   "y": 628,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl56",
+   "type": "text",
+   "x": 1925,
+   "y": 616,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 8192]`"
+  },
+  {
+   "id": "kout57",
+   "type": "text",
+   "x": 1550,
+   "y": 677,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 8192 → 4096  \n33.6M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kt558",
+   "type": "text",
+   "x": 1598,
+   "y": 773,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl59",
+   "type": "text",
+   "x": 1870,
+   "y": 761,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 4096]`"
+  },
+  {
+   "id": "kab",
+   "type": "text",
+   "x": 2410,
+   "y": 353,
+   "width": 300,
+   "height": 100,
+   "text": "**f_a→f_b** 4096→128→8192 + dt_bias, A_log · **b_proj** → 64  \nlog α = -5·σ(e^A·(f + dt_bias)) · β = σ(b)  \n1.8M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "kg",
+   "type": "text",
+   "x": 2410,
+   "y": 520,
+   "width": 300,
+   "height": 80,
+   "text": "**g_a→g_b** 4096→128→8192  \n1.6M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "bw1",
+   "type": "text",
+   "x": -150,
+   "y": 1131,
+   "width": 300,
+   "height": 80,
+   "text": "**mHC write**: X ← post ⊗ out + combᵀ·X  (X = lanes from the top)",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bh160",
+   "type": "text",
+   "x": -240,
+   "y": 1251,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl61",
+   "type": "text",
+   "x": 260,
+   "y": 1239,
+   "width": 300,
+   "height": 34,
+   "text": "`X [T, 4, 4096]` — bar clipped (real 819px)"
+  },
+  {
+   "id": "bhc262",
+   "type": "text",
+   "x": -150,
+   "y": 1300,
+   "width": 300,
+   "height": 56,
+   "text": "**mHC read** (ffn_hc) — same form, own weights  \n393K",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bh263",
+   "type": "text",
+   "x": -102,
+   "y": 1396,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl64",
+   "type": "text",
+   "x": 170,
+   "y": 1384,
+   "width": 300,
+   "height": 34,
+   "text": "`h [T, 4096]`"
+  },
+  {
+   "id": "bn265",
+   "type": "text",
+   "x": -150,
+   "y": 1445,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "hn66",
+   "type": "text",
+   "x": -102,
+   "y": 1541,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl67",
+   "type": "text",
+   "x": -470,
+   "y": 1529,
+   "width": 300,
+   "height": 34,
+   "text": "`ĥ [T, 4096]`"
+  },
+  {
+   "id": "rt68",
+   "type": "text",
+   "x": -150,
+   "y": 1590,
+   "width": 300,
+   "height": 80,
+   "text": "**router** 4096→288, sigmoid · top-8 by score+bias · weights normalised ×2.5  \n1.2M",
+   "color": "4"
+  },
+  {
+   "id": "shexp",
+   "type": "text",
+   "x": 350,
+   "y": 1590,
+   "width": 300,
+   "height": 80,
+   "text": "**shared expert** (always on)    \nSwiGLU 4096→2048→4096    \n25.2M",
+   "color": "#22c55e"
+  },
+  {
+   "id": "rid69",
+   "type": "text",
+   "x": -20,
+   "y": 1710,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl70",
+   "type": "text",
+   "x": 170,
+   "y": 1698,
+   "width": 300,
+   "height": 34,
+   "text": "`8 expert ids + weights / token`"
+  },
+  {
+   "id": "rex71",
+   "type": "text",
+   "x": -150,
+   "y": 1759,
+   "width": 300,
+   "height": 80,
+   "text": "**8 of 288 routed experts**, each SwiGLU 4096→2048→4096  \n25.2M · each · 7.25B all",
+   "color": "4"
+  },
+  {
+   "id": "sum72",
+   "type": "text",
+   "x": -150,
+   "y": 1879,
+   "width": 300,
+   "height": 56,
+   "text": "**Σ** weighted experts + shared expert",
+   "color": "#64748b"
+  },
+  {
+   "id": "bmo73",
+   "type": "text",
+   "x": -102,
+   "y": 1975,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl74",
+   "type": "text",
+   "x": 170,
+   "y": 1963,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 4096]`"
+  },
+  {
+   "id": "bw275",
+   "type": "text",
+   "x": -150,
+   "y": 2024,
+   "width": 300,
+   "height": 56,
+   "text": "**mHC write**: X ← post ⊗ out + combᵀ·X",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bout76",
+   "type": "text",
+   "x": -240,
+   "y": 2120,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl77",
+   "type": "text",
+   "x": 260,
+   "y": 2108,
+   "width": 300,
+   "height": 34,
+   "text": "`X [T, 4, 4096] → next layer` — bar clipped (real 819px)"
+  },
+  {
+   "id": "note-kv",
+   "type": "text",
+   "x": 1300,
+   "y": -600,
+   "width": 420,
+   "height": 200,
+   "text": "Why MLA: the cache keeps one 512-value latent per token instead of 64 heads × (256+256) keys and values (32,768 numbers); kv_b_proj re-expands it. The indexer also caches 257 values / token. KDA instead keeps a fixed 64×128×128 state."
+  },
+  {
+   "id": "note-hc",
+   "type": "text",
+   "x": -1900,
+   "y": 1131,
+   "width": 900,
+   "height": 130,
+   "text": "**mHC** (4 lanes): per token, a 16384→24 projection gives pre [4] (how to read the lanes), post [4] (how to write the output back) and comb [4×4] (how lanes mix), comb made doubly stochastic by 20 Sinkhorn steps so the stream norm cannot blow up."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bx1",
+   "toNode": "bhc13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bhc13",
+   "toNode": "bxc4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "bxc4",
+   "toNode": "bn16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "bn16",
+   "toNode": "bxn7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "bxn7",
+   "toNode": "qa9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "qa9",
+   "toNode": "cq10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "cq10",
+   "toNode": "qb12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "qb12",
+   "toNode": "qo13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "bxn7",
+   "toNode": "kva15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "kva15",
+   "toNode": "kvl16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "kvl16",
+   "toNode": "kvn18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "kvn18",
+   "toNode": "kvc19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "kvc19",
+   "toNode": "kvb21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "kvb21",
+   "toNode": "kvo22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "bxn7",
+   "toNode": "iwk24",
+   "fromSide": "left",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "iwk24",
+   "toNode": "ik25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "ik25",
+   "toNode": "ipool27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "ipool27",
+   "toNode": "ipk28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "cq10",
+   "toNode": "iwq30",
+   "fromSide": "left",
+   "toSide": "right"
+  },
+  {
+   "id": "e19",
+   "fromNode": "iwq30",
+   "toNode": "iqt31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "iqt31",
+   "toNode": "isc33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "ipk28",
+   "toNode": "isc33",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e22",
+   "fromNode": "isc33",
+   "toNode": "isco34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "isco34",
+   "toNode": "itop36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "itop36",
+   "toNode": "iids37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "qo13",
+   "toNode": "att39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "kvo22",
+   "toNode": "att39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "iids37",
+   "toNode": "att39",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e28",
+   "fromNode": "att39",
+   "toNode": "ao40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "ao40",
+   "toNode": "aop42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "aop42",
+   "toNode": "ao243",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "bxn7",
+   "toNode": "kqkv45",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e32",
+   "fromNode": "kqkv45",
+   "toNode": "kt146",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "kt146",
+   "toNode": "kconv48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "kconv48",
+   "toNode": "kt249",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "kt249",
+   "toNode": "krule51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "krule51",
+   "toNode": "kt352",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "kt352",
+   "toNode": "kgn54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "kgn54",
+   "toNode": "kt455",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "kt455",
+   "toNode": "kout57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "kout57",
+   "toNode": "kt558",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "kab",
+   "toNode": "krule51",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "α, β"
+  },
+  {
+   "id": "e42",
+   "fromNode": "kg",
+   "toNode": "kgn54",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "g"
+  },
+  {
+   "id": "e43",
+   "fromNode": "ao243",
+   "toNode": "bw1",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "label": "11 of 45 layers"
+  },
+  {
+   "id": "e44",
+   "fromNode": "kt558",
+   "toNode": "bw1",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "label": "34 of 45 layers"
+  },
+  {
+   "id": "e45",
+   "fromNode": "bw1",
+   "toNode": "bh160",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "bh160",
+   "toNode": "bhc262",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "bhc262",
+   "toNode": "bh263",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "bh263",
+   "toNode": "bn265",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "bn265",
+   "toNode": "hn66",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e50",
+   "fromNode": "hn66",
+   "toNode": "rt68",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "hn66",
+   "toNode": "shexp",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "rt68",
+   "toNode": "rid69",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e53",
+   "fromNode": "rid69",
+   "toNode": "rex71",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e54",
+   "fromNode": "rex71",
+   "toNode": "sum72",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e55",
+   "fromNode": "shexp",
+   "toNode": "sum72",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e56",
+   "fromNode": "sum72",
+   "toNode": "bmo73",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e57",
+   "fromNode": "bmo73",
+   "toNode": "bw275",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e58",
+   "fromNode": "bw275",
+   "toNode": "bout76",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

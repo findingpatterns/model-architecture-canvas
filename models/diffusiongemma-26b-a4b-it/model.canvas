@@ -1,0 +1,1599 @@
+{
+ "nodes": [
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -1300,
+   "y": -2466,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 25.82B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -1300,
+   "y": -2420,
+   "width": 2299,
+   "height": 44,
+   "text": "**routed experts 128×30**",
+   "color": "4"
+  },
+  {
+   "id": "bp1",
+   "type": "text",
+   "x": 999,
+   "y": -2420,
+   "width": 87,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bp2",
+   "type": "text",
+   "x": 1086,
+   "y": -2420,
+   "width": 25,
+   "height": 44,
+   "text": "",
+   "color": "#0e7490"
+  },
+  {
+   "id": "bp3",
+   "type": "text",
+   "x": 1111,
+   "y": -2420,
+   "width": 54,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "bp4",
+   "type": "text",
+   "x": 1165,
+   "y": -2420,
+   "width": 74,
+   "height": 44,
+   "text": "",
+   "color": "6"
+  },
+  {
+   "id": "bp6",
+   "type": "text",
+   "x": 1239,
+   "y": -2420,
+   "width": 58,
+   "height": 44,
+   "text": "",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -1300,
+   "y": -2370,
+   "width": 2600,
+   "height": 64,
+   "text": "routed experts 128×30 **22.84B** (88.4%) · sliding attention ×25 **865.1M** (3.3%) · global attention ×5 **245.1M** (0.9%) · dense MLP ×30 (always on) **535.3M** (2.1%) · embed **738.2M** (2.9%) · vision tower + projector **572.8M** (2.2%) · lm head **0** (tied: same table as embed) · self-conditioning MLP **17.8M** (<0.1%) · router ×30 **10.9M** (<0.1%) · norms + layer scalars **0.6M** (<0.1%) · encoder layer scalars **30** (<0.1%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -1300,
+   "y": -2266,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one canvas token is multiplied by per denoising step (active weights)** — total 3.84B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -1300,
+   "y": -2220,
+   "width": 966,
+   "height": 44,
+   "text": "**routed experts 128×30**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": -334,
+   "y": -2220,
+   "width": 586,
+   "height": 44,
+   "text": "**sliding attention ×25**",
+   "color": "5"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 252,
+   "y": -2220,
+   "width": 166,
+   "height": 44,
+   "text": "",
+   "color": "#0e7490"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": 418,
+   "y": -2220,
+   "width": 362,
+   "height": 44,
+   "text": "**dense MLP ×30 (always on)**",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "bc5",
+   "type": "text",
+   "x": 780,
+   "y": -2220,
+   "width": 500,
+   "height": 44,
+   "text": "**lm head**",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -1300,
+   "y": -2170,
+   "width": 2600,
+   "height": 64,
+   "text": "routed experts 128×30 **1.43B** (37.2%) · sliding attention ×25 **865.1M** (22.5%) · global attention ×5 **245.1M** (6.4%) · dense MLP ×30 (always on) **535.3M** (13.9%) · lm head **738.2M** (19.2%) · embed **0** (row lookup) · vision tower + projector **0** (runs per image) · self-conditioning MLP **17.8M** (0.5%) · router ×30 **10.9M** (0.3%) · norms + layer scalars **0.6M** (<0.1%) · encoder layer scalars **0** (prompt pass only)"
+  },
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1300,
+   "y": -2060,
+   "width": 1260,
+   "height": 230,
+   "text": "# DiffusionGemma 26B-A4B — model  \nA **block-diffusion** LM built on Gemma 4 26B-A4B. Text comes out in **canvases of 256 tokens**: a canvas starts as random token ids and is denoised by up to 48 full forward passes, each predicting all 256 positions at once. Grey bars = tensors (0.08 px/channel), boxes = operations. *Layer* tab = one layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 40,
+   "y": -2060,
+   "width": 1260,
+   "height": 230,
+   "text": "**One set of 30 layers, two passes.** The *encoder* pass runs them **causally** over the prompt (and over each finished canvas) once, only to fill the KV cache. The *decoder* pass runs the same weights **bidirectionally** over the canvas, reading that cache.    \nRow colours — **grey**: sliding window 1024, 16 q / 8 kv heads × 256 · **cyan**: global, 16 q / 2 kv heads × 512, K = V. Every layer: dense MLP + MoE 8 of 128 in parallel."
+  },
+  {
+   "id": "canvas",
+   "type": "text",
+   "x": -230,
+   "y": -1760,
+   "width": 460,
+   "height": 90,
+   "text": "**canvas** — 256 positions after the cached prefix    \nstep 1: uniform random ids from the whole vocab (no mask token)",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "ids1",
+   "type": "text",
+   "x": -20,
+   "y": -1630,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 170,
+   "y": -1642,
+   "width": 440,
+   "height": 34,
+   "text": "`canvas ids [256]`"
+  },
+  {
+   "id": "embed3",
+   "type": "text",
+   "x": -150,
+   "y": -1581,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** — row lookup × √2816  \n738.2M · 262,144 × 2816",
+   "color": "6"
+  },
+  {
+   "id": "x4",
+   "type": "text",
+   "x": -113,
+   "y": -1485,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 170,
+   "y": -1497,
+   "width": 440,
+   "height": 34,
+   "text": "`x [256, 2816]`"
+  },
+  {
+   "id": "sc6",
+   "type": "text",
+   "x": -230,
+   "y": -1436,
+   "width": 460,
+   "height": 116,
+   "text": "**self-conditioning** — soft embedding of the previous step's logits (softmax · table × √d; zeros at step 1) → RMSNorm → gated MLP 2816→2112→2816, **+ x** → RMSNorm  \n17.8M",
+   "color": "#22c55e"
+  },
+  {
+   "id": "x27",
+   "type": "text",
+   "x": -113,
+   "y": -1280,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": 170,
+   "y": -1292,
+   "width": 440,
+   "height": 34,
+   "text": "`x [256, 2816]`"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -230,
+   "y": -1101,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16q/8kv × 256 · MoE 8/128 + MLP  \nL0, 6, …, 24",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -230,
+   "y": -1019,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16q/8kv × 256 · MoE 8/128 + MLP  \nL1, 7, …, 25",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -230,
+   "y": -937,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16q/8kv × 256 · MoE 8/128 + MLP  \nL2, 8, …, 26",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -230,
+   "y": -855,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16q/8kv × 256 · MoE 8/128 + MLP  \nL3, 9, …, 27",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per4",
+   "type": "text",
+   "x": -230,
+   "y": -773,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16q/8kv × 256 · MoE 8/128 + MLP  \nL4, 10, …, 28",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per5",
+   "type": "text",
+   "x": -230,
+   "y": -691,
+   "width": 460,
+   "height": 56,
+   "text": "global · 16q/2kv × 512, K=V · MoE 8/128 + MLP  \nL5, 11, …, 29",
+   "color": "5"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": 290,
+   "y": -898,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×5"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -290,
+   "y": -1151,
+   "width": 580,
+   "height": 552,
+   "label": "×5 — L0–29, a period of 6 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": -900,
+   "y": -781,
+   "width": 560,
+   "height": 40,
+   "text": "**Every layer, L0 → L29** (grey = sliding, cyan = global)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": -900,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": -882,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": -864,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": -846,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": -828,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": -810,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": -792,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": -774,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": -756,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": -738,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": -720,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": -702,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": -684,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": -666,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": -648,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": -630,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": -612,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": -594,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": -576,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": -558,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": -540,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": -522,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": -504,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": -486,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": -468,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": -450,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": -432,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": -414,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": -396,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": -378,
+   "y": -731,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": -904,
+   "y": -681,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": -724,
+   "y": -681,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": -544,
+   "y": -681,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick29",
+   "type": "text",
+   "x": -382,
+   "y": -681,
+   "width": 60,
+   "height": 30,
+   "text": "L29"
+  },
+  {
+   "id": "h9",
+   "type": "text",
+   "x": -113,
+   "y": -539,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl10",
+   "type": "text",
+   "x": 170,
+   "y": -551,
+   "width": 440,
+   "height": 34,
+   "text": "`h [256, 2816]  after L29`"
+  },
+  {
+   "id": "norm11",
+   "type": "text",
+   "x": -150,
+   "y": -490,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "head12",
+   "type": "text",
+   "x": -150,
+   "y": -394,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** 2816 → 262,144",
+   "color": "2"
+  },
+  {
+   "id": "logits13",
+   "type": "text",
+   "x": -550,
+   "y": -298,
+   "width": 1100,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl14",
+   "type": "text",
+   "x": -1010,
+   "y": -310,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [256, 262,144]` — bar clipped (20972px)"
+  },
+  {
+   "id": "cap15",
+   "type": "text",
+   "x": -150,
+   "y": -249,
+   "width": 300,
+   "height": 56,
+   "text": "**soft-cap** 30·tanh(z/30)",
+   "color": "2"
+  },
+  {
+   "id": "temp16",
+   "type": "text",
+   "x": -230,
+   "y": -153,
+   "width": 460,
+   "height": 66,
+   "text": "**temperature** — linear 0.8 at the first step → 0.4 at the last",
+   "color": "#e879f9"
+  },
+  {
+   "id": "samp17",
+   "type": "text",
+   "x": -230,
+   "y": -47,
+   "width": 460,
+   "height": 66,
+   "text": "**sample** x_D ~ softmax per position    \nand keep **argmax** x̂",
+   "color": "#e879f9"
+  },
+  {
+   "id": "xd18",
+   "type": "text",
+   "x": -20,
+   "y": 59,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": 170,
+   "y": 47,
+   "width": 440,
+   "height": 34,
+   "text": "`x_D, x̂, entropy H [256]`"
+  },
+  {
+   "id": "acc20",
+   "type": "text",
+   "x": -230,
+   "y": 108,
+   "width": 460,
+   "height": 96,
+   "text": "**accept (entropy bound)** — sort positions by H, take the k lowest while ΣH − max H ≤ 0.1; they get their sample x_D",
+   "color": "#e879f9"
+  },
+  {
+   "id": "ren21",
+   "type": "text",
+   "x": -230,
+   "y": 244,
+   "width": 460,
+   "height": 66,
+   "text": "**renoise** — every other position ← a fresh uniform random id",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "nc22",
+   "type": "text",
+   "x": -20,
+   "y": 350,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl23",
+   "type": "text",
+   "x": 170,
+   "y": 338,
+   "width": 440,
+   "height": 34,
+   "text": "`next canvas [256]`"
+  },
+  {
+   "id": "done24",
+   "type": "text",
+   "x": -230,
+   "y": 399,
+   "width": 460,
+   "height": 76,
+   "text": "**done?** x̂ unchanged for 1 step and mean H < 0.005,    \nor 48 steps used",
+   "color": "#64748b"
+  },
+  {
+   "id": "commit25",
+   "type": "text",
+   "x": -230,
+   "y": 515,
+   "width": 460,
+   "height": 96,
+   "text": "**yes → commit x̂** (the argmax canvas, not the sample) · ids after an EOS → pad · stop on EOS, else next canvas",
+   "color": "2"
+  },
+  {
+   "id": "loop-r1",
+   "type": "text",
+   "x": 1660,
+   "y": 407,
+   "width": 260,
+   "height": 60,
+   "text": "**no → next step**    \nwhole decoder pass again",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "loop-r2",
+   "type": "text",
+   "x": 1660,
+   "y": -1745,
+   "width": 260,
+   "height": 60,
+   "text": "↻ **denoising step**    \nnew canvas in",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "loop-s1",
+   "type": "text",
+   "x": 1310,
+   "y": -150,
+   "width": 240,
+   "height": 60,
+   "text": "processed logits → next step",
+   "color": "#22c55e"
+  },
+  {
+   "id": "loop-s2",
+   "type": "text",
+   "x": 1310,
+   "y": -1408,
+   "width": 240,
+   "height": 60,
+   "text": "self-conditioning input",
+   "color": "#22c55e"
+  },
+  {
+   "id": "cap-mask",
+   "type": "text",
+   "x": 630,
+   "y": -1301,
+   "width": 620,
+   "height": 100,
+   "text": "**Who attends to whom** — rows = queries, columns = keys. Prefix = prompt + finished canvases (in the KV cache)."
+  },
+  {
+   "id": "cap-mrow0",
+   "type": "text",
+   "x": 630,
+   "y": -1145,
+   "width": 110,
+   "height": 34,
+   "text": "**encoder**"
+  },
+  {
+   "id": "cap-mcol0",
+   "type": "text",
+   "x": 750,
+   "y": -945,
+   "width": 110,
+   "height": 34,
+   "text": "prefix"
+  },
+  {
+   "id": "cap-mrow1",
+   "type": "text",
+   "x": 630,
+   "y": -1027,
+   "width": 110,
+   "height": 34,
+   "text": "**decoder**"
+  },
+  {
+   "id": "cap-mcol1",
+   "type": "text",
+   "x": 868,
+   "y": -945,
+   "width": 110,
+   "height": 34,
+   "text": "canvas"
+  },
+  {
+   "id": "mk00",
+   "type": "text",
+   "x": 750,
+   "y": -1181,
+   "width": 110,
+   "height": 110,
+   "text": "causal ◣",
+   "color": "4"
+  },
+  {
+   "id": "mk01",
+   "type": "text",
+   "x": 868,
+   "y": -1181,
+   "width": 110,
+   "height": 110,
+   "text": ""
+  },
+  {
+   "id": "mk10",
+   "type": "text",
+   "x": 750,
+   "y": -1063,
+   "width": 110,
+   "height": 110,
+   "text": "all ✓",
+   "color": "4"
+  },
+  {
+   "id": "mk11",
+   "type": "text",
+   "x": 868,
+   "y": -1063,
+   "width": 110,
+   "height": 110,
+   "text": "all ↔",
+   "color": "4"
+  },
+  {
+   "id": "note-mask",
+   "type": "text",
+   "x": 630,
+   "y": -895,
+   "width": 620,
+   "height": 220,
+   "text": "Encoder: causal; image tokens also see their whole image (`use_bidirectional_attention = \"vision\"`, sliding layers). Decoder: `is_causal = False` — every canvas position sees the cached prefix and the whole canvas, incl. positions to its right. Sliding layers keep only the last 1024 prefix tokens in the cache; global layers see all of it. The decoder never writes the cache."
+  },
+  {
+   "id": "note-layers",
+   "type": "text",
+   "x": 630,
+   "y": -645,
+   "width": 620,
+   "height": 190,
+   "text": "Per layer: attention 34.6M (sliding) / 49.0M (global) · dense MLP 17.8M · router 0.4M · 128 experts 761.3M (5.9M each, SwiGLU-style 2816→704→2816, GELU-tanh).    \nPattern: [5 sliding, 1 global] × 5. Context 262,144 positions."
+  },
+  {
+   "id": "raw26",
+   "type": "text",
+   "x": -1460,
+   "y": -1760,
+   "width": 420,
+   "height": 56,
+   "text": "**prompt** — chat template text, `<image>` placeholders",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok27",
+   "type": "text",
+   "x": -1400,
+   "y": -1664,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (vocab 262,144)",
+   "color": "#64748b"
+  },
+  {
+   "id": "pids28",
+   "type": "text",
+   "x": -1270,
+   "y": -1568,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl29",
+   "type": "text",
+   "x": -1860,
+   "y": -1580,
+   "width": 440,
+   "height": 34,
+   "text": "`prompt ids [P]`"
+  },
+  {
+   "id": "pemb30",
+   "type": "text",
+   "x": -1400,
+   "y": -1519,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** (same table) × √d",
+   "color": "6"
+  },
+  {
+   "id": "pe31",
+   "type": "text",
+   "x": -1363,
+   "y": -1423,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": -1080,
+   "y": -1435,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 2816]`"
+  },
+  {
+   "id": "splice33",
+   "type": "text",
+   "x": -1460,
+   "y": -1374,
+   "width": 420,
+   "height": 56,
+   "text": "**splice**: each image's placeholders ← its 280 soft tokens",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "px34",
+   "type": "text",
+   "x": -1363,
+   "y": -1278,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": -1860,
+   "y": -1290,
+   "width": 440,
+   "height": 34,
+   "text": "`x [P, 2816]`"
+  },
+  {
+   "id": "enc36",
+   "type": "text",
+   "x": -1460,
+   "y": -1229,
+   "width": 420,
+   "height": 96,
+   "text": "**encoder pass** — the same 30 layers, run **once**, causal; no self-conditioning, no lm head",
+   "color": "#64748b"
+  },
+  {
+   "id": "kv37",
+   "type": "text",
+   "x": -1460,
+   "y": -1093,
+   "width": 420,
+   "height": 116,
+   "text": "**KV cache**, per layer    \nsliding: K, V 8 × 256 for the last 1024 tokens    \nglobal: K (= V) 2 × 512 for every token",
+   "color": "5"
+  },
+  {
+   "id": "reenc",
+   "type": "text",
+   "x": -1460,
+   "y": 515,
+   "width": 420,
+   "height": 96,
+   "text": "**encoder pass over the 256 committed ids** (causal, same layers) appends their K, V",
+   "color": "#64748b"
+  },
+  {
+   "id": "img38",
+   "type": "text",
+   "x": -2450,
+   "y": -2048,
+   "width": 300,
+   "height": 56,
+   "text": "**image** → 16×16 patches",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "patch39",
+   "type": "text",
+   "x": -2480,
+   "y": -1952,
+   "width": 360,
+   "height": 76,
+   "text": "**patch embed** 768 → 1152 + 2-D position table  \n24.5M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vp40",
+   "type": "text",
+   "x": -2346,
+   "y": -1836,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": -2910,
+   "y": -1848,
+   "width": 440,
+   "height": 34,
+   "text": "`[patches, 1152]`"
+  },
+  {
+   "id": "vit42",
+   "type": "text",
+   "x": -2480,
+   "y": -1787,
+   "width": 360,
+   "height": 76,
+   "text": "**ViT × 27** · 16 heads × 72 · MLP 4304  \n545.1M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "pool43",
+   "type": "text",
+   "x": -2450,
+   "y": -1671,
+   "width": 300,
+   "height": 56,
+   "text": "**pool 3×3** · standardize",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "evis44",
+   "type": "text",
+   "x": -2450,
+   "y": -1575,
+   "width": 300,
+   "height": 66,
+   "text": "**embed_vision** RMSNorm → 1152 → 2816  \n3.2M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vt45",
+   "type": "text",
+   "x": -2413,
+   "y": -1469,
+   "width": 225,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl46",
+   "type": "text",
+   "x": -2910,
+   "y": -1481,
+   "width": 440,
+   "height": 34,
+   "text": "`soft tokens [280, 2816] per image`"
+  },
+  {
+   "id": "note-vis",
+   "type": "text",
+   "x": -2600,
+   "y": -1400,
+   "width": 600,
+   "height": 150,
+   "text": "Gemma 4 vision tower (572.8M). 280 soft tokens per image by default; the card lists budgets of 70 / 140 / 280 / 560 / 1120. Runs once per image, inside the encoder pass only."
+  },
+  {
+   "id": "note-eb",
+   "type": "text",
+   "x": -1060,
+   "y": -12,
+   "width": 700,
+   "height": 230,
+   "text": "**Nothing is frozen inside a canvas.** The accept set is recomputed every step from fresh logits; a position not accepted this step is re-randomised even if it was accepted before. The canvas settles because the model grows confident, and only x̂ of the last step is kept. Generation config: up to 48 steps, `max_new_tokens` 256 (= 1 canvas), EOS ids [1, 106, 50]."
+  },
+  {
+   "id": "note-card",
+   "type": "text",
+   "x": -1060,
+   "y": 248,
+   "width": 700,
+   "height": 130,
+   "text": "Model card: 15–20 tokens per forward pass on average, i.e. a 256-token canvas typically takes ~13–17 decoder passes instead of 256 autoregressive ones. The decoder also multiplies the tied table twice per position (lm head and soft embedding)."
+  },
+  {
+   "id": "note-llada",
+   "type": "text",
+   "x": -1300,
+   "y": 695,
+   "width": 1400,
+   "height": 300,
+   "text": "**vs. LLaDA2.2-mini** (also a diffusion MoE, see that model)  \n- Noise: LLaDA starts a block as `<|mask|>` tokens and fills masks (masked diffusion); DiffusionGemma starts from **uniform random ids** and re-randomises rejected positions (uniform-noise diffusion).\n- Block: LLaDA 32 tokens, one stack with a block-causal mask and no KV cache; here 256 tokens, an **encoder pass** caches the prefix once and a bidirectional **decoder pass** reuses the same weights.\n- Committing: LLaDA writes a mask when p > 0.5 and keeps it (rewrites / deletes via T2T edits); here an **entropy-bound** set is accepted per step, nothing is frozen, and the canvas ends on stability + confidence (48 steps max).\n- Extra: self-conditioning on the previous step's logits; LLaDA has none. LLaDA routes experts per 32-token block; here plain per-token top-8."
+  },
+  {
+   "id": "note-src",
+   "type": "text",
+   "x": 200,
+   "y": 695,
+   "width": 1300,
+   "height": 300,
+   "text": "**Sources.** config.json, generation_config.json and the safetensors headers of google/diffusiongemma-26B-A4B-it (1047 tensors, all BF16) — stored total **25.82B** (25.25B without the vision tower; card: 25.2B), active **3.84B** (card: 3.8B). Dataflow from transformers' diffusion_gemma (DiffusionGemmaForBlockDiffusion, EntropyBoundSampler, StableAndConfidentStoppingCriteria). The text encoder stores only 30 `layer_scalar` values; all its other weights are tied to the decoder (`_tied_weights_keys`). The repo also ships a diffusers BlockRefinementScheduler config (block 32, 32 steps, threshold 0.95); transformers' `generate()` does not use it."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "canvas",
+   "toNode": "ids1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "ids1",
+   "toNode": "embed3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "embed3",
+   "toNode": "x4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "x4",
+   "toNode": "sc6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "sc6",
+   "toNode": "x27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "x27",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "per3",
+   "toNode": "per4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "per4",
+   "toNode": "per5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "per5",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e12",
+   "fromNode": "per5",
+   "toNode": "h9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "h9",
+   "toNode": "norm11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "norm11",
+   "toNode": "head12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "head12",
+   "toNode": "logits13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "logits13",
+   "toNode": "cap15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "cap15",
+   "toNode": "temp16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "temp16",
+   "toNode": "samp17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "samp17",
+   "toNode": "xd18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "xd18",
+   "toNode": "acc20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "acc20",
+   "toNode": "ren21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "ren21",
+   "toNode": "nc22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "nc22",
+   "toNode": "done24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "done24",
+   "toNode": "commit25",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "label": "yes"
+  },
+  {
+   "id": "e25",
+   "fromNode": "done24",
+   "toNode": "loop-r1",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "e26",
+   "fromNode": "loop-r1",
+   "toNode": "loop-r2",
+   "fromSide": "top",
+   "toSide": "bottom"
+  },
+  {
+   "id": "e27",
+   "fromNode": "loop-r2",
+   "toNode": "canvas",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e28",
+   "fromNode": "temp16",
+   "toNode": "loop-s1",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "e29",
+   "fromNode": "loop-s1",
+   "toNode": "loop-s2",
+   "fromSide": "top",
+   "toSide": "bottom"
+  },
+  {
+   "id": "e30",
+   "fromNode": "loop-s2",
+   "toNode": "sc6",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#22c55e"
+  },
+  {
+   "id": "e31",
+   "fromNode": "raw26",
+   "toNode": "tok27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "tok27",
+   "toNode": "pids28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "pids28",
+   "toNode": "pemb30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "pemb30",
+   "toNode": "pe31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "pe31",
+   "toNode": "splice33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "splice33",
+   "toNode": "px34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "px34",
+   "toNode": "enc36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "enc36",
+   "toNode": "kv37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "kv37",
+   "toNode": "grp-period",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "read-only",
+   "color": "5"
+  },
+  {
+   "id": "e40",
+   "fromNode": "commit25",
+   "toNode": "reenc",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "2"
+  },
+  {
+   "id": "e41",
+   "fromNode": "reenc",
+   "toNode": "kv37",
+   "fromSide": "top",
+   "toSide": "bottom",
+   "color": "2"
+  },
+  {
+   "id": "e42",
+   "fromNode": "img38",
+   "toNode": "patch39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "patch39",
+   "toNode": "vp40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "vp40",
+   "toNode": "vit42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "vit42",
+   "toNode": "pool43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "pool43",
+   "toNode": "evis44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "evis44",
+   "toNode": "vt45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "vt45",
+   "toNode": "splice33",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#a78bfa"
+  }
+ ]
+}

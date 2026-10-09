@@ -1,0 +1,1222 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1900,
+   "y": -760,
+   "width": 1500,
+   "height": 170,
+   "text": "# Kimi K3 — one decoder layer  \nA MoE layer (all but L0). Grey bars = tensors (0.05 px/channel, long ones clipped), boxes = operations with their weights per layer. The token mixer is **either** the KDA column (left, 69 layers) **or** the gated-MLA columns (right, 24 layers)."
+  },
+  {
+   "id": "cap-bnote",
+   "type": "text",
+   "x": -300,
+   "y": -760,
+   "width": 1500,
+   "height": 170,
+   "text": "**Layer variants.** KDA layer mixer 443.7M, MLA layer mixer 232.2M. L0 uses a dense SiTU-GLU FFN 7168→33792→7168 (726.7M) instead of the MoE. AttnRes, norms and MoE are identical everywhere (29K of AttnRes vectors per layer)."
+  },
+  {
+   "id": "bs36",
+   "type": "text",
+   "x": -179,
+   "y": -520,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl37",
+   "type": "text",
+   "x": 199,
+   "y": -532,
+   "width": 300,
+   "height": 34,
+   "text": "`s [T, 7168]  partial sum of this block`"
+  },
+  {
+   "id": "mix138",
+   "type": "text",
+   "x": -150,
+   "y": -471,
+   "width": 300,
+   "height": 80,
+   "text": "**AttnRes mix** (self_attention_res) — softmax over snapshots b + s, weighted sum  \n14K",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bsnap",
+   "type": "text",
+   "x": -820,
+   "y": -420,
+   "width": 320,
+   "height": 80,
+   "text": "**block snapshots** b0…b(k−1)  \n[T, k, 7168], k ≤ 8",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bx39",
+   "type": "text",
+   "x": -179,
+   "y": -351,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": 199,
+   "y": -363,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 7168]`"
+  },
+  {
+   "id": "bn141",
+   "type": "text",
+   "x": -150,
+   "y": -302,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (input_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "bxn42",
+   "type": "text",
+   "x": -179,
+   "y": -206,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl43",
+   "type": "text",
+   "x": 199,
+   "y": -218,
+   "width": 300,
+   "height": 34,
+   "text": "`x̂ [T, 7168]`"
+  },
+  {
+   "id": "note-push",
+   "type": "text",
+   "x": 560,
+   "y": -560,
+   "width": 520,
+   "height": 110,
+   "text": "At L0, L12, L24 … L84 the mix runs, then s is frozen as the next snapshot and reset to 0, so this layer's outputs start a new block sum."
+  },
+  {
+   "id": "dqkv44",
+   "type": "text",
+   "x": -1400,
+   "y": -97,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj, k_proj, v_proj** 7168 → 12288 each  \n264.2M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt145",
+   "type": "text",
+   "x": -1490,
+   "y": -1,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl46",
+   "type": "text",
+   "x": -1810,
+   "y": -13,
+   "width": 300,
+   "height": 34,
+   "text": "`q, k, v [T, 12288] each` — bar clipped (real 614px)"
+  },
+  {
+   "id": "dconv47",
+   "type": "text",
+   "x": -1400,
+   "y": 48,
+   "width": 300,
+   "height": 80,
+   "text": "**short conv1d** (4 taps, per channel) + SiLU — on q, k, v  \n147K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dsplit48",
+   "type": "text",
+   "x": -1400,
+   "y": 168,
+   "width": 300,
+   "height": 56,
+   "text": "**split 96 heads** × 128 · L2-norm q, k",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt249",
+   "type": "text",
+   "x": -1490,
+   "y": 264,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl50",
+   "type": "text",
+   "x": -1810,
+   "y": 252,
+   "width": 300,
+   "height": 34,
+   "text": "`q, k, v [T, 96, 128] each` — bar clipped (real 1843px)"
+  },
+  {
+   "id": "drule51",
+   "type": "text",
+   "x": -1400,
+   "y": 313,
+   "width": 300,
+   "height": 80,
+   "text": "**KDA delta rule** (per head)  \nS ← Diag(α)·S ;  S ← S + β·k(vᵀ − kᵀS) ;  o = Sᵀq",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt352",
+   "type": "text",
+   "x": -1490,
+   "y": 433,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl53",
+   "type": "text",
+   "x": -1810,
+   "y": 421,
+   "width": 300,
+   "height": 34,
+   "text": "`o [T, 96, 128]   state S [96, 128, 128]` — bar clipped (real 614px)"
+  },
+  {
+   "id": "dgn54",
+   "type": "text",
+   "x": -1400,
+   "y": 482,
+   "width": 300,
+   "height": 56,
+   "text": "**gated RMSNorm** (o_norm) — norm(o) · σ(g)  \n0K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt455",
+   "type": "text",
+   "x": -1490,
+   "y": 578,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl56",
+   "type": "text",
+   "x": -1810,
+   "y": 566,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 12288]` — bar clipped (real 614px)"
+  },
+  {
+   "id": "dout57",
+   "type": "text",
+   "x": -1400,
+   "y": 627,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 12288 → 7168  \n88.1M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt558",
+   "type": "text",
+   "x": -1429,
+   "y": 723,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl59",
+   "type": "text",
+   "x": -1749,
+   "y": 711,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 7168]`"
+  },
+  {
+   "id": "dab",
+   "type": "text",
+   "x": -680,
+   "y": 163,
+   "width": 320,
+   "height": 150,
+   "text": "**f_a_proj** 7168→128, **f_b_proj** 128→12288 + dt_bias, A_log → per-channel decay α (gate_lower_bound -5)  \n**b_proj** 7168→96 → β = σ(b)  \n3.2M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dg",
+   "type": "text",
+   "x": -680,
+   "y": 472,
+   "width": 320,
+   "height": 76,
+   "text": "**g_proj** 7168 → 12288 (full-rank output gate)  \n88.1M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "qa60",
+   "type": "text",
+   "x": 550,
+   "y": -97,
+   "width": 300,
+   "height": 56,
+   "text": "**q_a_proj** 7168→1536 + RMSNorm  \n11.0M",
+   "color": "#f97316"
+  },
+  {
+   "id": "cq61",
+   "type": "text",
+   "x": 662,
+   "y": -1,
+   "width": 77,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl62",
+   "type": "text",
+   "x": 230,
+   "y": -13,
+   "width": 300,
+   "height": 34,
+   "text": "`c_q [T, 1536]  query latent`"
+  },
+  {
+   "id": "qb63",
+   "type": "text",
+   "x": 550,
+   "y": 48,
+   "width": 300,
+   "height": 56,
+   "text": "**q_b_proj** 1536 → 96×192  \n28.3M",
+   "color": "#f97316"
+  },
+  {
+   "id": "qo64",
+   "type": "text",
+   "x": 460,
+   "y": 144,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl65",
+   "type": "text",
+   "x": 140,
+   "y": 132,
+   "width": 300,
+   "height": 34,
+   "text": "`q [T, 96, 128+64]  (no RoPE)` — bar clipped (real 922px)"
+  },
+  {
+   "id": "kva66",
+   "type": "text",
+   "x": 1500,
+   "y": -97,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_a_proj_with_mqa** 7168→576  \n4.1M",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvl67",
+   "type": "text",
+   "x": 1636,
+   "y": -1,
+   "width": 29,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl68",
+   "type": "text",
+   "x": 1820,
+   "y": -13,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 576] = 512 latent ‖ 64 shared key`"
+  },
+  {
+   "id": "kvn69",
+   "type": "text",
+   "x": 1500,
+   "y": 48,
+   "width": 300,
+   "height": 56,
+   "text": "512: **RMSNorm** · 64: kept as-is  \n1K",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvc70",
+   "type": "text",
+   "x": 1636,
+   "y": 144,
+   "width": 29,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl71",
+   "type": "text",
+   "x": 1820,
+   "y": 132,
+   "width": 300,
+   "height": 34,
+   "text": "`KV cache: 576 values / token / layer`"
+  },
+  {
+   "id": "kvb72",
+   "type": "text",
+   "x": 1500,
+   "y": 193,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_b_proj** 512 → 96×(128+128)  \n12.6M",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvx73",
+   "type": "text",
+   "x": 1410,
+   "y": 289,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl74",
+   "type": "text",
+   "x": 1910,
+   "y": 277,
+   "width": 300,
+   "height": 34,
+   "text": "`k_nope [T,96,128] ‖ v [T,96,128]` — bar clipped (real 1229px)"
+  },
+  {
+   "id": "kcat75",
+   "type": "text",
+   "x": 1500,
+   "y": 338,
+   "width": 300,
+   "height": 56,
+   "text": "k = [k_nope ‖ shared 64-dim key]",
+   "color": "#f97316"
+  },
+  {
+   "id": "kvo76",
+   "type": "text",
+   "x": 1410,
+   "y": 434,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl77",
+   "type": "text",
+   "x": 1910,
+   "y": 422,
+   "width": 300,
+   "height": 34,
+   "text": "`k [T,96,192] · v [T,96,128]` — bar clipped (real 922px)"
+  },
+  {
+   "id": "att78",
+   "type": "text",
+   "x": 1025,
+   "y": 523,
+   "width": 300,
+   "height": 80,
+   "text": "**causal softmax attention**  \n96 heads, qk 192 / v 128",
+   "color": "#f97316"
+  },
+  {
+   "id": "ao79",
+   "type": "text",
+   "x": 935,
+   "y": 643,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl80",
+   "type": "text",
+   "x": 1435,
+   "y": 631,
+   "width": 300,
+   "height": 34,
+   "text": "`o [T, 96×128]` — bar clipped (real 614px)"
+  },
+  {
+   "id": "ag81",
+   "type": "text",
+   "x": 1025,
+   "y": 692,
+   "width": 300,
+   "height": 56,
+   "text": "**× σ(g_proj(x̂))** — output gate 7168→12288  \n88.1M",
+   "color": "#f97316"
+  },
+  {
+   "id": "ag282",
+   "type": "text",
+   "x": 935,
+   "y": 788,
+   "width": 480,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl83",
+   "type": "text",
+   "x": 1435,
+   "y": 776,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 12288]` — bar clipped (real 614px)"
+  },
+  {
+   "id": "aop84",
+   "type": "text",
+   "x": 1025,
+   "y": 837,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 12288 → 7168  \n88.1M",
+   "color": "#f97316"
+  },
+  {
+   "id": "ao385",
+   "type": "text",
+   "x": 996,
+   "y": 933,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl86",
+   "type": "text",
+   "x": 1374,
+   "y": 921,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 7168]`"
+  },
+  {
+   "id": "note-kv",
+   "type": "text",
+   "x": 2250,
+   "y": -117,
+   "width": 480,
+   "height": 150,
+   "text": "Why MLA: the cache keeps one 512+64 latent per token instead of 96 heads × (192+128) keys and values (30,720 numbers); kv_b_proj re-expands it. Kimi K3 adds a sigmoid output gate and drops RoPE."
+  },
+  {
+   "id": "badd1",
+   "type": "text",
+   "x": -150,
+   "y": 1082,
+   "width": 300,
+   "height": 56,
+   "text": "**s ← s + mixer output**",
+   "color": "#64748b"
+  },
+  {
+   "id": "bs287",
+   "type": "text",
+   "x": -179,
+   "y": 1178,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl88",
+   "type": "text",
+   "x": 199,
+   "y": 1166,
+   "width": 300,
+   "height": 34,
+   "text": "`s [T, 7168]`"
+  },
+  {
+   "id": "mix289",
+   "type": "text",
+   "x": -150,
+   "y": 1227,
+   "width": 300,
+   "height": 80,
+   "text": "**AttnRes mix** (mlp_res) — softmax over the same b + updated s  \n14K",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bsnap2",
+   "type": "text",
+   "x": -820,
+   "y": 1227,
+   "width": 320,
+   "height": 80,
+   "text": "same snapshots b0…b(k−1)",
+   "color": "#e879f9"
+  },
+  {
+   "id": "bh90",
+   "type": "text",
+   "x": -179,
+   "y": 1347,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl91",
+   "type": "text",
+   "x": 199,
+   "y": 1335,
+   "width": 300,
+   "height": 34,
+   "text": "`h [T, 7168]`"
+  },
+  {
+   "id": "bn292",
+   "type": "text",
+   "x": -150,
+   "y": 1396,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "hn93",
+   "type": "text",
+   "x": -179,
+   "y": 1492,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl94",
+   "type": "text",
+   "x": -499,
+   "y": 1480,
+   "width": 300,
+   "height": 34,
+   "text": "`ĥ [T, 7168]`"
+  },
+  {
+   "id": "rt95",
+   "type": "text",
+   "x": -150,
+   "y": 1541,
+   "width": 300,
+   "height": 80,
+   "text": "**router** 7168→896, sigmoid · top-16 by score+bias · weights renormalised ×1  \n6.4M",
+   "color": "4"
+  },
+  {
+   "id": "shexp",
+   "type": "text",
+   "x": 350,
+   "y": 1541,
+   "width": 300,
+   "height": 80,
+   "text": "**2 shared experts** (always on)    \nSiTU-GLU 7168→6144→7168    \n132.1M",
+   "color": "#22c55e"
+  },
+  {
+   "id": "rid96",
+   "type": "text",
+   "x": -20,
+   "y": 1661,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl97",
+   "type": "text",
+   "x": -470,
+   "y": 1649,
+   "width": 300,
+   "height": 34,
+   "text": "`16 expert ids + weights / token`"
+  },
+  {
+   "id": "ldn98",
+   "type": "text",
+   "x": -150,
+   "y": 1710,
+   "width": 300,
+   "height": 56,
+   "text": "**routed_expert_down_proj** 7168 → 3584  \n25.7M",
+   "color": "#10b981"
+  },
+  {
+   "id": "lz99",
+   "type": "text",
+   "x": -90,
+   "y": 1806,
+   "width": 179,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl100",
+   "type": "text",
+   "x": -470,
+   "y": 1794,
+   "width": 300,
+   "height": 34,
+   "text": "`z [T, 3584]  latent`"
+  },
+  {
+   "id": "rex101",
+   "type": "text",
+   "x": -150,
+   "y": 1855,
+   "width": 300,
+   "height": 80,
+   "text": "**16 of 896 routed experts**, each SiTU-GLU 3584→3072→3584 (MXFP4)  \n33.0M · each · 29.60B all",
+   "color": "4"
+  },
+  {
+   "id": "lsum102",
+   "type": "text",
+   "x": -90,
+   "y": 1975,
+   "width": 179,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl103",
+   "type": "text",
+   "x": -470,
+   "y": 1963,
+   "width": 300,
+   "height": 34,
+   "text": "`Σ weighted [T, 3584]`"
+  },
+  {
+   "id": "lup104",
+   "type": "text",
+   "x": -150,
+   "y": 2024,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm → routed_expert_up_proj** 3584 → 7168  \n25.7M",
+   "color": "#10b981"
+  },
+  {
+   "id": "lo105",
+   "type": "text",
+   "x": -179,
+   "y": 2120,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl106",
+   "type": "text",
+   "x": -499,
+   "y": 2108,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 7168]`"
+  },
+  {
+   "id": "sum107",
+   "type": "text",
+   "x": -150,
+   "y": 2169,
+   "width": 300,
+   "height": 56,
+   "text": "**+ shared experts**, then **s ← s + FFN output**",
+   "color": "#64748b"
+  },
+  {
+   "id": "bout108",
+   "type": "text",
+   "x": -179,
+   "y": 2265,
+   "width": 358,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl109",
+   "type": "text",
+   "x": 199,
+   "y": 2253,
+   "width": 300,
+   "height": 34,
+   "text": "`s [T, 7168] → next layer`"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bs36",
+   "toNode": "mix138",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bsnap",
+   "toNode": "mix138",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "b"
+  },
+  {
+   "id": "e2",
+   "fromNode": "mix138",
+   "toNode": "bx39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "bx39",
+   "toNode": "bn141",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "bn141",
+   "toNode": "bxn42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "bxn42",
+   "toNode": "dqkv44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "dqkv44",
+   "toNode": "dt145",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "dt145",
+   "toNode": "dconv47",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "dconv47",
+   "toNode": "dsplit48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "dsplit48",
+   "toNode": "dt249",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "dt249",
+   "toNode": "drule51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "drule51",
+   "toNode": "dt352",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "dt352",
+   "toNode": "dgn54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "dgn54",
+   "toNode": "dt455",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "dt455",
+   "toNode": "dout57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "dout57",
+   "toNode": "dt558",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "dab",
+   "toNode": "drule51",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "α, β"
+  },
+  {
+   "id": "e17",
+   "fromNode": "dg",
+   "toNode": "dgn54",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "g"
+  },
+  {
+   "id": "e18",
+   "fromNode": "bxn42",
+   "toNode": "qa60",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "qa60",
+   "toNode": "cq61",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "cq61",
+   "toNode": "qb63",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "qb63",
+   "toNode": "qo64",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "bxn42",
+   "toNode": "kva66",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "kva66",
+   "toNode": "kvl67",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "kvl67",
+   "toNode": "kvn69",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "kvn69",
+   "toNode": "kvc70",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "kvc70",
+   "toNode": "kvb72",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "kvb72",
+   "toNode": "kvx73",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "kvx73",
+   "toNode": "kcat75",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "kcat75",
+   "toNode": "kvo76",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "qo64",
+   "toNode": "att78",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "kvo76",
+   "toNode": "att78",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "att78",
+   "toNode": "ao79",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "ao79",
+   "toNode": "ag81",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "ag81",
+   "toNode": "ag282",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "ag282",
+   "toNode": "aop84",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "aop84",
+   "toNode": "ao385",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "dt558",
+   "toNode": "badd1",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "label": "69 KDA layers"
+  },
+  {
+   "id": "e38",
+   "fromNode": "ao385",
+   "toNode": "badd1",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "label": "24 MLA layers"
+  },
+  {
+   "id": "e39",
+   "fromNode": "badd1",
+   "toNode": "bs287",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "bs287",
+   "toNode": "mix289",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "bsnap2",
+   "toNode": "mix289",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "b"
+  },
+  {
+   "id": "e42",
+   "fromNode": "mix289",
+   "toNode": "bh90",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "bh90",
+   "toNode": "bn292",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "bn292",
+   "toNode": "hn93",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "hn93",
+   "toNode": "rt95",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "hn93",
+   "toNode": "shexp",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "rt95",
+   "toNode": "rid96",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "rid96",
+   "toNode": "ldn98",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "ldn98",
+   "toNode": "lz99",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e50",
+   "fromNode": "lz99",
+   "toNode": "rex101",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "rex101",
+   "toNode": "lsum102",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "lsum102",
+   "toNode": "lup104",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e53",
+   "fromNode": "lup104",
+   "toNode": "lo105",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e54",
+   "fromNode": "lo105",
+   "toNode": "sum107",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e55",
+   "fromNode": "shexp",
+   "toNode": "sum107",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e56",
+   "fromNode": "sum107",
+   "toNode": "bout108",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

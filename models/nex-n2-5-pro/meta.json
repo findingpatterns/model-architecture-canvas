@@ -1,0 +1,100 @@
+{
+  "name": "Nex-N2.5-Pro",
+  "description": "Nex-AGI's 397B multimodal MoE (~16B active per token), a post-train on the Qwen3.5-397B-A17B architecture: 60 layers mixing Gated DeltaNet linear attention 3:1 with sigmoid-gated softmax attention, each followed by a 512-expert top-10 MoE with a shared expert. Built from config.json and checkpoint tensor shapes; row colours mark the two token-mixer types.",
+  "logo": "N",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "nex-agi",
+    "qwen3.5",
+    "moe",
+    "linear-attention",
+    "hybrid-attention",
+    "multimodal"
+  ],
+  "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "397B",
+      "number": 396.8,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "16.3B",
+      "number": 16.33,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "60",
+      "number": 60,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "4,096",
+      "number": 4096,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Gated DeltaNet 3 : 1 gated GQA (32 q / 2 kv)",
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "512 (+1 shared)",
+      "number": 512,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-10",
+      "number": 10,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "248,320",
+      "number": 248320,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "FP8",
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image",
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro"
+    },
+    {
+      "key": "drafting",
+      "value": "none",
+      "source": "https://huggingface.co/nex-agi/Nex-N2.5-Pro"
+    }
+  ]
+}

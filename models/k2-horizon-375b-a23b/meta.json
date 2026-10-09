@@ -1,0 +1,99 @@
+{
+  "name": "K2-Horizon-375B-A23B",
+  "description": "IFM/MBZUAI's 61-layer MoE (379B stored, 25B active per token incl. lm head): 3 dense layers, then 58 layers routing each token to 8 of 192 experts plus a shared expert via a biased sigmoid router. Attention is plain GQA (48 query / 8 KV heads) with partial RoPE on 64 of 128 head dims and full causal 512K context; traced from modeling_k2_horizon.py and the checkpoint's tensor shapes.",
+  "logo": "K2",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "k2",
+    "ifm",
+    "mbzuai",
+    "moe",
+    "gqa"
+  ],
+  "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "379B",
+      "number": 379.17,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "25.1B",
+      "number": 25.13,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "61",
+      "number": 61,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "GQA (48 q / 8 kv), full causal",
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "192 (+1 shared)",
+      "number": 192,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "250,624",
+      "number": 250624,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "512K",
+      "number": 524288,
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B"
+    },
+    {
+      "key": "drafting",
+      "value": "none",
+      "source": "https://huggingface.co/IFM/K2-Horizon-375B-A23B"
+    }
+  ]
+}

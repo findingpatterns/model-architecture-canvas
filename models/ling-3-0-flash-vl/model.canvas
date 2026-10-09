@@ -1,0 +1,1454 @@
+{
+ "nodes": [
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1746,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 124.85B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1700,
+   "width": 44,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bp3",
+   "type": "text",
+   "x": -854,
+   "y": -1700,
+   "width": 2514,
+   "height": 44,
+   "text": "**routed experts 40×512**",
+   "color": "#86efac"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1650,
+   "width": 2600,
+   "height": 64,
+   "text": "35 KDA attn **2.21B** (1.8%) · routed experts 40×512 **120.80B** (96.8%) · 7 MLA attn **223.8M** (0.2%) · dense FFN ×2 **94.4M** (0.1%) · shared experts + routers **288.4M** (0.2%) · lm head **402.4M** (0.3%) · embed **402.4M** (0.3%) · ViT + projector **434.2M** (0.3%) · norms **0.2M** (0.0%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1546,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one text token is multiplied by (active weights; adding the 402.4M embedding row gives 5.51B, the card's 5.5B)** — total 5.10B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1500,
+   "width": 1122,
+   "height": 44,
+   "text": "**35 KDA attn**",
+   "color": "5"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 224,
+   "y": -1500,
+   "width": 112,
+   "height": 44,
+   "text": "",
+   "color": "6"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 338,
+   "y": -1500,
+   "width": 46,
+   "height": 44,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": 386,
+   "y": -1500,
+   "width": 960,
+   "height": 44,
+   "text": "**routed experts 40×512**",
+   "color": "#86efac"
+  },
+  {
+   "id": "bc4",
+   "type": "text",
+   "x": 1348,
+   "y": -1500,
+   "width": 145,
+   "height": 44,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "bc5",
+   "type": "text",
+   "x": 1495,
+   "y": -1500,
+   "width": 203,
+   "height": 44,
+   "text": "**lm head**",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1450,
+   "width": 2600,
+   "height": 64,
+   "text": "35 KDA attn **2.21B** (43.2%) · 7 MLA attn **223.8M** (4.4%) · dense FFN ×2 **94.4M** (1.8%) · routed experts 40×512 **1.89B** (37.0%) · shared experts + routers **288.4M** (5.7%) · lm head **402.4M** (7.9%) · embed **0** (row lookup) · ViT + projector **0** (runs per image) · norms **0.2M** (0.0%)"
+  },
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1300,
+   "width": 1250,
+   "height": 200,
+   "text": "# Ling-3.0-flash-VL — model  \nRead top → bottom. **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel). **Boxes = operations**, all the same size; where parameters and compute live is the pair of bars above. T = sequence length, P = image patches. *Layer* tab = one decoder layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1300,
+   "width": 1250,
+   "height": 200,
+   "text": "Layer rows — **KDA** (Kimi Delta Attention, linear): fixed-size state [32, 128, 128] per sequence, no KV cache, no position encoding · **Gated MLA**: softmax attention over a compressed KV cache (512 + 64 values per token), M-RoPE, per-head sigmoid output gate. Pattern repeats every 6 layers: 5 KDA → 1 MLA (35 : 7).    \nFFN — L0–1 dense SwiGLU 6144; L2–41 MoE: 512 experts × 768, top-8 (sigmoid scores, 8 groups → best 4) + 1 shared expert. No MTP head in this checkpoint."
+  },
+  {
+   "id": "note-src",
+   "type": "text",
+   "x": -900,
+   "y": -1080,
+   "width": 2600,
+   "height": 40,
+   "text": "Sources: tensor shapes from the safetensors headers of inclusionAI/Ling-3.0-flash-VL, hyper-parameters from its config.json, dataflow from inclusionAI/vllm-ling-v3 (bailing_moe_v3.py, bailing_moe_v3_vl.py); total / active counts from the model card (124B / 5.5B)."
+  },
+  {
+   "id": "img1",
+   "type": "text",
+   "x": -630,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**image / video** frames",
+   "color": "#64748b"
+  },
+  {
+   "id": "patch2",
+   "type": "text",
+   "x": -541,
+   "y": -864,
+   "width": 123,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl3",
+   "type": "text",
+   "x": -1090,
+   "y": -874,
+   "width": 440,
+   "height": 34,
+   "text": "`patches [P, 1536]  (3 ch × 2 frames × 16×16)`"
+  },
+  {
+   "id": "pemb4",
+   "type": "text",
+   "x": -630,
+   "y": -810,
+   "width": 300,
+   "height": 56,
+   "text": "**patch embed** Conv3d + learned pos (2304)  \n4.4M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "vf05",
+   "type": "text",
+   "x": -526,
+   "y": -714,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl6",
+   "type": "text",
+   "x": -1090,
+   "y": -724,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 1152]`"
+  },
+  {
+   "id": "vit7",
+   "type": "text",
+   "x": -630,
+   "y": -660,
+   "width": 300,
+   "height": 56,
+   "text": "**ViT ×27** · 16 heads · MLP 4304  \n411.5M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "vf18",
+   "type": "text",
+   "x": -526,
+   "y": -564,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl9",
+   "type": "text",
+   "x": -1090,
+   "y": -574,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 1152]`"
+  },
+  {
+   "id": "merge10",
+   "type": "text",
+   "x": -630,
+   "y": -510,
+   "width": 300,
+   "height": 56,
+   "text": "**merger**: LayerNorm, concat 2×2 patches  \n2.3K",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "vf211",
+   "type": "text",
+   "x": -664,
+   "y": -414,
+   "width": 369,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -1124,
+   "y": -424,
+   "width": 440,
+   "height": 34,
+   "text": "`[P/4, 4608]`"
+  },
+  {
+   "id": "proj13",
+   "type": "text",
+   "x": -630,
+   "y": -360,
+   "width": 300,
+   "height": 56,
+   "text": "**projector** MLP 4608 → 2560 → 2560, GELU  \n18.4M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "vt14",
+   "type": "text",
+   "x": -582,
+   "y": -264,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": -1090,
+   "y": -274,
+   "width": 440,
+   "height": 34,
+   "text": "`image tokens [P/4, 2560]`"
+  },
+  {
+   "id": "raw16",
+   "type": "text",
+   "x": 0,
+   "y": -684,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text** + image placeholders",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok17",
+   "type": "text",
+   "x": 0,
+   "y": -588,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (BPE, vocab 157184)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids18",
+   "type": "text",
+   "x": 130,
+   "y": -492,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": 320,
+   "y": -502,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed20",
+   "type": "text",
+   "x": 0,
+   "y": -438,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** — look up row *id*  \n402.4M · table 157184 × 2560",
+   "color": "#f472b6"
+  },
+  {
+   "id": "xt21",
+   "type": "text",
+   "x": 48,
+   "y": -342,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": 320,
+   "y": -352,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2560]`"
+  },
+  {
+   "id": "splice23",
+   "type": "text",
+   "x": 0,
+   "y": -288,
+   "width": 300,
+   "height": 56,
+   "text": "**splice**: image tokens replace  \n<|image_pad|> positions",
+   "color": "#64748b"
+  },
+  {
+   "id": "x24",
+   "type": "text",
+   "x": 48,
+   "y": -192,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl25",
+   "type": "text",
+   "x": 320,
+   "y": -202,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2560]  + positions [3, T] (t, h, w)`"
+  },
+  {
+   "id": "note-vision",
+   "type": "text",
+   "x": -900,
+   "y": -204,
+   "width": 700,
+   "height": 150,
+   "text": "Vision tower = Qwen3-VL-style ViT (27 pre-LN blocks, width 1152). The merger has no MLP of its own (config `disable_merger_proj`; its `out_hidden_size` 4096 is unused) — the 2-layer projector does the alignment. No DeepStack taps: the checkpoint has no deepstack_merger weights and vLLM disables them."
+  },
+  {
+   "id": "note-mrope",
+   "type": "text",
+   "x": -900,
+   "y": -24,
+   "width": 700,
+   "height": 120,
+   "text": "M-RoPE: text tokens get (t, h, w) = (n, n, n); image tokens get their grid cell. The 32 rotary frequencies are split 8/12/12 over t/h/w (θ = 6e+06). Only the 7 MLA layers use positions; KDA layers are position-free."
+  },
+  {
+   "id": "L0",
+   "type": "text",
+   "x": 0,
+   "y": -128,
+   "width": 300,
+   "height": 34,
+   "text": "**L0** · KDA · dense FFN",
+   "color": "5"
+  },
+  {
+   "id": "L1",
+   "type": "text",
+   "x": 0,
+   "y": -88,
+   "width": 300,
+   "height": 34,
+   "text": "**L1** · KDA · dense FFN",
+   "color": "5"
+  },
+  {
+   "id": "L2",
+   "type": "text",
+   "x": 0,
+   "y": -48,
+   "width": 300,
+   "height": 34,
+   "text": "**L2** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L3",
+   "type": "text",
+   "x": 0,
+   "y": -8,
+   "width": 300,
+   "height": 34,
+   "text": "**L3** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L4",
+   "type": "text",
+   "x": 0,
+   "y": 32,
+   "width": 300,
+   "height": 34,
+   "text": "**L4** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L5",
+   "type": "text",
+   "x": 0,
+   "y": 72,
+   "width": 300,
+   "height": 34,
+   "text": "**L5** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L6",
+   "type": "text",
+   "x": 0,
+   "y": 112,
+   "width": 300,
+   "height": 34,
+   "text": "**L6** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L7",
+   "type": "text",
+   "x": 0,
+   "y": 152,
+   "width": 300,
+   "height": 34,
+   "text": "**L7** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L8",
+   "type": "text",
+   "x": 0,
+   "y": 192,
+   "width": 300,
+   "height": 34,
+   "text": "**L8** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L9",
+   "type": "text",
+   "x": 0,
+   "y": 232,
+   "width": 300,
+   "height": 34,
+   "text": "**L9** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L10",
+   "type": "text",
+   "x": 0,
+   "y": 272,
+   "width": 300,
+   "height": 34,
+   "text": "**L10** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L11",
+   "type": "text",
+   "x": 0,
+   "y": 312,
+   "width": 300,
+   "height": 34,
+   "text": "**L11** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L12",
+   "type": "text",
+   "x": 0,
+   "y": 352,
+   "width": 300,
+   "height": 34,
+   "text": "**L12** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L13",
+   "type": "text",
+   "x": 0,
+   "y": 392,
+   "width": 300,
+   "height": 34,
+   "text": "**L13** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L14",
+   "type": "text",
+   "x": 0,
+   "y": 432,
+   "width": 300,
+   "height": 34,
+   "text": "**L14** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L15",
+   "type": "text",
+   "x": 0,
+   "y": 472,
+   "width": 300,
+   "height": 34,
+   "text": "**L15** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L16",
+   "type": "text",
+   "x": 0,
+   "y": 512,
+   "width": 300,
+   "height": 34,
+   "text": "**L16** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L17",
+   "type": "text",
+   "x": 0,
+   "y": 552,
+   "width": 300,
+   "height": 34,
+   "text": "**L17** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L18",
+   "type": "text",
+   "x": 0,
+   "y": 592,
+   "width": 300,
+   "height": 34,
+   "text": "**L18** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L19",
+   "type": "text",
+   "x": 0,
+   "y": 632,
+   "width": 300,
+   "height": 34,
+   "text": "**L19** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L20",
+   "type": "text",
+   "x": 0,
+   "y": 672,
+   "width": 300,
+   "height": 34,
+   "text": "**L20** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L21",
+   "type": "text",
+   "x": 0,
+   "y": 712,
+   "width": 300,
+   "height": 34,
+   "text": "**L21** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L22",
+   "type": "text",
+   "x": 0,
+   "y": 752,
+   "width": 300,
+   "height": 34,
+   "text": "**L22** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L23",
+   "type": "text",
+   "x": 0,
+   "y": 792,
+   "width": 300,
+   "height": 34,
+   "text": "**L23** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L24",
+   "type": "text",
+   "x": 0,
+   "y": 832,
+   "width": 300,
+   "height": 34,
+   "text": "**L24** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L25",
+   "type": "text",
+   "x": 0,
+   "y": 872,
+   "width": 300,
+   "height": 34,
+   "text": "**L25** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L26",
+   "type": "text",
+   "x": 0,
+   "y": 912,
+   "width": 300,
+   "height": 34,
+   "text": "**L26** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L27",
+   "type": "text",
+   "x": 0,
+   "y": 952,
+   "width": 300,
+   "height": 34,
+   "text": "**L27** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L28",
+   "type": "text",
+   "x": 0,
+   "y": 992,
+   "width": 300,
+   "height": 34,
+   "text": "**L28** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L29",
+   "type": "text",
+   "x": 0,
+   "y": 1032,
+   "width": 300,
+   "height": 34,
+   "text": "**L29** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L30",
+   "type": "text",
+   "x": 0,
+   "y": 1072,
+   "width": 300,
+   "height": 34,
+   "text": "**L30** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L31",
+   "type": "text",
+   "x": 0,
+   "y": 1112,
+   "width": 300,
+   "height": 34,
+   "text": "**L31** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L32",
+   "type": "text",
+   "x": 0,
+   "y": 1152,
+   "width": 300,
+   "height": 34,
+   "text": "**L32** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L33",
+   "type": "text",
+   "x": 0,
+   "y": 1192,
+   "width": 300,
+   "height": 34,
+   "text": "**L33** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L34",
+   "type": "text",
+   "x": 0,
+   "y": 1232,
+   "width": 300,
+   "height": 34,
+   "text": "**L34** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L35",
+   "type": "text",
+   "x": 0,
+   "y": 1272,
+   "width": 300,
+   "height": 34,
+   "text": "**L35** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "L36",
+   "type": "text",
+   "x": 0,
+   "y": 1312,
+   "width": 300,
+   "height": 34,
+   "text": "**L36** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L37",
+   "type": "text",
+   "x": 0,
+   "y": 1352,
+   "width": 300,
+   "height": 34,
+   "text": "**L37** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L38",
+   "type": "text",
+   "x": 0,
+   "y": 1392,
+   "width": 300,
+   "height": 34,
+   "text": "**L38** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L39",
+   "type": "text",
+   "x": 0,
+   "y": 1432,
+   "width": 300,
+   "height": 34,
+   "text": "**L39** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L40",
+   "type": "text",
+   "x": 0,
+   "y": 1472,
+   "width": 300,
+   "height": 34,
+   "text": "**L40** · KDA · MoE",
+   "color": "5"
+  },
+  {
+   "id": "L41",
+   "type": "text",
+   "x": 0,
+   "y": 1512,
+   "width": 300,
+   "height": 34,
+   "text": "**L41** · Gated MLA · MoE",
+   "color": "6"
+  },
+  {
+   "id": "note-grp0",
+   "type": "text",
+   "x": 330,
+   "y": -128,
+   "width": 250,
+   "height": 234,
+   "text": "group 1 · L0–5  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp1",
+   "type": "text",
+   "x": 330,
+   "y": 112,
+   "width": 250,
+   "height": 234,
+   "text": "group 2 · L6–11  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp2",
+   "type": "text",
+   "x": 330,
+   "y": 352,
+   "width": 250,
+   "height": 234,
+   "text": "group 3 · L12–17  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp3",
+   "type": "text",
+   "x": 330,
+   "y": 592,
+   "width": 250,
+   "height": 234,
+   "text": "group 4 · L18–23  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp4",
+   "type": "text",
+   "x": 330,
+   "y": 832,
+   "width": 250,
+   "height": 234,
+   "text": "group 5 · L24–29  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp5",
+   "type": "text",
+   "x": 330,
+   "y": 1072,
+   "width": 250,
+   "height": 234,
+   "text": "group 6 · L30–35  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-grp6",
+   "type": "text",
+   "x": 330,
+   "y": 1312,
+   "width": 250,
+   "height": 234,
+   "text": "group 7 · L36–41  \n5 KDA → 1 MLA"
+  },
+  {
+   "id": "note-layer",
+   "type": "text",
+   "x": 620,
+   "y": -128,
+   "width": 620,
+   "height": 330,
+   "text": "Every layer: RMSNorm → attention → add → RMSNorm → FFN → add (pre-norm, fused residual).    \nKDA layer ≈ **63.0M** attention; MLA layer ≈ **32.0M**. MoE layer ≈ **3.03B**, of which one token multiplies ≈ 54.4M (8 routed + 1 shared expert + router).    \nSwiGLU clamp (config): routed experts limit 4 in L35–41; shared expert limit 5/7 in L34–41.    \nContext: 128K native, 256K with YaRN ×2 (model card serving recipe)."
+  },
+  {
+   "id": "ho26",
+   "type": "text",
+   "x": 48,
+   "y": 1606,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl27",
+   "type": "text",
+   "x": 320,
+   "y": 1596,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 2560]  after L41`"
+  },
+  {
+   "id": "fnorm28",
+   "type": "text",
+   "x": 0,
+   "y": 1660,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**  \n2.6K",
+   "color": "3"
+  },
+  {
+   "id": "xf29",
+   "type": "text",
+   "x": 48,
+   "y": 1756,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl30",
+   "type": "text",
+   "x": 320,
+   "y": 1746,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2560]`"
+  },
+  {
+   "id": "head31",
+   "type": "text",
+   "x": 0,
+   "y": 1810,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** — 2560 → 157184 (untied)  \n402.4M",
+   "color": "2"
+  },
+  {
+   "id": "logits32",
+   "type": "text",
+   "x": -750,
+   "y": 1906,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl33",
+   "type": "text",
+   "x": 1070,
+   "y": 1896,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 157184]` — bar clipped (real 12575px)"
+  },
+  {
+   "id": "samp34",
+   "type": "text",
+   "x": 0,
+   "y": 1960,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next35",
+   "type": "text",
+   "x": 0,
+   "y": 2056,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "img1",
+   "toNode": "patch2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "patch2",
+   "toNode": "pemb4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "pemb4",
+   "toNode": "vf05",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "vf05",
+   "toNode": "vit7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "vit7",
+   "toNode": "vf18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "vf18",
+   "toNode": "merge10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "merge10",
+   "toNode": "vf211",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "vf211",
+   "toNode": "proj13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "proj13",
+   "toNode": "vt14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "raw16",
+   "toNode": "tok17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "tok17",
+   "toNode": "ids18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "ids18",
+   "toNode": "embed20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "embed20",
+   "toNode": "xt21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "xt21",
+   "toNode": "splice23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vt14",
+   "toNode": "splice23",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e15",
+   "fromNode": "splice23",
+   "toNode": "x24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "x24",
+   "toNode": "L0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "L0",
+   "toNode": "L1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "L1",
+   "toNode": "L2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "L2",
+   "toNode": "L3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "L3",
+   "toNode": "L4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "L4",
+   "toNode": "L5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "L5",
+   "toNode": "L6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "L6",
+   "toNode": "L7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "L7",
+   "toNode": "L8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "L8",
+   "toNode": "L9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "L9",
+   "toNode": "L10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "L10",
+   "toNode": "L11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "L11",
+   "toNode": "L12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "L12",
+   "toNode": "L13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "L13",
+   "toNode": "L14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "L14",
+   "toNode": "L15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "L15",
+   "toNode": "L16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "L16",
+   "toNode": "L17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "L17",
+   "toNode": "L18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "L18",
+   "toNode": "L19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "L19",
+   "toNode": "L20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "L20",
+   "toNode": "L21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "L21",
+   "toNode": "L22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "L22",
+   "toNode": "L23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "L23",
+   "toNode": "L24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "L24",
+   "toNode": "L25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e42",
+   "fromNode": "L25",
+   "toNode": "L26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "L26",
+   "toNode": "L27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "L27",
+   "toNode": "L28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "L28",
+   "toNode": "L29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "L29",
+   "toNode": "L30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "L30",
+   "toNode": "L31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "L31",
+   "toNode": "L32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "L32",
+   "toNode": "L33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e50",
+   "fromNode": "L33",
+   "toNode": "L34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "L34",
+   "toNode": "L35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "L35",
+   "toNode": "L36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e53",
+   "fromNode": "L36",
+   "toNode": "L37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e54",
+   "fromNode": "L37",
+   "toNode": "L38",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e55",
+   "fromNode": "L38",
+   "toNode": "L39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e56",
+   "fromNode": "L39",
+   "toNode": "L40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e57",
+   "fromNode": "L40",
+   "toNode": "L41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e58",
+   "fromNode": "L41",
+   "toNode": "ho26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e59",
+   "fromNode": "ho26",
+   "toNode": "fnorm28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e60",
+   "fromNode": "fnorm28",
+   "toNode": "xf29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e61",
+   "fromNode": "xf29",
+   "toNode": "head31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e62",
+   "fromNode": "head31",
+   "toNode": "logits32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e63",
+   "fromNode": "logits32",
+   "toNode": "samp34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e64",
+   "fromNode": "samp34",
+   "toNode": "next35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

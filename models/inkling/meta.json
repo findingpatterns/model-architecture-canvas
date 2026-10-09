@@ -1,0 +1,101 @@
+{
+  "name": "Inkling",
+  "description": "Thinking Machines Lab's 952B MoE multimodal model (InklingForConditionalGeneration): 66 layers in a [5 × sliding-window (512), 1 × global] pattern with no RoPE — positions come from a learned, content-dependent relative bias — causal short-convs on K, V, attention and MLP outputs, 256 routed experts (top-6 + 2 shared, ~40B active), a muP-scaled untied head, an 8-layer MTP draft chain, and small vision and audio encoders. Numbers from config.json and the safetensors headers.",
+  "logo": "In",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "inkling",
+    "thinking-machines",
+    "moe",
+    "multimodal",
+    "sliding-window",
+    "mtp"
+  ],
+  "source": "https://huggingface.co/thinkingmachines/Inkling",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "952.4B",
+      "number": 952.38,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. The README states \"975B total, 41B active\" with no breakdown, so the ~23B (total) / ~1.2B (active) gap is not explained by the card; our figures are exact tensor sums."
+    },
+    {
+      "key": "params_active",
+      "value": "39.8B",
+      "number": 39.82,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. The README states \"975B total, 41B active\" with no breakdown, so the ~23B (total) / ~1.2B (active) gap is not explained by the card; our figures are exact tensor sums."
+    },
+    {
+      "key": "layers",
+      "value": "66",
+      "number": 66,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-512 5 : 1 global, no RoPE (learned relative bias), 64 q / 16 kv (sliding) · 64 q / 8 kv (global), head 128",
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "256 (+2 shared)",
+      "number": 256,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-6",
+      "number": 6,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "201,024 (200,058 used)",
+      "number": 201024,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, audio",
+      "source": "https://huggingface.co/thinkingmachines/Inkling/raw/main/README.md",
+      "note": "Card: \"accepts text, image and audio inputs\", text output. Video appears only in training data / patch-encoder description, not as a listed input."
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×8",
+      "source": "https://huggingface.co/thinkingmachines/Inkling/blob/main/config.json"
+    }
+  ]
+}

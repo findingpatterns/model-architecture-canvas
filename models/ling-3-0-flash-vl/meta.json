@@ -1,0 +1,100 @@
+{
+  "name": "Ling-3.0-flash-VL",
+  "description": "Vision-language MoE (124B total, 5.5B active) from inclusionAI: a Qwen3-VL-style ViT + 2-layer MLP projector feeding a 42-layer hybrid backbone where every 6th layer is Gated MLA and the rest are KDA linear attention (5:1), with 512-expert top-8 MoE plus a shared expert. Row colours = attention type; numbers from the checkpoint's tensor shapes.",
+  "logo": "L",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "ling",
+    "inclusionai",
+    "moe",
+    "multimodal",
+    "linear-attention",
+    "hybrid-attention"
+  ],
+  "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "125B",
+      "number": 124.85,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "5.10B",
+      "number": 5.1,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "42",
+      "number": 42,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,560",
+      "number": 2560,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "KDA linear 5 : 1 gated MLA, 32 heads",
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "512 (+1 shared)",
+      "number": 512,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "157,184",
+      "number": 157184,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "128K",
+      "number": 131072,
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image",
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL"
+    },
+    {
+      "key": "drafting",
+      "value": "none",
+      "source": "https://huggingface.co/inclusionAI/Ling-3.0-flash-VL"
+    }
+  ]
+}

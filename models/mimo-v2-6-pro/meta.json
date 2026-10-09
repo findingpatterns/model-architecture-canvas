@@ -1,0 +1,101 @@
+{
+  "name": "MiMo-V2.6-Pro",
+  "description": "Flagship omnimodal MoE of the MiMo-V2.6 series (1024.2B stored, 41.0B active per text token): 70 layers with 60 sliding-window (128-token, sink-logit) and 10 global attention layers, 384 routed experts top-8 without a shared expert, ViT and audio encoders spliced into the token stream, 3 built-in MTP modules plus a separate 5-layer DFlash block drafter. Same modeling code as MiMo-V2.6-Flash, scaled up; numbers computed from the Pro-RL checkpoint headers, config.json and modeling code.",
+  "logo": "Mi",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "xiaomi",
+    "mimo",
+    "moe",
+    "multimodal",
+    "sliding-window",
+    "speculative-decoding"
+  ],
+  "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "1024B",
+      "number": 1024.22,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the main checkpoint (incl. MTP and vision), summed from the safetensors headers; the separate DFlash drafter and audio-tokenizer files are not included."
+    },
+    {
+      "key": "params_active",
+      "value": "41.0B",
+      "number": 40.96,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "70",
+      "number": 70,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-128 60 : 10 global GQA (128 q / 8 kv)",
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "384",
+      "number": 384,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "152,576",
+      "number": 152576,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "MXFP4 experts + FP8",
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/model.safetensors.index.json",
+      "note": "Routed experts stored as packed MXFP4 (U8); attention / dense weights FP8 E4M3 (config quantization_config, store_dtype mxfp4)."
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video, audio",
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×3 + DFlash drafter",
+      "source": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL"
+    }
+  ]
+}

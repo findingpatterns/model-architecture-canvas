@@ -1,0 +1,1059 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -2200,
+   "y": -420,
+   "width": 1700,
+   "height": 170,
+   "text": "# Gemma 4 12B Unified — one decoder layer  \nLeft: the attention of the 40 **sliding** layers (224.1M per layer). Right: the 8 **full** layers (241.8M). A layer takes one of the two; norms, MLP, residuals are shared. Grey bars = tensors (0.05 px/channel, long ones clipped), boxes = operations with their weights."
+  },
+  {
+   "id": "cap-blegend",
+   "type": "text",
+   "x": 800,
+   "y": -420,
+   "width": 1500,
+   "height": 170,
+   "text": "**Full layers save memory three ways**: one KV head (1 × 512) for all 16 query heads, **K = V** (no v_proj — keys and values are the same projection, normalised differently), and **p-RoPE** that rotates only 128 of 512 dims (θ 1,000,000), leaving the rest position-free for long range."
+  },
+  {
+   "id": "xin1",
+   "type": "text",
+   "x": -96,
+   "y": -180,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 170,
+   "y": -190,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 3840]  residual stream in`"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -150,
+   "y": -126,
+   "width": 300,
+   "height": 56,
+   "text": "**input norm** — RMSNorm",
+   "color": "3"
+  },
+  {
+   "id": "h4",
+   "type": "text",
+   "x": -96,
+   "y": -30,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 170,
+   "y": -40,
+   "width": 300,
+   "height": 34,
+   "text": "`x̂ [T, 3840]`"
+  },
+  {
+   "id": "sq6",
+   "type": "text",
+   "x": -2250,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 3840 → 16×256  \n15.7M",
+   "color": "5"
+  },
+  {
+   "id": "sqt7",
+   "type": "text",
+   "x": -2202,
+   "y": 420,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1930,
+   "y": 410,
+   "width": 240,
+   "height": 34,
+   "text": "`q [T, 16, 256]`"
+  },
+  {
+   "id": "sqn9",
+   "type": "text",
+   "x": -2250,
+   "y": 474,
+   "width": 300,
+   "height": 56,
+   "text": "**q_norm** RMSNorm per head (256)",
+   "color": "3"
+  },
+  {
+   "id": "sqr10",
+   "type": "text",
+   "x": -2250,
+   "y": 570,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** θ 10,000, all 256 dims",
+   "color": "5"
+  },
+  {
+   "id": "sk11",
+   "type": "text",
+   "x": -1650,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**k_proj** 3840 → 8×256  \n7.9M",
+   "color": "5"
+  },
+  {
+   "id": "skt12",
+   "type": "text",
+   "x": -1551,
+   "y": 420,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl13",
+   "type": "text",
+   "x": -1330,
+   "y": 410,
+   "width": 240,
+   "height": 34,
+   "text": "`k [T, 8, 256]`"
+  },
+  {
+   "id": "skn14",
+   "type": "text",
+   "x": -1650,
+   "y": 474,
+   "width": 300,
+   "height": 56,
+   "text": "**k_norm** RMSNorm per head (256)",
+   "color": "3"
+  },
+  {
+   "id": "skr15",
+   "type": "text",
+   "x": -1650,
+   "y": 570,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** θ 10,000",
+   "color": "5"
+  },
+  {
+   "id": "sv16",
+   "type": "text",
+   "x": -1050,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**v_proj** 3840 → 8×256  \n7.9M",
+   "color": "5"
+  },
+  {
+   "id": "svt17",
+   "type": "text",
+   "x": -951,
+   "y": 420,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl18",
+   "type": "text",
+   "x": -730,
+   "y": 410,
+   "width": 240,
+   "height": 34,
+   "text": "`v [T, 8, 256]`"
+  },
+  {
+   "id": "svn19",
+   "type": "text",
+   "x": -1050,
+   "y": 474,
+   "width": 300,
+   "height": 56,
+   "text": "**v_norm** RMSNorm (no weight)",
+   "color": "3"
+  },
+  {
+   "id": "satt",
+   "type": "text",
+   "x": -2250,
+   "y": 666,
+   "width": 1500,
+   "height": 90,
+   "text": "**sliding-window attention** — 16 q heads share 8 KV heads (2:1 GQA), head 256, scale 1 (qk-norm does the scaling)  \ncausal, last 1024 tokens · image tokens also see their own image",
+   "color": "5"
+  },
+  {
+   "id": "sao20",
+   "type": "text",
+   "x": -1602,
+   "y": 796,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl21",
+   "type": "text",
+   "x": -1330,
+   "y": 786,
+   "width": 240,
+   "height": 34,
+   "text": "`[T, 4096]  heads concatenated`"
+  },
+  {
+   "id": "so22",
+   "type": "text",
+   "x": -1650,
+   "y": 850,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 4096 → 3840  \n15.7M",
+   "color": "5"
+  },
+  {
+   "id": "sot23",
+   "type": "text",
+   "x": -1596,
+   "y": 946,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl24",
+   "type": "text",
+   "x": -1330,
+   "y": 936,
+   "width": 240,
+   "height": 34,
+   "text": "`[T, 3840]`"
+  },
+  {
+   "id": "fq25",
+   "type": "text",
+   "x": 650,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 3840 → 16×512  \n31.5M",
+   "color": "5"
+  },
+  {
+   "id": "fqt26",
+   "type": "text",
+   "x": 650,
+   "y": 420,
+   "width": 300,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl27",
+   "type": "text",
+   "x": 390,
+   "y": 410,
+   "width": 240,
+   "height": 34,
+   "text": "`q [T, 16, 512]` — bar clipped (real 410px)"
+  },
+  {
+   "id": "fqn28",
+   "type": "text",
+   "x": 650,
+   "y": 474,
+   "width": 300,
+   "height": 56,
+   "text": "**q_norm** RMSNorm per head (512)",
+   "color": "3"
+  },
+  {
+   "id": "fqr29",
+   "type": "text",
+   "x": 650,
+   "y": 570,
+   "width": 300,
+   "height": 72,
+   "text": "**p-RoPE** θ 1,000,000  \nrotates 128 of 512 dims",
+   "color": "5"
+  },
+  {
+   "id": "fk30",
+   "type": "text",
+   "x": 1250,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**k_proj** 3840 → 1×512  \n2.0M",
+   "color": "5"
+  },
+  {
+   "id": "fkt31",
+   "type": "text",
+   "x": 1387,
+   "y": 420,
+   "width": 26,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": 990,
+   "y": 410,
+   "width": 240,
+   "height": 34,
+   "text": "`k = v [T, 1, 512]`"
+  },
+  {
+   "id": "fkn33",
+   "type": "text",
+   "x": 1250,
+   "y": 474,
+   "width": 300,
+   "height": 56,
+   "text": "**k_norm** RMSNorm (512)",
+   "color": "3"
+  },
+  {
+   "id": "fkr34",
+   "type": "text",
+   "x": 1250,
+   "y": 570,
+   "width": 300,
+   "height": 72,
+   "text": "**p-RoPE** θ 1,000,000  \nrotates 128 of 512 dims",
+   "color": "5"
+  },
+  {
+   "id": "fvn35",
+   "type": "text",
+   "x": 1850,
+   "y": 570,
+   "width": 300,
+   "height": 72,
+   "text": "**v_norm** RMSNorm (no weight)  \non the *same* k_proj output",
+   "color": "3"
+  },
+  {
+   "id": "fatt",
+   "type": "text",
+   "x": 650,
+   "y": 682,
+   "width": 1500,
+   "height": 90,
+   "text": "**full causal attention** — all 16 q heads share **1** KV head (MQA), head 512, scale 1  \nwhole context, always causal (no bidirectional image block here)",
+   "color": "5"
+  },
+  {
+   "id": "fao36",
+   "type": "text",
+   "x": 1250,
+   "y": 812,
+   "width": 300,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl37",
+   "type": "text",
+   "x": 990,
+   "y": 802,
+   "width": 240,
+   "height": 34,
+   "text": "`[T, 8192]  heads concatenated` — bar clipped (real 410px)"
+  },
+  {
+   "id": "fo38",
+   "type": "text",
+   "x": 1250,
+   "y": 866,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 8192 → 3840  \n31.5M",
+   "color": "5"
+  },
+  {
+   "id": "fot39",
+   "type": "text",
+   "x": 1304,
+   "y": 962,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": 990,
+   "y": 952,
+   "width": 240,
+   "height": 34,
+   "text": "`[T, 3840]`"
+  },
+  {
+   "id": "n241",
+   "type": "text",
+   "x": -150,
+   "y": 1176,
+   "width": 300,
+   "height": 56,
+   "text": "**post-attention norm** — RMSNorm",
+   "color": "3"
+  },
+  {
+   "id": "add142",
+   "type": "text",
+   "x": -150,
+   "y": 1272,
+   "width": 300,
+   "height": 56,
+   "text": "**+ residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "xm43",
+   "type": "text",
+   "x": -96,
+   "y": 1368,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl44",
+   "type": "text",
+   "x": 170,
+   "y": 1358,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 3840]`"
+  },
+  {
+   "id": "n345",
+   "type": "text",
+   "x": -150,
+   "y": 1422,
+   "width": 300,
+   "height": 56,
+   "text": "**pre-FFN norm** — RMSNorm",
+   "color": "3"
+  },
+  {
+   "id": "h246",
+   "type": "text",
+   "x": -96,
+   "y": 1518,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": 170,
+   "y": 1508,
+   "width": 300,
+   "height": 34,
+   "text": "`h [T, 3840]`"
+  },
+  {
+   "id": "gu48",
+   "type": "text",
+   "x": -150,
+   "y": 1572,
+   "width": 300,
+   "height": 56,
+   "text": "**gate_proj ‖ up_proj** 3840 → 2 × 15360  \n118.0M",
+   "color": "4"
+  },
+  {
+   "id": "gut49",
+   "type": "text",
+   "x": -150,
+   "y": 1668,
+   "width": 300,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "gut50",
+   "type": "text",
+   "x": -150,
+   "y": 1682,
+   "width": 300,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl51",
+   "type": "text",
+   "x": 170,
+   "y": 1658,
+   "width": 300,
+   "height": 34,
+   "text": "`gate, up [T, 15360]` — bar clipped (real 768px)"
+  },
+  {
+   "id": "gel52",
+   "type": "text",
+   "x": -150,
+   "y": 1736,
+   "width": 300,
+   "height": 56,
+   "text": "**GELU-tanh(gate) · up**",
+   "color": "4"
+  },
+  {
+   "id": "ff53",
+   "type": "text",
+   "x": -150,
+   "y": 1832,
+   "width": 300,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl54",
+   "type": "text",
+   "x": 170,
+   "y": 1822,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 15360]` — bar clipped (real 768px)"
+  },
+  {
+   "id": "down55",
+   "type": "text",
+   "x": -150,
+   "y": 1886,
+   "width": 300,
+   "height": 56,
+   "text": "**down_proj** 15360 → 3840  \n59.0M",
+   "color": "4"
+  },
+  {
+   "id": "dt56",
+   "type": "text",
+   "x": -96,
+   "y": 1982,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl57",
+   "type": "text",
+   "x": 170,
+   "y": 1972,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 3840]`"
+  },
+  {
+   "id": "n458",
+   "type": "text",
+   "x": -150,
+   "y": 2036,
+   "width": 300,
+   "height": 56,
+   "text": "**post-FFN norm** — RMSNorm",
+   "color": "3"
+  },
+  {
+   "id": "add259",
+   "type": "text",
+   "x": -150,
+   "y": 2132,
+   "width": 300,
+   "height": 56,
+   "text": "**+ residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "xs60",
+   "type": "text",
+   "x": -96,
+   "y": 2228,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl61",
+   "type": "text",
+   "x": 170,
+   "y": 2218,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 3840]`"
+  },
+  {
+   "id": "ls62",
+   "type": "text",
+   "x": -150,
+   "y": 2282,
+   "width": 300,
+   "height": 56,
+   "text": "**× layer_scalar** (1 learned number)",
+   "color": "#64748b"
+  },
+  {
+   "id": "xout63",
+   "type": "text",
+   "x": -96,
+   "y": 2378,
+   "width": 192,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl64",
+   "type": "text",
+   "x": 170,
+   "y": 2368,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 3840]  → next layer`"
+  },
+  {
+   "id": "note-kv",
+   "type": "text",
+   "x": 2190,
+   "y": 324,
+   "width": 440,
+   "height": 200,
+   "text": "**KV cache per token** — sliding: K+V = 2 × 8 × 256 = 4,096 values, kept only for the last 1024 tokens. Full: K and V = 2 × 1 × 512 = 1,024 values for every token. K = V shares the weight, not the cached tensor: K gets k_norm + p-RoPE, V only a weightless RMSNorm."
+  },
+  {
+   "id": "note-scale",
+   "type": "text",
+   "x": -2730,
+   "y": 324,
+   "width": 440,
+   "height": 170,
+   "text": "**qk-norm**: q and k are RMS-normalised per head with a learned weight, and the attention scale is 1 (no 1/√d). v is RMS-normalised without a weight. Same in both layer types."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "xin1",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n13",
+   "toNode": "h4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "h4",
+   "toNode": "sq6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "sq6",
+   "toNode": "sqt7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "sqt7",
+   "toNode": "sqn9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "sqn9",
+   "toNode": "sqr10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "h4",
+   "toNode": "sk11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "sk11",
+   "toNode": "skt12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "skt12",
+   "toNode": "skn14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "skn14",
+   "toNode": "skr15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "h4",
+   "toNode": "sv16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "sv16",
+   "toNode": "svt17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "svt17",
+   "toNode": "svn19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "sqr10",
+   "toNode": "satt",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "skr15",
+   "toNode": "satt",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "svn19",
+   "toNode": "satt",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e16",
+   "fromNode": "satt",
+   "toNode": "sao20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "sao20",
+   "toNode": "so22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "so22",
+   "toNode": "sot23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "h4",
+   "toNode": "fq25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "fq25",
+   "toNode": "fqt26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "fqt26",
+   "toNode": "fqn28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "fqn28",
+   "toNode": "fqr29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "h4",
+   "toNode": "fk30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "fk30",
+   "toNode": "fkt31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "fkt31",
+   "toNode": "fkn33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "fkn33",
+   "toNode": "fkr34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "fkt31",
+   "toNode": "fvn35",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "fqr29",
+   "toNode": "fatt",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "fkr34",
+   "toNode": "fatt",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "fvn35",
+   "toNode": "fatt",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "fatt",
+   "toNode": "fao36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "fao36",
+   "toNode": "fo38",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "fo38",
+   "toNode": "fot39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "sot23",
+   "toNode": "n241",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "label": "40 sliding layers"
+  },
+  {
+   "id": "e35",
+   "fromNode": "fot39",
+   "toNode": "n241",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "label": "8 full layers"
+  },
+  {
+   "id": "e36",
+   "fromNode": "n241",
+   "toNode": "add142",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "xin1",
+   "toNode": "add142",
+   "fromSide": "left",
+   "toSide": "left",
+   "label": "residual"
+  },
+  {
+   "id": "e38",
+   "fromNode": "add142",
+   "toNode": "xm43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "xm43",
+   "toNode": "n345",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "n345",
+   "toNode": "h246",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "h246",
+   "toNode": "gu48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e42",
+   "fromNode": "gu48",
+   "toNode": "gut49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "gut50",
+   "toNode": "gel52",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "gel52",
+   "toNode": "ff53",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "ff53",
+   "toNode": "down55",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "down55",
+   "toNode": "dt56",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "dt56",
+   "toNode": "n458",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "n458",
+   "toNode": "add259",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "xm43",
+   "toNode": "add259",
+   "fromSide": "left",
+   "toSide": "left",
+   "label": "residual"
+  },
+  {
+   "id": "e50",
+   "fromNode": "add259",
+   "toNode": "xs60",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "xs60",
+   "toNode": "ls62",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "ls62",
+   "toNode": "xout63",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

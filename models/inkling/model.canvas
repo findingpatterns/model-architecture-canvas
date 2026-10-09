@@ -1,0 +1,2192 @@
+{
+ "nodes": [
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1746,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored (BF16 checkpoint)** — total 952.38B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1700,
+   "width": 2533,
+   "height": 44,
+   "text": "**routed experts 256×64**",
+   "color": "4"
+  },
+  {
+   "id": "bp1",
+   "type": "text",
+   "x": 1633,
+   "y": -1700,
+   "width": 23,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bp2",
+   "type": "text",
+   "x": 1656,
+   "y": -1700,
+   "width": 20,
+   "height": 44,
+   "text": "",
+   "color": "#22c55e"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1650,
+   "width": 2600,
+   "height": 64,
+   "text": "routed experts 256×64 **927.71B** (97.4%) · attention ×66 **8.58B** (0.9%) · shared experts ×2 + router ×64 **7.35B** (0.8%) · dense FFN ×2 **906.0M** (<0.1%) · embed **1.24B** (0.1%) · lm head **1.24B** (0.1%) · MTP ×8 **5.26B** (0.6%) · vision encoder **83.7M** (<0.1%) · audio encoder **7.9M** (<0.1%) · norms + MLP short-convs **2.4M** (<0.1%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1546,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one text token is multiplied by in the main forward (active weights)** — total 39.82B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1500,
+   "width": 1420,
+   "height": 44,
+   "text": "**routed experts 256×64**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 520,
+   "y": -1500,
+   "width": 560,
+   "height": 44,
+   "text": "**attention ×66**",
+   "color": "5"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 1080,
+   "y": -1500,
+   "width": 480,
+   "height": 44,
+   "text": "**shared experts ×2 + router ×64**",
+   "color": "#22c55e"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": 1560,
+   "y": -1500,
+   "width": 59,
+   "height": 44,
+   "text": "",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "bc5",
+   "type": "text",
+   "x": 1619,
+   "y": -1500,
+   "width": 81,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1450,
+   "width": 2600,
+   "height": 64,
+   "text": "routed experts 256×64 **21.74B** (54.6%) · attention ×66 **8.58B** (21.6%) · shared experts ×2 + router ×64 **7.35B** (18.5%) · dense FFN ×2 **906.0M** (2.3%) · lm head **1.24B** (3.1%) · embed **0** (row lookup) · MTP ×8 **0** (only when drafting) · vision encoder **0** (runs per image) · audio encoder **0** (runs per audio frame) · norms + MLP short-convs **2.4M** (<0.1%)"
+  },
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1300,
+   "width": 1250,
+   "height": 200,
+   "text": "# Inkling — model  \nRead top → bottom. **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel). **Boxes = operations**, all one size; where parameters and compute live is the pair of bars above. T = sequence length, P = 40×40 image patches, F = 50 ms audio frames. *Layer* tab = one decoder layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1300,
+   "width": 1250,
+   "height": 200,
+   "text": "Every layer = **GQA attention with no RoPE**: position comes from a learned, input-dependent relative bias over the last 512 (sliding) or 1024 (global) distances, plus depthwise causal short-convs (kernel 4) on k, v and both sub-block outputs.    \nRow colours — **amber**: sliding 512 + dense SwiGLU FFN (L0–1) · **grey**: sliding 512, 16 KV heads + MoE · **cyan**: global, 8 KV heads + MoE (every 6th layer). MoE = 6 of 256 routed experts + 2 shared, one sigmoid router scores all 258."
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -980,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"Describe this…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -884,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (tiktoken, vocab 201,024)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -788,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -800,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — image / audio placeholders included`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -739,
+   "width": 300,
+   "height": 90,
+   "text": "**embed** — look up row *id*  \nthen **embed_norm** (RMSNorm)  \n1.24B · table 201,024 × 6144",
+   "color": "6"
+  },
+  {
+   "id": "e6",
+   "type": "text",
+   "x": -96,
+   "y": -609,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 416,
+   "y": -621,
+   "width": 440,
+   "height": 34,
+   "text": "`e [T, 6144]`"
+  },
+  {
+   "id": "img8",
+   "type": "text",
+   "x": -710,
+   "y": -980,
+   "width": 300,
+   "height": 72,
+   "text": "**image** → 40×40 patches  \n(still image repeated as 2 frames)",
+   "color": "#64748b"
+  },
+  {
+   "id": "vp9",
+   "type": "text",
+   "x": -944,
+   "y": -868,
+   "width": 768,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl10",
+   "type": "text",
+   "x": -1404,
+   "y": -880,
+   "width": 440,
+   "height": 34,
+   "text": "`patches [P, 2×40×40×3 = 9600]`"
+  },
+  {
+   "id": "hm011",
+   "type": "text",
+   "x": -710,
+   "y": -819,
+   "width": 300,
+   "height": 72,
+   "text": "**fold 5×5 pixels → linear_0** 75 → 128  \nRMSNorm · GELU  \n9.7K",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vh012",
+   "type": "text",
+   "x": -568,
+   "y": -707,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl13",
+   "type": "text",
+   "x": -1170,
+   "y": -719,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 128]  per 5×5-pixel cell`"
+  },
+  {
+   "id": "hm114",
+   "type": "text",
+   "x": -710,
+   "y": -658,
+   "width": 300,
+   "height": 72,
+   "text": "**fold 2×2 → linear_1** 512 → 320  \nRMSNorm · GELU  \n164.2K",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vh115",
+   "type": "text",
+   "x": -573,
+   "y": -546,
+   "width": 26,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl16",
+   "type": "text",
+   "x": -1170,
+   "y": -558,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 320]  per 10×10-pixel cell`"
+  },
+  {
+   "id": "hm217",
+   "type": "text",
+   "x": -710,
+   "y": -497,
+   "width": 300,
+   "height": 72,
+   "text": "**fold 4×4 → linear_2** 5120 → 4800  \nRMSNorm · GELU  \n24.6M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vh218",
+   "type": "text",
+   "x": -752,
+   "y": -385,
+   "width": 384,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": -1212,
+   "y": -397,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 4800]  per 40×40-pixel cell`"
+  },
+  {
+   "id": "hm320",
+   "type": "text",
+   "x": -710,
+   "y": -336,
+   "width": 300,
+   "height": 56,
+   "text": "**fold 2 frames → linear_3** 9600 → 6144  \n59.0M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vh321",
+   "type": "text",
+   "x": -806,
+   "y": -240,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": -1266,
+   "y": -252,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 6144]`"
+  },
+  {
+   "id": "vfn23",
+   "type": "text",
+   "x": -710,
+   "y": -191,
+   "width": 300,
+   "height": 56,
+   "text": "**final_norm** (RMSNorm)  \n6.1K",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vt24",
+   "type": "text",
+   "x": -806,
+   "y": -95,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl25",
+   "type": "text",
+   "x": -1266,
+   "y": -107,
+   "width": 440,
+   "height": 34,
+   "text": "`image tokens [P, 6144] — 1 per patch`"
+  },
+  {
+   "id": "wav26",
+   "type": "text",
+   "x": 1050,
+   "y": -980,
+   "width": 300,
+   "height": 56,
+   "text": "**audio** 16 kHz WAV",
+   "color": "#64748b"
+  },
+  {
+   "id": "dmel27",
+   "type": "text",
+   "x": 1050,
+   "y": -884,
+   "width": 300,
+   "height": 72,
+   "text": "**dMel**: 80-bin log-mel every 50 ms  \n(hop 800), each bin → 16 levels in [-7, 2]",
+   "color": "#f472b6"
+  },
+  {
+   "id": "al28",
+   "type": "text",
+   "x": 1192,
+   "y": -772,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl29",
+   "type": "text",
+   "x": 1370,
+   "y": -784,
+   "width": 440,
+   "height": 34,
+   "text": "`levels [F, 80] — integers 0…15`"
+  },
+  {
+   "id": "aemb30",
+   "type": "text",
+   "x": 1050,
+   "y": -723,
+   "width": 300,
+   "height": 90,
+   "text": "**embed** row bin·16 + level  \n(table 1280 × 6144), **sum** over 80 bins  \n7.9M",
+   "color": "#f472b6"
+  },
+  {
+   "id": "ae31",
+   "type": "text",
+   "x": 954,
+   "y": -593,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": 1466,
+   "y": -605,
+   "width": 440,
+   "height": 34,
+   "text": "`[F, 6144]`"
+  },
+  {
+   "id": "afn33",
+   "type": "text",
+   "x": 1050,
+   "y": -544,
+   "width": 300,
+   "height": 56,
+   "text": "**final_norm** (RMSNorm)  \n6.1K",
+   "color": "#f472b6"
+  },
+  {
+   "id": "at34",
+   "type": "text",
+   "x": 954,
+   "y": -448,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": 1466,
+   "y": -460,
+   "width": 440,
+   "height": 34,
+   "text": "`audio tokens [F, 6144] — 1 per 50 ms`"
+  },
+  {
+   "id": "merge36",
+   "type": "text",
+   "x": 0,
+   "y": -26,
+   "width": 300,
+   "height": 72,
+   "text": "**splice**: image / audio tokens  \nreplace their placeholder rows",
+   "color": "#64748b"
+  },
+  {
+   "id": "x37",
+   "type": "text",
+   "x": -96,
+   "y": 86,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": 416,
+   "y": 74,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]`"
+  },
+  {
+   "id": "seg0",
+   "type": "text",
+   "x": -80,
+   "y": 165,
+   "width": 460,
+   "height": 56,
+   "text": "**L0–1** ×2 · sliding 512 · dense FFN",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "seg2",
+   "type": "text",
+   "x": -80,
+   "y": 247,
+   "width": 460,
+   "height": 56,
+   "text": "**L2–4** ×3 · sliding 512 · MoE",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "seg5",
+   "type": "text",
+   "x": -80,
+   "y": 329,
+   "width": 460,
+   "height": 56,
+   "text": "**L5** · global · MoE",
+   "color": "5"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -80,
+   "y": 501,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 512 · MoE  \nL6, 12, …, 60",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -80,
+   "y": 583,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 512 · MoE  \nL7, 13, …, 61",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -80,
+   "y": 665,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 512 · MoE  \nL8, 14, …, 62",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -80,
+   "y": 747,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 512 · MoE  \nL9, 15, …, 63",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per4",
+   "type": "text",
+   "x": -80,
+   "y": 829,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 512 · MoE  \nL10, 16, …, 64",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per5",
+   "type": "text",
+   "x": -80,
+   "y": 911,
+   "width": 460,
+   "height": 56,
+   "text": "global · MoE  \nL11, 17, …, 65",
+   "color": "5"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": 710,
+   "y": 704,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×10"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -140,
+   "y": 451,
+   "width": 580,
+   "height": 552,
+   "label": "×10 — L6–65, a period of 6 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": 850,
+   "y": 155,
+   "width": 1188,
+   "height": 40,
+   "text": "**Every layer, L0 → L65** (amber = dense FFN, grey = sliding MoE, cyan = global MoE)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": 850,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": 868,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": 886,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": 904,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": 922,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": 940,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": 958,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": 976,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": 994,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": 1012,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": 1030,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": 1048,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": 1066,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": 1084,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": 1102,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": 1120,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": 1138,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": 1156,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": 1174,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": 1192,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": 1210,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": 1228,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": 1246,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": 1264,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": 1282,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": 1300,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": 1318,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": 1336,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": 1354,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": 1372,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr30",
+   "type": "text",
+   "x": 1390,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr31",
+   "type": "text",
+   "x": 1408,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr32",
+   "type": "text",
+   "x": 1426,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr33",
+   "type": "text",
+   "x": 1444,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr34",
+   "type": "text",
+   "x": 1462,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr35",
+   "type": "text",
+   "x": 1480,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr36",
+   "type": "text",
+   "x": 1498,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr37",
+   "type": "text",
+   "x": 1516,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr38",
+   "type": "text",
+   "x": 1534,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr39",
+   "type": "text",
+   "x": 1552,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr40",
+   "type": "text",
+   "x": 1570,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr41",
+   "type": "text",
+   "x": 1588,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr42",
+   "type": "text",
+   "x": 1606,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr43",
+   "type": "text",
+   "x": 1624,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr44",
+   "type": "text",
+   "x": 1642,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr45",
+   "type": "text",
+   "x": 1660,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr46",
+   "type": "text",
+   "x": 1678,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr47",
+   "type": "text",
+   "x": 1696,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr48",
+   "type": "text",
+   "x": 1714,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr49",
+   "type": "text",
+   "x": 1732,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr50",
+   "type": "text",
+   "x": 1750,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr51",
+   "type": "text",
+   "x": 1768,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr52",
+   "type": "text",
+   "x": 1786,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr53",
+   "type": "text",
+   "x": 1804,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr54",
+   "type": "text",
+   "x": 1822,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr55",
+   "type": "text",
+   "x": 1840,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr56",
+   "type": "text",
+   "x": 1858,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr57",
+   "type": "text",
+   "x": 1876,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr58",
+   "type": "text",
+   "x": 1894,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr59",
+   "type": "text",
+   "x": 1912,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr60",
+   "type": "text",
+   "x": 1930,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr61",
+   "type": "text",
+   "x": 1948,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr62",
+   "type": "text",
+   "x": 1966,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr63",
+   "type": "text",
+   "x": 1984,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr64",
+   "type": "text",
+   "x": 2002,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr65",
+   "type": "text",
+   "x": 2020,
+   "y": 205,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": 846,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": 1026,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": 1206,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick30",
+   "type": "text",
+   "x": 1386,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L30"
+  },
+  {
+   "id": "note-tick40",
+   "type": "text",
+   "x": 1566,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L40"
+  },
+  {
+   "id": "note-tick50",
+   "type": "text",
+   "x": 1746,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L50"
+  },
+  {
+   "id": "note-tick60",
+   "type": "text",
+   "x": 1926,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L60"
+  },
+  {
+   "id": "note-tick65",
+   "type": "text",
+   "x": 2016,
+   "y": 255,
+   "width": 60,
+   "height": 30,
+   "text": "L65"
+  },
+  {
+   "id": "note-pattern",
+   "type": "text",
+   "x": -760,
+   "y": 165,
+   "width": 600,
+   "height": 260,
+   "text": "**Layer pattern** — 55 sliding + 11 global layers ([sliding ×5, global] ×11).  \nSliding: 64 query / 16 KV heads, causal window 512, relative bias over all 512 distances. Global: 64 query / 8 KV heads over the whole context; relative bias only for the last 1024 tokens, beyond that no position signal at all, and past position 128,000 queries are scaled by 1 + 0.1·ln(pos / 128,000)."
+  },
+  {
+   "id": "note-kv",
+   "type": "text",
+   "x": -760,
+   "y": 465,
+   "width": 600,
+   "height": 170,
+   "text": "**KV cache per token per layer**: sliding K+V = 2×16×128 = 4096 values but only the last 512 tokens; global 2×8×128 = 2048 values for every token — so at long context the 11 global layers hold nearly all of it. Each layer also keeps 3 past steps for each of its 4 short-convs."
+  },
+  {
+   "id": "note-layer",
+   "type": "text",
+   "x": -760,
+   "y": 675,
+   "width": 600,
+   "height": 200,
+   "text": "**One MoE layer** ≈ attention 132.2M (sliding) / 119.6M (global) + router 1.6M + 2 shared experts 113.2M + 256 routed experts × 56.6M, of which 6 run per token. Expert SwiGLU width 3072; dense layers L0–1 use one SwiGLU 24576 (453.0M)."
+  },
+  {
+   "id": "ho39",
+   "type": "text",
+   "x": -96,
+   "y": 1063,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": -556,
+   "y": 1051,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 6144]  after L65`"
+  },
+  {
+   "id": "fn41",
+   "type": "text",
+   "x": 0,
+   "y": 1112,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm** (llm.norm)",
+   "color": "3"
+  },
+  {
+   "id": "xf42",
+   "type": "text",
+   "x": -96,
+   "y": 1208,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl43",
+   "type": "text",
+   "x": -556,
+   "y": 1196,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]`"
+  },
+  {
+   "id": "mup44",
+   "type": "text",
+   "x": 0,
+   "y": 1257,
+   "width": 300,
+   "height": 56,
+   "text": "**÷ 24** (muP width multiplier)",
+   "color": "#64748b"
+  },
+  {
+   "id": "head45",
+   "type": "text",
+   "x": 0,
+   "y": 1353,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** (unembed) 6144 → 201,024  \n1.24B · not tied to embed",
+   "color": "2"
+  },
+  {
+   "id": "logits46",
+   "type": "text",
+   "x": -750,
+   "y": 1449,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": -1210,
+   "y": 1437,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 201,024]` — bar clipped (real 16082px)"
+  },
+  {
+   "id": "slice48",
+   "type": "text",
+   "x": 0,
+   "y": 1498,
+   "width": 300,
+   "height": 56,
+   "text": "**keep first 200,058** (rest is padding)",
+   "color": "2"
+  },
+  {
+   "id": "samp49",
+   "type": "text",
+   "x": 0,
+   "y": 1594,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next50",
+   "type": "text",
+   "x": 0,
+   "y": 1690,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-tap",
+   "type": "text",
+   "x": 410,
+   "y": 922,
+   "width": 260,
+   "height": 34,
+   "text": "↳ L65 hidden state → MTP"
+  },
+  {
+   "id": "membed51",
+   "type": "text",
+   "x": 1550,
+   "y": 1063,
+   "width": 300,
+   "height": 72,
+   "text": "**embed** token t+k — main table  \n→ MTP **embed_norm**",
+   "color": "6"
+  },
+  {
+   "id": "me52",
+   "type": "text",
+   "x": 1454,
+   "y": 1175,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl53",
+   "type": "text",
+   "x": 1966,
+   "y": 1163,
+   "width": 440,
+   "height": 34,
+   "text": "`e [T, 6144]`"
+  },
+  {
+   "id": "mcat54",
+   "type": "text",
+   "x": 1550,
+   "y": 1224,
+   "width": 300,
+   "height": 72,
+   "text": "**hidden_norm**(h) ‖ **embed_norm**(e)  \nRMSNorm each, hidden first",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mc55",
+   "type": "text",
+   "x": 1208,
+   "y": 1336,
+   "width": 983,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl56",
+   "type": "text",
+   "x": 2212,
+   "y": 1324,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 12288]`"
+  },
+  {
+   "id": "min57",
+   "type": "text",
+   "x": 1550,
+   "y": 1385,
+   "width": 300,
+   "height": 56,
+   "text": "**input_proj** 12288 → 6144  \n75.5M · incl. both norms",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mh58",
+   "type": "text",
+   "x": 1454,
+   "y": 1481,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl59",
+   "type": "text",
+   "x": 1966,
+   "y": 1469,
+   "width": 440,
+   "height": 34,
+   "text": "`h_k [T, 6144]`"
+  },
+  {
+   "id": "mblk60",
+   "type": "text",
+   "x": 1550,
+   "y": 1530,
+   "width": 300,
+   "height": 72,
+   "text": "**1 decoder block** — attention as listed →  \n+ **dense** SwiGLU 24576 (no MoE)  \n582.0M · avg per layer",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mhead61",
+   "type": "text",
+   "x": 1550,
+   "y": 1642,
+   "width": 300,
+   "height": 72,
+   "text": "**→ lm head** (main's; no head  \ntensors of its own)",
+   "color": "2"
+  },
+  {
+   "id": "mdraft62",
+   "type": "text",
+   "x": 1680,
+   "y": 1754,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl63",
+   "type": "text",
+   "x": 1870,
+   "y": 1742,
+   "width": 440,
+   "height": 34,
+   "text": "`draft token t+k+1`"
+  },
+  {
+   "id": "mver64",
+   "type": "text",
+   "x": 1550,
+   "y": 1803,
+   "width": 300,
+   "height": 72,
+   "text": "**verify**: main model checks the  \ndrafts in its next forward",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-mrows",
+   "type": "text",
+   "x": 2750,
+   "y": 1013,
+   "width": 300,
+   "height": 40,
+   "text": "**8 MTP layers**, each feeds the next:"
+  },
+  {
+   "id": "M0",
+   "type": "text",
+   "x": 2750,
+   "y": 1063,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP0** · sliding 512 → t+2",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M1",
+   "type": "text",
+   "x": 2750,
+   "y": 1103,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP1** · global → t+3",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M2",
+   "type": "text",
+   "x": 2750,
+   "y": 1143,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP2** · sliding 512 → t+4",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M3",
+   "type": "text",
+   "x": 2750,
+   "y": 1183,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP3** · global → t+5",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M4",
+   "type": "text",
+   "x": 2750,
+   "y": 1223,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP4** · sliding 512 → t+6",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M5",
+   "type": "text",
+   "x": 2750,
+   "y": 1263,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP5** · sliding 512 → t+7",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M6",
+   "type": "text",
+   "x": 2750,
+   "y": 1303,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP6** · sliding 512 → t+8",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "M7",
+   "type": "text",
+   "x": 2750,
+   "y": 1343,
+   "width": 300,
+   "height": 34,
+   "text": "**MTP7** · sliding 512 → t+9",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "note-mtp",
+   "type": "text",
+   "x": 2750,
+   "y": 1403,
+   "width": 640,
+   "height": 230,
+   "text": "MTP = multi-token prediction (8 layers, 5.26B stored). Layer k mixes the hidden state of layer k−1 (the main model's for k = 0) with the embedding of the next known token and predicts one token further, so the chain can draft several tokens per step for speculative decoding. transformers skips model.mtp.* on load; this wiring is read from its tensor names and config.json's mtp_config (chain_hidden_post_norm = false)."
+  },
+  {
+   "id": "note-src",
+   "type": "text",
+   "x": -900,
+   "y": 1906,
+   "width": 1300,
+   "height": 170,
+   "text": "**Sources.** config.json + safetensors headers of thinkingmachines/Inkling (1552 tensors, BF16 + F32 router biases; experts stored as stacked [256, …] tensors). All tensors sum to **952.38B** (the README says 975B total, 41B active). Dataflow from transformers modeling_inkling.py. Context 1,048,576 tokens (model_max_length); no rotary embedding anywhere."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "e6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "img8",
+   "toNode": "vp9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "vp9",
+   "toNode": "hm011",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "hm011",
+   "toNode": "vh012",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "vh012",
+   "toNode": "hm114",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "hm114",
+   "toNode": "vh115",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "vh115",
+   "toNode": "hm217",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "hm217",
+   "toNode": "vh218",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "vh218",
+   "toNode": "hm320",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "hm320",
+   "toNode": "vh321",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "vh321",
+   "toNode": "vfn23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vfn23",
+   "toNode": "vt24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "wav26",
+   "toNode": "dmel27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "dmel27",
+   "toNode": "al28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "al28",
+   "toNode": "aemb30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "aemb30",
+   "toNode": "ae31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "ae31",
+   "toNode": "afn33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "afn33",
+   "toNode": "at34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "e6",
+   "toNode": "merge36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "vt24",
+   "toNode": "merge36",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "e23",
+   "fromNode": "at34",
+   "toNode": "merge36",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "color": "#f472b6"
+  },
+  {
+   "id": "e24",
+   "fromNode": "merge36",
+   "toNode": "x37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "x37",
+   "toNode": "seg0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "seg0",
+   "toNode": "seg2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "seg2",
+   "toNode": "seg5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "seg5",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "per3",
+   "toNode": "per4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "per4",
+   "toNode": "per5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "per5",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e35",
+   "fromNode": "per5",
+   "toNode": "ho39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "ho39",
+   "toNode": "fn41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "fn41",
+   "toNode": "xf42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "xf42",
+   "toNode": "mup44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "mup44",
+   "toNode": "head45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "head45",
+   "toNode": "logits46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "logits46",
+   "toNode": "slice48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e42",
+   "fromNode": "slice48",
+   "toNode": "samp49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "samp49",
+   "toNode": "next50",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "membed51",
+   "toNode": "me52",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "me52",
+   "toNode": "mcat54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "note-tap",
+   "toNode": "mcat54",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e47",
+   "fromNode": "mcat54",
+   "toNode": "mc55",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "mc55",
+   "toNode": "min57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "min57",
+   "toNode": "mh58",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e50",
+   "fromNode": "mh58",
+   "toNode": "mblk60",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "mblk60",
+   "toNode": "mhead61",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "mhead61",
+   "toNode": "mdraft62",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e53",
+   "fromNode": "mdraft62",
+   "toNode": "mver64",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e54",
+   "fromNode": "mver64",
+   "toNode": "next50",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "accepted drafts = extra tokens",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e55",
+   "fromNode": "M0",
+   "toNode": "M1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e56",
+   "fromNode": "M1",
+   "toNode": "M2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e57",
+   "fromNode": "M2",
+   "toNode": "M3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e58",
+   "fromNode": "M3",
+   "toNode": "M4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e59",
+   "fromNode": "M4",
+   "toNode": "M5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e60",
+   "fromNode": "M5",
+   "toNode": "M6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e61",
+   "fromNode": "M6",
+   "toNode": "M7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

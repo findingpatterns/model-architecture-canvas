@@ -1,0 +1,1556 @@
+{
+ "nodes": [
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -1000,
+   "y": -1686,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 32.91B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -1000,
+   "y": -1640,
+   "width": 2357,
+   "height": 44,
+   "text": "**MoE ×23**",
+   "color": "4"
+  },
+  {
+   "id": "bp1",
+   "type": "text",
+   "x": 1357,
+   "y": -1640,
+   "width": 71,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "bp3",
+   "type": "text",
+   "x": 1428,
+   "y": -1640,
+   "width": 28,
+   "height": 44,
+   "text": "",
+   "color": "6"
+  },
+  {
+   "id": "bp4",
+   "type": "text",
+   "x": 1456,
+   "y": -1640,
+   "width": 27,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "bp5",
+   "type": "text",
+   "x": 1483,
+   "y": -1640,
+   "width": 106,
+   "height": 44,
+   "text": "",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -1000,
+   "y": -1590,
+   "width": 2600,
+   "height": 40,
+   "text": "MoE ×23 **29.84B** (90.7%) · Mamba-2 ×23 **891.1M** (2.7%) · embed **352.3M** (1.1%) · lm head **352.3M** (1.1%) · MTP head **1.34B** (4.1%) · Attention ×6 **140.4M** (0.4%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -1000,
+   "y": -1506,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one token is multiplied by (active weights)** — total 3.23B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -1000,
+   "y": -1460,
+   "width": 1485,
+   "height": 44,
+   "text": "**MoE ×23**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 485,
+   "y": -1460,
+   "width": 718,
+   "height": 44,
+   "text": "**Mamba-2 ×23**",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 1203,
+   "y": -1460,
+   "width": 113,
+   "height": 44,
+   "text": "",
+   "color": "1"
+  },
+  {
+   "id": "bc4",
+   "type": "text",
+   "x": 1316,
+   "y": -1460,
+   "width": 284,
+   "height": 44,
+   "text": "**lm head**",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -1000,
+   "y": -1410,
+   "width": 2600,
+   "height": 40,
+   "text": "MoE ×23 **1.84B** (57.1%) · Mamba-2 ×23 **891.1M** (27.6%) · Attention ×6 **140.4M** (4.3%) · lm head **352.3M** (10.9%) · embed **0** (row lookup) · MTP head **0** (only while drafting)"
+  },
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1000,
+   "y": -1270,
+   "width": 1250,
+   "height": 220,
+   "text": "# Nemotron 3.5 Lightning — model  \nHybrid of **23 Mamba-2**, **23 MoE** and **6 attention** layers (52 in all). **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel). **Boxes = operations**; parameter and compute shares are the two bars above. T = sequence length. *Layer* tab = one layer of each type in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 350,
+   "y": -1270,
+   "width": 1250,
+   "height": 220,
+   "text": "Every layer = RMSNorm → **one** mixer → add residual. Layer rows are coloured by `layers_block_type`:  \n**Mamba-2** (SSM, 64 heads, state 128) 38.7M · **MoE** (6 of 128 experts + 1 shared) 1.30B, of which 80.2M run per token · **Attention** (GQA 32 q / 2 kv heads, no RoPE) 23.4M.  \nPattern: `MEMEMAEMEMEMAEMEMEMAEMEMEMAEMEMEMAEMEMEMEMAEMEMEMEME`"
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"The cat sat…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -864,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (BPE, vocab 131072)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -768,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -778,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -714,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** — look up row *id*  \n352.3M · table 131072 × 2688",
+   "color": "6"
+  },
+  {
+   "id": "x6",
+   "type": "text",
+   "x": 42,
+   "y": -618,
+   "width": 215,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 320,
+   "y": -628,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2688]`"
+  },
+  {
+   "id": "L0",
+   "type": "text",
+   "x": 0,
+   "y": -534,
+   "width": 300,
+   "height": 34,
+   "text": "**L0** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L1",
+   "type": "text",
+   "x": 0,
+   "y": -494,
+   "width": 300,
+   "height": 34,
+   "text": "**L1** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L2",
+   "type": "text",
+   "x": 0,
+   "y": -454,
+   "width": 300,
+   "height": 34,
+   "text": "**L2** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L3",
+   "type": "text",
+   "x": 0,
+   "y": -414,
+   "width": 300,
+   "height": 34,
+   "text": "**L3** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L4",
+   "type": "text",
+   "x": 0,
+   "y": -374,
+   "width": 300,
+   "height": 34,
+   "text": "**L4** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L5",
+   "type": "text",
+   "x": 0,
+   "y": -334,
+   "width": 300,
+   "height": 34,
+   "text": "**L5** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L6",
+   "type": "text",
+   "x": 0,
+   "y": -294,
+   "width": 300,
+   "height": 34,
+   "text": "**L6** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L7",
+   "type": "text",
+   "x": 0,
+   "y": -254,
+   "width": 300,
+   "height": 34,
+   "text": "**L7** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L8",
+   "type": "text",
+   "x": 0,
+   "y": -214,
+   "width": 300,
+   "height": 34,
+   "text": "**L8** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L9",
+   "type": "text",
+   "x": 0,
+   "y": -174,
+   "width": 300,
+   "height": 34,
+   "text": "**L9** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L10",
+   "type": "text",
+   "x": 0,
+   "y": -134,
+   "width": 300,
+   "height": 34,
+   "text": "**L10** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L11",
+   "type": "text",
+   "x": 0,
+   "y": -94,
+   "width": 300,
+   "height": 34,
+   "text": "**L11** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L12",
+   "type": "text",
+   "x": 0,
+   "y": -54,
+   "width": 300,
+   "height": 34,
+   "text": "**L12** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L13",
+   "type": "text",
+   "x": 0,
+   "y": -14,
+   "width": 300,
+   "height": 34,
+   "text": "**L13** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L14",
+   "type": "text",
+   "x": 0,
+   "y": 26,
+   "width": 300,
+   "height": 34,
+   "text": "**L14** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L15",
+   "type": "text",
+   "x": 0,
+   "y": 66,
+   "width": 300,
+   "height": 34,
+   "text": "**L15** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L16",
+   "type": "text",
+   "x": 0,
+   "y": 106,
+   "width": 300,
+   "height": 34,
+   "text": "**L16** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L17",
+   "type": "text",
+   "x": 0,
+   "y": 146,
+   "width": 300,
+   "height": 34,
+   "text": "**L17** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L18",
+   "type": "text",
+   "x": 0,
+   "y": 186,
+   "width": 300,
+   "height": 34,
+   "text": "**L18** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L19",
+   "type": "text",
+   "x": 0,
+   "y": 226,
+   "width": 300,
+   "height": 34,
+   "text": "**L19** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L20",
+   "type": "text",
+   "x": 0,
+   "y": 266,
+   "width": 300,
+   "height": 34,
+   "text": "**L20** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L21",
+   "type": "text",
+   "x": 0,
+   "y": 306,
+   "width": 300,
+   "height": 34,
+   "text": "**L21** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L22",
+   "type": "text",
+   "x": 0,
+   "y": 346,
+   "width": 300,
+   "height": 34,
+   "text": "**L22** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L23",
+   "type": "text",
+   "x": 0,
+   "y": 386,
+   "width": 300,
+   "height": 34,
+   "text": "**L23** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L24",
+   "type": "text",
+   "x": 0,
+   "y": 426,
+   "width": 300,
+   "height": 34,
+   "text": "**L24** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L25",
+   "type": "text",
+   "x": 0,
+   "y": 466,
+   "width": 300,
+   "height": 34,
+   "text": "**L25** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L26",
+   "type": "text",
+   "x": 0,
+   "y": 506,
+   "width": 300,
+   "height": 34,
+   "text": "**L26** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L27",
+   "type": "text",
+   "x": 0,
+   "y": 546,
+   "width": 300,
+   "height": 34,
+   "text": "**L27** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L28",
+   "type": "text",
+   "x": 0,
+   "y": 586,
+   "width": 300,
+   "height": 34,
+   "text": "**L28** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L29",
+   "type": "text",
+   "x": 0,
+   "y": 626,
+   "width": 300,
+   "height": 34,
+   "text": "**L29** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L30",
+   "type": "text",
+   "x": 0,
+   "y": 666,
+   "width": 300,
+   "height": 34,
+   "text": "**L30** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L31",
+   "type": "text",
+   "x": 0,
+   "y": 706,
+   "width": 300,
+   "height": 34,
+   "text": "**L31** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L32",
+   "type": "text",
+   "x": 0,
+   "y": 746,
+   "width": 300,
+   "height": 34,
+   "text": "**L32** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L33",
+   "type": "text",
+   "x": 0,
+   "y": 786,
+   "width": 300,
+   "height": 34,
+   "text": "**L33** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L34",
+   "type": "text",
+   "x": 0,
+   "y": 826,
+   "width": 300,
+   "height": 34,
+   "text": "**L34** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L35",
+   "type": "text",
+   "x": 0,
+   "y": 866,
+   "width": 300,
+   "height": 34,
+   "text": "**L35** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L36",
+   "type": "text",
+   "x": 0,
+   "y": 906,
+   "width": 300,
+   "height": 34,
+   "text": "**L36** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L37",
+   "type": "text",
+   "x": 0,
+   "y": 946,
+   "width": 300,
+   "height": 34,
+   "text": "**L37** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L38",
+   "type": "text",
+   "x": 0,
+   "y": 986,
+   "width": 300,
+   "height": 34,
+   "text": "**L38** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L39",
+   "type": "text",
+   "x": 0,
+   "y": 1026,
+   "width": 300,
+   "height": 34,
+   "text": "**L39** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L40",
+   "type": "text",
+   "x": 0,
+   "y": 1066,
+   "width": 300,
+   "height": 34,
+   "text": "**L40** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L41",
+   "type": "text",
+   "x": 0,
+   "y": 1106,
+   "width": 300,
+   "height": 34,
+   "text": "**L41** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L42",
+   "type": "text",
+   "x": 0,
+   "y": 1146,
+   "width": 300,
+   "height": 34,
+   "text": "**L42** · Attention",
+   "color": "1"
+  },
+  {
+   "id": "L43",
+   "type": "text",
+   "x": 0,
+   "y": 1186,
+   "width": 300,
+   "height": 34,
+   "text": "**L43** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L44",
+   "type": "text",
+   "x": 0,
+   "y": 1226,
+   "width": 300,
+   "height": 34,
+   "text": "**L44** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L45",
+   "type": "text",
+   "x": 0,
+   "y": 1266,
+   "width": 300,
+   "height": 34,
+   "text": "**L45** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L46",
+   "type": "text",
+   "x": 0,
+   "y": 1306,
+   "width": 300,
+   "height": 34,
+   "text": "**L46** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L47",
+   "type": "text",
+   "x": 0,
+   "y": 1346,
+   "width": 300,
+   "height": 34,
+   "text": "**L47** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L48",
+   "type": "text",
+   "x": 0,
+   "y": 1386,
+   "width": 300,
+   "height": 34,
+   "text": "**L48** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L49",
+   "type": "text",
+   "x": 0,
+   "y": 1426,
+   "width": 300,
+   "height": 34,
+   "text": "**L49** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "L50",
+   "type": "text",
+   "x": 0,
+   "y": 1466,
+   "width": 300,
+   "height": 34,
+   "text": "**L50** · Mamba-2",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "L51",
+   "type": "text",
+   "x": 0,
+   "y": 1506,
+   "width": 300,
+   "height": 34,
+   "text": "**L51** · MoE",
+   "color": "4"
+  },
+  {
+   "id": "band",
+   "type": "group",
+   "x": -16,
+   "y": -564,
+   "width": 332,
+   "height": 2120,
+   "label": "52 LAYERS · residual stream x [T, 2688]",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "note-cache",
+   "type": "text",
+   "x": 360,
+   "y": -294,
+   "width": 520,
+   "height": 230,
+   "text": "**What a layer keeps while generating**\n- Mamba-2: fixed state 64 heads × 64 × 128 + conv window 3 × 6144 — same size at any context length\n- Attention: K and V of every past token, 2 heads × 128 × 2 = 512 values per token per layer\n- MoE: nothing (per-token MLP)\n\nOnly 6 of 52 layers grow with context; the card lists up to 1M tokens."
+  },
+  {
+   "id": "note-pos",
+   "type": "text",
+   "x": 360,
+   "y": 26,
+   "width": 520,
+   "height": 120,
+   "text": "**No positional encoding.** The attention layers apply no RoPE (`apply_rotary_pos_emb` is never called in `NemotronHAttention.forward`); token order reaches the model through the causal Mamba-2 layers."
+  },
+  {
+   "id": "note-moe",
+   "type": "text",
+   "x": 360,
+   "y": 266,
+   "width": 520,
+   "height": 120,
+   "text": "**MoE router**: sigmoid scores over 128 experts, a learned bias (`e_score_correction_bias`) only for choosing the top 6; weights renormalised × 2.5. Experts are 2-matrix ReLU² MLPs (no gate matrix)."
+  },
+  {
+   "id": "ho8",
+   "type": "text",
+   "x": 42,
+   "y": 1600,
+   "width": 215,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl9",
+   "type": "text",
+   "x": -460,
+   "y": 1590,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2688]  after L51`"
+  },
+  {
+   "id": "normf10",
+   "type": "text",
+   "x": 0,
+   "y": 1654,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm** (norm_f)",
+   "color": "3"
+  },
+  {
+   "id": "xf11",
+   "type": "text",
+   "x": 42,
+   "y": 1750,
+   "width": 215,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -460,
+   "y": 1740,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 2688]`"
+  },
+  {
+   "id": "head13",
+   "type": "text",
+   "x": 0,
+   "y": 1804,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** — 2688 → 131072  \n352.3M",
+   "color": "2"
+  },
+  {
+   "id": "logits14",
+   "type": "text",
+   "x": -450,
+   "y": 1900,
+   "width": 1200,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": -910,
+   "y": 1890,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 131072]` — bar clipped (real 10486px)"
+  },
+  {
+   "id": "samp16",
+   "type": "text",
+   "x": 0,
+   "y": 1954,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next17",
+   "type": "text",
+   "x": 0,
+   "y": 2050,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  },
+  {
+   "id": "memb18",
+   "type": "text",
+   "x": 1650,
+   "y": 1260,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** (shared) of token t+1",
+   "color": "6"
+  },
+  {
+   "id": "me19",
+   "type": "text",
+   "x": 1692,
+   "y": 1356,
+   "width": 215,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl20",
+   "type": "text",
+   "x": 1970,
+   "y": 1346,
+   "width": 440,
+   "height": 34,
+   "text": "`e [T, 2688]`"
+  },
+  {
+   "id": "mcat21",
+   "type": "text",
+   "x": 1650,
+   "y": 1410,
+   "width": 300,
+   "height": 56,
+   "text": "**enorm(e) ‖ hnorm(h)** — concat",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mc22",
+   "type": "text",
+   "x": 1585,
+   "y": 1506,
+   "width": 430,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl23",
+   "type": "text",
+   "x": 2035,
+   "y": 1496,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 5376]`"
+  },
+  {
+   "id": "meh24",
+   "type": "text",
+   "x": 1650,
+   "y": 1560,
+   "width": 300,
+   "height": 56,
+   "text": "**eh_proj** 5376 → 2688  \n14.5M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "m125",
+   "type": "text",
+   "x": 1692,
+   "y": 1656,
+   "width": 215,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl26",
+   "type": "text",
+   "x": 1970,
+   "y": 1646,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 2688]`"
+  },
+  {
+   "id": "matt27",
+   "type": "text",
+   "x": 1650,
+   "y": 1710,
+   "width": 300,
+   "height": 56,
+   "text": "**attention layer** (as in trunk)  \n23.4M",
+   "color": "1"
+  },
+  {
+   "id": "mmoe28",
+   "type": "text",
+   "x": 1650,
+   "y": 1806,
+   "width": 300,
+   "height": 56,
+   "text": "**MoE layer** (6 of 128 + shared)  \n1.30B",
+   "color": "4"
+  },
+  {
+   "id": "mhead29",
+   "type": "text",
+   "x": 1650,
+   "y": 1902,
+   "width": 300,
+   "height": 56,
+   "text": "**final_layernorm → lm head** (shared)",
+   "color": "2"
+  },
+  {
+   "id": "ml30",
+   "type": "text",
+   "x": 1200,
+   "y": 1998,
+   "width": 1200,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl31",
+   "type": "text",
+   "x": 2420,
+   "y": 1988,
+   "width": 440,
+   "height": 34,
+   "text": "`draft logits for token t+2 [T, 131072]` — bar clipped (real 10486px)"
+  },
+  {
+   "id": "mver32",
+   "type": "text",
+   "x": 1650,
+   "y": 2052,
+   "width": 300,
+   "height": 56,
+   "text": "**verify**: main model checks the draft  \nin its next forward pass",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-mtp",
+   "type": "text",
+   "x": 1650,
+   "y": 2128,
+   "width": 620,
+   "height": 130,
+   "text": "**Multi-token prediction** (1 MTP module, 1.34B stored, 118.0M active). Trained to predict one token further; at serving time it is one of the card's speculative-decoding options (besides external DSpark / DFlash drafters). Wiring read from `mtp.*` tensor names — transformers ignores these weights."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "x6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "x6",
+   "toNode": "L0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "L0",
+   "toNode": "L1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "L1",
+   "toNode": "L2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "L2",
+   "toNode": "L3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "L3",
+   "toNode": "L4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "L4",
+   "toNode": "L5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "L5",
+   "toNode": "L6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "L6",
+   "toNode": "L7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "L7",
+   "toNode": "L8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "L8",
+   "toNode": "L9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "L9",
+   "toNode": "L10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "L10",
+   "toNode": "L11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "L11",
+   "toNode": "L12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "L12",
+   "toNode": "L13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "L13",
+   "toNode": "L14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "L14",
+   "toNode": "L15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "L15",
+   "toNode": "L16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "L16",
+   "toNode": "L17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "L17",
+   "toNode": "L18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "L18",
+   "toNode": "L19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "L19",
+   "toNode": "L20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "L20",
+   "toNode": "L21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "L21",
+   "toNode": "L22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "L22",
+   "toNode": "L23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "L23",
+   "toNode": "L24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "L24",
+   "toNode": "L25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "L25",
+   "toNode": "L26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "L26",
+   "toNode": "L27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "L27",
+   "toNode": "L28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "L28",
+   "toNode": "L29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "L29",
+   "toNode": "L30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "L30",
+   "toNode": "L31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "L31",
+   "toNode": "L32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "L32",
+   "toNode": "L33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "L33",
+   "toNode": "L34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "L34",
+   "toNode": "L35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "L35",
+   "toNode": "L36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e41",
+   "fromNode": "L36",
+   "toNode": "L37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e42",
+   "fromNode": "L37",
+   "toNode": "L38",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "L38",
+   "toNode": "L39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "L39",
+   "toNode": "L40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "L40",
+   "toNode": "L41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "L41",
+   "toNode": "L42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e47",
+   "fromNode": "L42",
+   "toNode": "L43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e48",
+   "fromNode": "L43",
+   "toNode": "L44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e49",
+   "fromNode": "L44",
+   "toNode": "L45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e50",
+   "fromNode": "L45",
+   "toNode": "L46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e51",
+   "fromNode": "L46",
+   "toNode": "L47",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e52",
+   "fromNode": "L47",
+   "toNode": "L48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e53",
+   "fromNode": "L48",
+   "toNode": "L49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e54",
+   "fromNode": "L49",
+   "toNode": "L50",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e55",
+   "fromNode": "L50",
+   "toNode": "L51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e56",
+   "fromNode": "L51",
+   "toNode": "ho8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e57",
+   "fromNode": "ho8",
+   "toNode": "normf10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e58",
+   "fromNode": "normf10",
+   "toNode": "xf11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e59",
+   "fromNode": "xf11",
+   "toNode": "head13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e60",
+   "fromNode": "head13",
+   "toNode": "logits14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e61",
+   "fromNode": "logits14",
+   "toNode": "samp16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e62",
+   "fromNode": "samp16",
+   "toNode": "next17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e63",
+   "fromNode": "memb18",
+   "toNode": "me19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e64",
+   "fromNode": "me19",
+   "toNode": "mcat21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e65",
+   "fromNode": "ho8",
+   "toNode": "mcat21",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "h from the trunk",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e66",
+   "fromNode": "mcat21",
+   "toNode": "mc22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e67",
+   "fromNode": "mc22",
+   "toNode": "meh24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e68",
+   "fromNode": "meh24",
+   "toNode": "m125",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e69",
+   "fromNode": "m125",
+   "toNode": "matt27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e70",
+   "fromNode": "matt27",
+   "toNode": "mmoe28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e71",
+   "fromNode": "mmoe28",
+   "toNode": "mhead29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e72",
+   "fromNode": "mhead29",
+   "toNode": "ml30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e73",
+   "fromNode": "ml30",
+   "toNode": "mver32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e74",
+   "fromNode": "mver32",
+   "toNode": "next17",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "accepted drafts",
+   "color": "#f59e0b"
+  }
+ ]
+}

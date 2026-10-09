@@ -1,0 +1,767 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1100,
+   "y": -420,
+   "width": 1100,
+   "height": 150,
+   "text": "# Ling-3.0-flash-VL — one decoder layer  \nLeft: **KDA** (35 layers). Right: **Gated MLA** (7 layers: L5, L11, L17, L23, L29, L35, L41). Both feed the same MoE FFN (L2–41). Shapes per token; parameter counts per layer from the checkpoint."
+  },
+  {
+   "id": "note-bsrc",
+   "type": "text",
+   "x": 100,
+   "y": -420,
+   "width": 1000,
+   "height": 150,
+   "text": "Sources: tensor shapes from the safetensors headers of inclusionAI/Ling-3.0-flash-VL, hyper-parameters from its config.json, dataflow from inclusionAI/vllm-ling-v3 (bailing_moe_v3.py, bailing_moe_v3_vl.py); total / active counts from the model card (124B / 5.5B)."
+  },
+  {
+   "id": "hin1",
+   "type": "text",
+   "x": -102,
+   "y": -220,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 170,
+   "y": -230,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 2560]  residual stream in`"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -150,
+   "y": -166,
+   "width": 300,
+   "height": 76,
+   "text": "**input RMSNorm**  \n2.6K",
+   "color": "3"
+  },
+  {
+   "id": "cap-kda",
+   "type": "text",
+   "x": -1040,
+   "y": 0,
+   "width": 420,
+   "height": 40,
+   "text": "**KDA** — linear attention (35 layers)"
+  },
+  {
+   "id": "cap-mla",
+   "type": "text",
+   "x": 620,
+   "y": 0,
+   "width": 420,
+   "height": 40,
+   "text": "**Gated MLA** — softmax attention (7 layers)"
+  },
+  {
+   "id": "kqkv4",
+   "type": "text",
+   "x": -600,
+   "y": 60,
+   "width": 300,
+   "height": 76,
+   "text": "**q / k / v proj** 2560 → 3 × 4096  \n31.5M",
+   "color": "5"
+  },
+  {
+   "id": "kqkvt5",
+   "type": "text",
+   "x": -614,
+   "y": 176,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "kqkvt6",
+   "type": "text",
+   "x": -614,
+   "y": 190,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "kqkvt7",
+   "type": "text",
+   "x": -614,
+   "y": 204,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1074,
+   "y": 166,
+   "width": 440,
+   "height": 34,
+   "text": "`q, k, v [T, 4096]`"
+  },
+  {
+   "id": "kconv9",
+   "type": "text",
+   "x": -600,
+   "y": 258,
+   "width": 300,
+   "height": 76,
+   "text": "**short conv** (causal, k=4) + SiLU  \n49.2K",
+   "color": "5"
+  },
+  {
+   "id": "kheads10",
+   "type": "text",
+   "x": -614,
+   "y": 374,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "kheads11",
+   "type": "text",
+   "x": -614,
+   "y": 388,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "kheads12",
+   "type": "text",
+   "x": -614,
+   "y": 402,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl13",
+   "type": "text",
+   "x": -1074,
+   "y": 364,
+   "width": 440,
+   "height": 34,
+   "text": "`q, k, v [T, 32, 128]  (q, k L2-normed)`"
+  },
+  {
+   "id": "kgate14",
+   "type": "text",
+   "x": -600,
+   "y": 456,
+   "width": 300,
+   "height": 76,
+   "text": "**gates** β = σ(b_proj) [T, 32] ·  \ndecay α = f_proj → A_log, dt_bias, ≥ -5.0  \n10.6M",
+   "color": "5"
+  },
+  {
+   "id": "kdelta15",
+   "type": "text",
+   "x": -600,
+   "y": 572,
+   "width": 300,
+   "height": 76,
+   "text": "**delta rule** S ← (I − βkkᵀ)·diag(α)·S + βkvᵀ  \nstate S [32, 128, 128], out o = Sᵀq",
+   "color": "5"
+  },
+  {
+   "id": "ko16",
+   "type": "text",
+   "x": -614,
+   "y": 688,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl17",
+   "type": "text",
+   "x": -1074,
+   "y": 678,
+   "width": 440,
+   "height": 34,
+   "text": "`o [T, 32, 128]`"
+  },
+  {
+   "id": "kon18",
+   "type": "text",
+   "x": -600,
+   "y": 742,
+   "width": 300,
+   "height": 76,
+   "text": "**gated RMSNorm** norm(o) · σ(g_proj h)  \n10.5M",
+   "color": "5"
+  },
+  {
+   "id": "kop19",
+   "type": "text",
+   "x": -600,
+   "y": 858,
+   "width": 300,
+   "height": 76,
+   "text": "**o_proj** 4096 → 2560  \n10.5M",
+   "color": "5"
+  },
+  {
+   "id": "kout20",
+   "type": "text",
+   "x": -552,
+   "y": 974,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl21",
+   "type": "text",
+   "x": -1060,
+   "y": 964,
+   "width": 440,
+   "height": 34,
+   "text": "`attn out [T, 2560]`"
+  },
+  {
+   "id": "mq22",
+   "type": "text",
+   "x": 300,
+   "y": 60,
+   "width": 300,
+   "height": 76,
+   "text": "**q_proj** 2560 → 32 × 192  \n15.7M",
+   "color": "6"
+  },
+  {
+   "id": "mqt23",
+   "type": "text",
+   "x": 204,
+   "y": 176,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl24",
+   "type": "text",
+   "x": 716,
+   "y": 166,
+   "width": 440,
+   "height": 34,
+   "text": "`q [T, 32, 128+64]  (nope + rope)`"
+  },
+  {
+   "id": "mkva25",
+   "type": "text",
+   "x": 300,
+   "y": 230,
+   "width": 300,
+   "height": 76,
+   "text": "**kv_a** 2560 → 512 + 64, RMSNorm on 512  \n1.5M",
+   "color": "6"
+  },
+  {
+   "id": "mc26",
+   "type": "text",
+   "x": 427,
+   "y": 346,
+   "width": 46,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl27",
+   "type": "text",
+   "x": 620,
+   "y": 336,
+   "width": 440,
+   "height": 34,
+   "text": "`c_kv [T, 512] + k_rope [T, 64]  — the KV cache`"
+  },
+  {
+   "id": "mrope28",
+   "type": "text",
+   "x": 300,
+   "y": 400,
+   "width": 300,
+   "height": 76,
+   "text": "**M-RoPE** on the 64 rope dims  \n(t/h/w 8/12/12)",
+   "color": "6"
+  },
+  {
+   "id": "mkvb29",
+   "type": "text",
+   "x": 300,
+   "y": 516,
+   "width": 300,
+   "height": 76,
+   "text": "**kv_b** 512 → 32 × (128 k + 128 v)  \n4.2M",
+   "color": "6"
+  },
+  {
+   "id": "mattn30",
+   "type": "text",
+   "x": 300,
+   "y": 632,
+   "width": 300,
+   "height": 76,
+   "text": "**softmax attention**, 32 heads, causal",
+   "color": "6"
+  },
+  {
+   "id": "mo31",
+   "type": "text",
+   "x": 286,
+   "y": 748,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": 634,
+   "y": 738,
+   "width": 440,
+   "height": 34,
+   "text": "`o [T, 32, 128]`"
+  },
+  {
+   "id": "mg33",
+   "type": "text",
+   "x": 300,
+   "y": 802,
+   "width": 300,
+   "height": 76,
+   "text": "**head gate** o · σ(g_proj h) [T, 32]  \n81.9K",
+   "color": "6"
+  },
+  {
+   "id": "md34",
+   "type": "text",
+   "x": 300,
+   "y": 918,
+   "width": 300,
+   "height": 76,
+   "text": "**dense** 4096 → 2560  \n10.5M",
+   "color": "6"
+  },
+  {
+   "id": "mout35",
+   "type": "text",
+   "x": 348,
+   "y": 1034,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl36",
+   "type": "text",
+   "x": 620,
+   "y": 1024,
+   "width": 440,
+   "height": 34,
+   "text": "`attn out [T, 2560]`"
+  },
+  {
+   "id": "add137",
+   "type": "text",
+   "x": -150,
+   "y": 1108,
+   "width": 300,
+   "height": 76,
+   "text": "**add residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "n238",
+   "type": "text",
+   "x": -150,
+   "y": 1224,
+   "width": 300,
+   "height": 76,
+   "text": "**post-attention RMSNorm**  \n2.6K",
+   "color": "3"
+  },
+  {
+   "id": "hm39",
+   "type": "text",
+   "x": -102,
+   "y": 1340,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": 170,
+   "y": 1330,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 2560]`"
+  },
+  {
+   "id": "router41",
+   "type": "text",
+   "x": -150,
+   "y": 1394,
+   "width": 300,
+   "height": 76,
+   "text": "**router** 2560 → 512, sigmoid + bias  \n8 groups → best 4 → top 8  \n1.3M",
+   "color": "4"
+  },
+  {
+   "id": "routed",
+   "type": "text",
+   "x": -600,
+   "y": 1530,
+   "width": 300,
+   "height": 76,
+   "text": "**8 routed experts** of 512  \nSwiGLU 2560→768→2560 · 5.9M each",
+   "color": "#86efac"
+  },
+  {
+   "id": "shared",
+   "type": "text",
+   "x": 300,
+   "y": 1530,
+   "width": 300,
+   "height": 76,
+   "text": "**1 shared expert** (always on)  \nSwiGLU 2560→768→2560 · 5.9M",
+   "color": "4"
+  },
+  {
+   "id": "mix42",
+   "type": "text",
+   "x": -150,
+   "y": 1686,
+   "width": 300,
+   "height": 76,
+   "text": "**Σ weights·experts × 2.5**  \n+ shared expert",
+   "color": "4"
+  },
+  {
+   "id": "add243",
+   "type": "text",
+   "x": -150,
+   "y": 1802,
+   "width": 300,
+   "height": 76,
+   "text": "**add residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "hout44",
+   "type": "text",
+   "x": -102,
+   "y": 1918,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl45",
+   "type": "text",
+   "x": 170,
+   "y": 1908,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 2560]  → next layer`"
+  },
+  {
+   "id": "note-dense",
+   "type": "text",
+   "x": 640,
+   "y": 1380,
+   "width": 420,
+   "height": 110,
+   "text": "L0–1 replace the whole MoE block by one dense SwiGLU 2560→6144→2560 (47.2M per layer)."
+  },
+  {
+   "id": "note-route",
+   "type": "text",
+   "x": -1080,
+   "y": 1380,
+   "width": 440,
+   "height": 150,
+   "text": "Expert choice uses sigmoid scores + a learned per-expert bias (load balancing, aux-loss-free); the 8 chosen weights are renormalised to sum 1 and scaled by 2.5. One expert is 5.9M; all 512 are 3.02B per layer."
+  },
+  {
+   "id": "note-cache",
+   "type": "text",
+   "x": 1200,
+   "y": 60,
+   "width": 420,
+   "height": 150,
+   "text": "Decode memory per sequence: KDA keeps a 32×128×128 state + conv tails, constant in T. MLA caches 576 values per token per layer — only 7 of 42 layers grow with context."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "hin1",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n13",
+   "toNode": "kqkv4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "kqkv4",
+   "toNode": "kqkvt5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "kqkvt7",
+   "toNode": "kconv9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "kconv9",
+   "toNode": "kheads10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "kheads12",
+   "toNode": "kgate14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "kgate14",
+   "toNode": "kdelta15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "kdelta15",
+   "toNode": "ko16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "ko16",
+   "toNode": "kon18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "kon18",
+   "toNode": "kop19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "kop19",
+   "toNode": "kout20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "n13",
+   "toNode": "mq22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "mq22",
+   "toNode": "mqt23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "mqt23",
+   "toNode": "mkva25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "mkva25",
+   "toNode": "mc26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "mc26",
+   "toNode": "mrope28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "mrope28",
+   "toNode": "mkvb29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "mkvb29",
+   "toNode": "mattn30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "mattn30",
+   "toNode": "mo31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "mo31",
+   "toNode": "mg33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "mg33",
+   "toNode": "md34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "md34",
+   "toNode": "mout35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "kout20",
+   "toNode": "add137",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e23",
+   "fromNode": "mout35",
+   "toNode": "add137",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e24",
+   "fromNode": "add137",
+   "toNode": "n238",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "n238",
+   "toNode": "hm39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "hm39",
+   "toNode": "router41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "router41",
+   "toNode": "routed",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "label": "top-8 ids + weights"
+  },
+  {
+   "id": "e28",
+   "fromNode": "router41",
+   "toNode": "shared",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "router41",
+   "toNode": "mix42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "routed",
+   "toNode": "mix42",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e31",
+   "fromNode": "shared",
+   "toNode": "mix42",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e32",
+   "fromNode": "mix42",
+   "toNode": "add243",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "add243",
+   "toNode": "hout44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

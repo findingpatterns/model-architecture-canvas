@@ -1,0 +1,958 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -1700,
+   "y": -480,
+   "width": 1600,
+   "height": 200,
+   "text": "# DiffusionGemma 26B-A4B — one layer  \nShapes for a **sliding** layer (L0–4, 6–10, …); a **global** layer (L5, L11, … L29) differs only in attention — its values are in [brackets]. T = tokens of this pass: the 256 canvas positions (decoder) or the new prompt / canvas ids (encoder). Grey bars = tensors (0.05 px/channel), boxes = operations with their weights per layer."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 0,
+   "y": -480,
+   "width": 1600,
+   "height": 200,
+   "text": "Gemma 4 layer: sandwich RMSNorms around attention and FFN, and the FFN is a **dense MLP and a MoE side by side**, summed. From `DiffusionGemmaDecoderTextLayer` / `DecoderTextAttention`, `Gemma4TextRouter`, `Gemma4TextExperts`. The encoder layer is the same code with a causal mask and a cache write; it shares every weight except `layer_scalar`."
+  },
+  {
+   "id": "xin1",
+   "type": "text",
+   "x": -70,
+   "y": -220,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 170,
+   "y": -232,
+   "width": 400,
+   "height": 34,
+   "text": "`x [T, 2816]  (residual stream)`"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -150,
+   "y": -171,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (input_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "xn4",
+   "type": "text",
+   "x": -70,
+   "y": -75,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 170,
+   "y": -105,
+   "width": 400,
+   "height": 34,
+   "text": "`x̂ [T, 2816]`"
+  },
+  {
+   "id": "qp6",
+   "type": "text",
+   "x": -1050,
+   "y": 14,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 2816 → 4096 [8192]  \n11.5M · [23.1M]",
+   "color": "5"
+  },
+  {
+   "id": "qt7",
+   "type": "text",
+   "x": -1002,
+   "y": 110,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1470,
+   "y": 98,
+   "width": 400,
+   "height": 34,
+   "text": "`Q [T, 16, 256]  [16, 512]`"
+  },
+  {
+   "id": "qn9",
+   "type": "text",
+   "x": -1050,
+   "y": 159,
+   "width": 300,
+   "height": 56,
+   "text": "**q_norm** — RMSNorm per head",
+   "color": "5"
+  },
+  {
+   "id": "qr10",
+   "type": "text",
+   "x": -1080,
+   "y": 255,
+   "width": 360,
+   "height": 76,
+   "text": "**RoPE** θ 10,000 on all 256 dims    \n[θ 1,000,000 on 128 of 512 dims]",
+   "color": "5"
+  },
+  {
+   "id": "qo11",
+   "type": "text",
+   "x": -1002,
+   "y": 371,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -1470,
+   "y": 359,
+   "width": 400,
+   "height": 34,
+   "text": "`Q [T, 16, 256]`"
+  },
+  {
+   "id": "kp13",
+   "type": "text",
+   "x": -150,
+   "y": 14,
+   "width": 300,
+   "height": 56,
+   "text": "**k_proj** 2816 → 2048 [1024]  \n5.8M · [2.9M]",
+   "color": "5"
+  },
+  {
+   "id": "kt14",
+   "type": "text",
+   "x": -51,
+   "y": 110,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": 170,
+   "y": 98,
+   "width": 400,
+   "height": 34,
+   "text": "`K [T, 8, 256]  [2, 512]`"
+  },
+  {
+   "id": "kn16",
+   "type": "text",
+   "x": -150,
+   "y": 159,
+   "width": 300,
+   "height": 56,
+   "text": "**k_norm** — RMSNorm per head",
+   "color": "5"
+  },
+  {
+   "id": "kr17",
+   "type": "text",
+   "x": -150,
+   "y": 255,
+   "width": 300,
+   "height": 56,
+   "text": "**RoPE** (same as Q)",
+   "color": "5"
+  },
+  {
+   "id": "ko18",
+   "type": "text",
+   "x": -51,
+   "y": 351,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": 170,
+   "y": 339,
+   "width": 400,
+   "height": 34,
+   "text": "`K [T, 8, 256]`"
+  },
+  {
+   "id": "vp20",
+   "type": "text",
+   "x": 720,
+   "y": 14,
+   "width": 360,
+   "height": 76,
+   "text": "**v_proj** 2816 → 2048    \n[none: V = raw k_proj output]  \n5.8M",
+   "color": "5"
+  },
+  {
+   "id": "vt21",
+   "type": "text",
+   "x": 849,
+   "y": 130,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": 1070,
+   "y": 118,
+   "width": 400,
+   "height": 34,
+   "text": "`V [T, 8, 256]  [2, 512]`"
+  },
+  {
+   "id": "vn23",
+   "type": "text",
+   "x": 750,
+   "y": 179,
+   "width": 300,
+   "height": 56,
+   "text": "**v_norm** — RMSNorm, no weight",
+   "color": "5"
+  },
+  {
+   "id": "vo24",
+   "type": "text",
+   "x": 849,
+   "y": 275,
+   "width": 102,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl25",
+   "type": "text",
+   "x": 1070,
+   "y": 263,
+   "width": 400,
+   "height": 34,
+   "text": "`V [T, 8, 256]`"
+  },
+  {
+   "id": "attn",
+   "type": "text",
+   "x": -300,
+   "y": 440,
+   "width": 600,
+   "height": 136,
+   "text": "**attention**, scale 1 (Q, K already RMS-normed)    \nGQA: 8 [2] KV heads serve 16 query heads    \nkeys = cached prefix ‖ this pass · decoder: no mask inside the canvas · encoder: causal, sliding window 1024 [none]",
+   "color": "5"
+  },
+  {
+   "id": "ao26",
+   "type": "text",
+   "x": -102,
+   "y": 616,
+   "width": 205,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl27",
+   "type": "text",
+   "x": 170,
+   "y": 604,
+   "width": 400,
+   "height": 34,
+   "text": "`[T, 4096]  [8192]`"
+  },
+  {
+   "id": "o28",
+   "type": "text",
+   "x": -150,
+   "y": 665,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 4096 [8192] → 2816  \n11.5M · [23.1M]",
+   "color": "5"
+  },
+  {
+   "id": "n229",
+   "type": "text",
+   "x": -150,
+   "y": 761,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "add130",
+   "type": "text",
+   "x": -150,
+   "y": 857,
+   "width": 300,
+   "height": 56,
+   "text": "**⊕ residual add**",
+   "color": "#64748b"
+  },
+  {
+   "id": "res1",
+   "type": "text",
+   "x": -1700,
+   "y": -235,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "res1b",
+   "type": "text",
+   "x": -1700,
+   "y": 865,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "h31",
+   "type": "text",
+   "x": -70,
+   "y": 953,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": 170,
+   "y": 923,
+   "width": 400,
+   "height": 34,
+   "text": "`h [T, 2816]`"
+  },
+  {
+   "id": "pf133",
+   "type": "text",
+   "x": -1080,
+   "y": 1042,
+   "width": 360,
+   "height": 56,
+   "text": "**RMSNorm** (pre_feedforward_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "mlp34",
+   "type": "text",
+   "x": -1080,
+   "y": 1138,
+   "width": 360,
+   "height": 96,
+   "text": "**dense MLP** — GELU-tanh(gate) · up    \n2816 → 2112 → 2816  \n17.8M",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "pf1b35",
+   "type": "text",
+   "x": -1080,
+   "y": 1274,
+   "width": 360,
+   "height": 56,
+   "text": "**RMSNorm** (post_feedforward_layernorm_1)",
+   "color": "3"
+  },
+  {
+   "id": "mo36",
+   "type": "text",
+   "x": -970,
+   "y": 1370,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl37",
+   "type": "text",
+   "x": -1470,
+   "y": 1358,
+   "width": 400,
+   "height": 34,
+   "text": "`h₁ [T, 2816]`"
+  },
+  {
+   "id": "rt38",
+   "type": "text",
+   "x": -180,
+   "y": 1042,
+   "width": 360,
+   "height": 96,
+   "text": "**router** — RMSNorm (no weight) × scale × 2816^-½    \n→ proj 2816 → 128  \n0.4M",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "sc39",
+   "type": "text",
+   "x": -8,
+   "y": 1178,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": -570,
+   "y": 1166,
+   "width": 400,
+   "height": 34,
+   "text": "`scores [T, 128]`"
+  },
+  {
+   "id": "tk41",
+   "type": "text",
+   "x": -180,
+   "y": 1227,
+   "width": 360,
+   "height": 66,
+   "text": "**softmax → top-8**, renormalise to 1, × per_expert_scale",
+   "color": "#fbbf24"
+  },
+  {
+   "id": "ids42",
+   "type": "text",
+   "x": -20,
+   "y": 1333,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl43",
+   "type": "text",
+   "x": -570,
+   "y": 1321,
+   "width": 400,
+   "height": 34,
+   "text": "`expert ids, weights [T, 8]`"
+  },
+  {
+   "id": "pf244",
+   "type": "text",
+   "x": 720,
+   "y": 1042,
+   "width": 360,
+   "height": 56,
+   "text": "**RMSNorm** (pre_feedforward_layernorm_2)",
+   "color": "3"
+  },
+  {
+   "id": "ex45",
+   "type": "text",
+   "x": 720,
+   "y": 1138,
+   "width": 360,
+   "height": 116,
+   "text": "**8 of 128 experts**    \neach GELU-tanh gated 2816 → 704 → 2816    \nweighted sum  \n47.6M · active of 761.3M",
+   "color": "4"
+  },
+  {
+   "id": "pf2b46",
+   "type": "text",
+   "x": 720,
+   "y": 1294,
+   "width": 360,
+   "height": 56,
+   "text": "**RMSNorm** (post_feedforward_layernorm_2)",
+   "color": "3"
+  },
+  {
+   "id": "eo47",
+   "type": "text",
+   "x": 830,
+   "y": 1390,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl48",
+   "type": "text",
+   "x": 1070,
+   "y": 1378,
+   "width": 400,
+   "height": 34,
+   "text": "`h₂ [T, 2816]`"
+  },
+  {
+   "id": "sum49",
+   "type": "text",
+   "x": -150,
+   "y": 1459,
+   "width": 300,
+   "height": 56,
+   "text": "**h₁ + h₂**",
+   "color": "4"
+  },
+  {
+   "id": "pf50",
+   "type": "text",
+   "x": -150,
+   "y": 1555,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_feedforward_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "add251",
+   "type": "text",
+   "x": -150,
+   "y": 1651,
+   "width": 300,
+   "height": 56,
+   "text": "**⊕ residual add** (h)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ls52",
+   "type": "text",
+   "x": -150,
+   "y": 1747,
+   "width": 300,
+   "height": 56,
+   "text": "**× layer_scalar**",
+   "color": "#64748b"
+  },
+  {
+   "id": "xout53",
+   "type": "text",
+   "x": -70,
+   "y": 1843,
+   "width": 141,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl54",
+   "type": "text",
+   "x": 170,
+   "y": 1831,
+   "width": 400,
+   "height": 34,
+   "text": "`x [T, 2816]  → next layer`"
+  },
+  {
+   "id": "res2",
+   "type": "text",
+   "x": -1700,
+   "y": 938,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "res2b",
+   "type": "text",
+   "x": -1700,
+   "y": 1659,
+   "width": 130,
+   "height": 40,
+   "text": "residual",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-moe",
+   "type": "text",
+   "x": 700,
+   "y": 1609,
+   "width": 700,
+   "height": 170,
+   "text": "**Two FFNs per layer.** The dense MLP (17.8M) runs on every token — the card's \"1 shared\" expert. The router reads h *before* any norm; the experts read pre_feedforward_layernorm_2(h). Experts are stored fused: gate_up [128, 1408, 2816], down [128, 2816, 704]."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "xin1",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n13",
+   "toNode": "xn4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "xn4",
+   "toNode": "qp6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "qp6",
+   "toNode": "qt7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "qt7",
+   "toNode": "qn9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "qn9",
+   "toNode": "qr10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "qr10",
+   "toNode": "qo11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "xn4",
+   "toNode": "kp13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "kp13",
+   "toNode": "kt14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "kt14",
+   "toNode": "kn16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "kn16",
+   "toNode": "kr17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "kr17",
+   "toNode": "ko18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "xn4",
+   "toNode": "vp20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "vp20",
+   "toNode": "vt21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vt21",
+   "toNode": "vn23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "vn23",
+   "toNode": "vo24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "qo11",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e17",
+   "fromNode": "ko18",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "vo24",
+   "toNode": "attn",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e19",
+   "fromNode": "attn",
+   "toNode": "ao26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "ao26",
+   "toNode": "o28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "o28",
+   "toNode": "n229",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "n229",
+   "toNode": "add130",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "xin1",
+   "toNode": "res1",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#64748b"
+  },
+  {
+   "id": "e24",
+   "fromNode": "res1",
+   "toNode": "res1b",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "color": "#64748b"
+  },
+  {
+   "id": "e25",
+   "fromNode": "res1b",
+   "toNode": "add130",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#64748b"
+  },
+  {
+   "id": "e26",
+   "fromNode": "add130",
+   "toNode": "h31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "h31",
+   "toNode": "pf133",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "pf133",
+   "toNode": "mlp34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "mlp34",
+   "toNode": "pf1b35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "pf1b35",
+   "toNode": "mo36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "h31",
+   "toNode": "rt38",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "rt38",
+   "toNode": "sc39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "sc39",
+   "toNode": "tk41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "tk41",
+   "toNode": "ids42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "h31",
+   "toNode": "pf244",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "pf244",
+   "toNode": "ex45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "ids42",
+   "toNode": "ex45",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "which & how much"
+  },
+  {
+   "id": "e38",
+   "fromNode": "ex45",
+   "toNode": "pf2b46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "pf2b46",
+   "toNode": "eo47",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "mo36",
+   "toNode": "sum49",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e41",
+   "fromNode": "eo47",
+   "toNode": "sum49",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e42",
+   "fromNode": "sum49",
+   "toNode": "pf50",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e43",
+   "fromNode": "pf50",
+   "toNode": "add251",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e44",
+   "fromNode": "add251",
+   "toNode": "ls52",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e45",
+   "fromNode": "ls52",
+   "toNode": "xout53",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e46",
+   "fromNode": "h31",
+   "toNode": "res2",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#64748b"
+  },
+  {
+   "id": "e47",
+   "fromNode": "res2",
+   "toNode": "res2b",
+   "fromSide": "bottom",
+   "toSide": "top",
+   "color": "#64748b"
+  },
+  {
+   "id": "e48",
+   "fromNode": "res2b",
+   "toNode": "add251",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#64748b"
+  }
+ ]
+}

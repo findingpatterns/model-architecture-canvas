@@ -1,0 +1,95 @@
+{
+  "name": "Kimi K3",
+  "description": "Moonshot AI's 2.78T MoE (KimiK3ForConditionalGeneration): 93 layers mixing 69 KDA linear-attention layers with 24 gated MLA layers (no positional encoding), a latent MoE of 896 routed experts (top-16 + 2 shared, ~104B active) stored in MXFP4, Attention Residuals instead of a plain residual stream, and a MoonViT vision tower. Numbers from config.json and the safetensors headers.",
+  "logo": "K",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "kimi",
+    "moe",
+    "linear-attention",
+    "mla",
+    "multimodal"
+  ],
+  "source": "https://huggingface.co/moonshotai/Kimi-K3",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "2,780B",
+      "number": 2779.93,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. MXFP4 expert weights counted 2 per packed byte; scale tensors not counted."
+    },
+    {
+      "key": "params_active",
+      "value": "104.2B",
+      "number": 104.19,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "93",
+      "number": 93,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "7,168",
+      "number": 7168,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "69 KDA linear + 24 gated MLA (NoPE), 96 heads",
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "896 (+2 shared)",
+      "number": 896,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-16",
+      "number": 16,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "163,840",
+      "number": 163840,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "MXFP4 (routed experts) + BF16",
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/moonshotai/Kimi-K3/raw/main/README.md",
+      "note": "Card highlights: \"understands text, images, and video\"; its spec table lists Modality \"Text, Image\" (video is read as frames through the same vision encoder)."
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "name": "Qwen3.8-27B",
+  "description": "Dense 27.8B vision-language model with a hybrid layer stack: 48 Gated DeltaNet (linear attention, fixed-size state) and 16 gated GQA attention layers in a 3:1 pattern, every layer with the same SwiGLU FFN, plus a ViT encoder and a 1-layer MTP head. Cyan rows = DeltaNet, orange rows = attention; numbers come from config.json and the checkpoint's tensor shapes.",
+  "logo": "Q",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "qwen",
+    "dense",
+    "hybrid-attention",
+    "linear-attention",
+    "multimodal"
+  ],
+  "source": "https://huggingface.co/Qwen/Qwen3.8-27B",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "27.8B",
+      "number": 27.78,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "25.6B",
+      "number": 25.62,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "64",
+      "number": 64,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "5,120",
+      "number": 5120,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Gated DeltaNet 3 : 1 gated GQA (24 q / 4 kv)",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "dense",
+      "number": 0,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "— (dense)",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "248,320",
+      "number": 248320,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B"
+    }
+  ]
+}

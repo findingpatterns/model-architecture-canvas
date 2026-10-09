@@ -1,0 +1,737 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1300,
+   "y": -420,
+   "width": 2600,
+   "height": 150,
+   "text": "# MiMo-V2.6-Flash — one decoder layer  \nPre-norm residual block: RMSNorm → attention → add → RMSNorm → MoE → add. Left column = **SWA** layer (39 of 48), right column = **GA** layer (9 of 48); the MoE half is identical in both. Grey bars = tensors (0.04 px/channel). Weights: attention qkv FP8, o_proj BF16, routed experts MXFP4."
+  },
+  {
+   "id": "bh59",
+   "type": "text",
+   "x": -82,
+   "y": -220,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl60",
+   "type": "text",
+   "x": 170,
+   "y": -230,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 4096]  from the previous layer`"
+  },
+  {
+   "id": "bn161",
+   "type": "text",
+   "x": -150,
+   "y": -166,
+   "width": 300,
+   "height": 56,
+   "text": "**input RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "bx62",
+   "type": "text",
+   "x": -82,
+   "y": -70,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl63",
+   "type": "text",
+   "x": 170,
+   "y": -80,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 4096]`"
+  },
+  {
+   "id": "qkv64",
+   "type": "text",
+   "x": -670,
+   "y": 4,
+   "width": 300,
+   "height": 76,
+   "text": "**SWA: fused qkv_proj**  \n4096 → 14848  \n60.8M",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "qkvt65",
+   "type": "text",
+   "x": -817,
+   "y": 120,
+   "width": 594,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl66",
+   "type": "text",
+   "x": -1277,
+   "y": 110,
+   "width": 440,
+   "height": 34,
+   "text": "`q | k | v  [T, 12288 | 1536 | 1024]`"
+  },
+  {
+   "id": "split67",
+   "type": "text",
+   "x": -670,
+   "y": 174,
+   "width": 300,
+   "height": 76,
+   "text": "**split heads**  \nq 64×192 · k 8×192 · v 8×128",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "rope68",
+   "type": "text",
+   "x": -670,
+   "y": 290,
+   "width": 300,
+   "height": 76,
+   "text": "**partial RoPE** on 64 of 192 q/k dims  \nθ = 1e+04 · v × 0.707",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "att69",
+   "type": "text",
+   "x": -670,
+   "y": 406,
+   "width": 300,
+   "height": 96,
+   "text": "**sliding-window attention**  \nwindow 128 · GQA 8:1  \n+ learned sink logit per head (64)",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "ot70",
+   "type": "text",
+   "x": -684,
+   "y": 542,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl71",
+   "type": "text",
+   "x": -1144,
+   "y": 532,
+   "width": 440,
+   "height": 34,
+   "text": "`o [T, 64×128 = 8192]`"
+  },
+  {
+   "id": "qkv72",
+   "type": "text",
+   "x": 370,
+   "y": 4,
+   "width": 300,
+   "height": 76,
+   "text": "**GA: fused qkv_proj**  \n4096 → 13568  \n55.6M",
+   "color": "5"
+  },
+  {
+   "id": "qkvt73",
+   "type": "text",
+   "x": 249,
+   "y": 120,
+   "width": 543,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl74",
+   "type": "text",
+   "x": 811,
+   "y": 110,
+   "width": 440,
+   "height": 34,
+   "text": "`q | k | v  [T, 12288 | 768 | 512]`"
+  },
+  {
+   "id": "split75",
+   "type": "text",
+   "x": 370,
+   "y": 174,
+   "width": 300,
+   "height": 76,
+   "text": "**split heads**  \nq 64×192 · k 4×192 · v 4×128",
+   "color": "5"
+  },
+  {
+   "id": "rope76",
+   "type": "text",
+   "x": 370,
+   "y": 290,
+   "width": 300,
+   "height": 76,
+   "text": "**partial RoPE** on 64 of 192 q/k dims  \nθ = 1e+07 · v × 0.707",
+   "color": "5"
+  },
+  {
+   "id": "att77",
+   "type": "text",
+   "x": 370,
+   "y": 406,
+   "width": 300,
+   "height": 96,
+   "text": "**global causal attention**  \nfull context (1M) · GQA 16:1  \nno sink logit",
+   "color": "5"
+  },
+  {
+   "id": "ot78",
+   "type": "text",
+   "x": 356,
+   "y": 542,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl79",
+   "type": "text",
+   "x": 704,
+   "y": 532,
+   "width": 440,
+   "height": 34,
+   "text": "`o [T, 64×128 = 8192]`"
+  },
+  {
+   "id": "oproj80",
+   "type": "text",
+   "x": -150,
+   "y": 616,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 8192 → 4096 (BF16)  \n33.6M",
+   "color": "5"
+  },
+  {
+   "id": "add181",
+   "type": "text",
+   "x": -150,
+   "y": 712,
+   "width": 300,
+   "height": 56,
+   "text": "**add residual** h + attn(x)",
+   "color": "#64748b"
+  },
+  {
+   "id": "bh282",
+   "type": "text",
+   "x": -82,
+   "y": 808,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl83",
+   "type": "text",
+   "x": 170,
+   "y": 798,
+   "width": 440,
+   "height": 34,
+   "text": "`h' [T, 4096]`"
+  },
+  {
+   "id": "bn284",
+   "type": "text",
+   "x": -150,
+   "y": 862,
+   "width": 300,
+   "height": 56,
+   "text": "**post-attention RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "bxm85",
+   "type": "text",
+   "x": -82,
+   "y": 958,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl86",
+   "type": "text",
+   "x": 170,
+   "y": 948,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 4096]`"
+  },
+  {
+   "id": "gate87",
+   "type": "text",
+   "x": 370,
+   "y": 1032,
+   "width": 300,
+   "height": 56,
+   "text": "**router** gate 4096 → 256 (BF16)  \n1.0M",
+   "color": "4"
+  },
+  {
+   "id": "sc88",
+   "type": "text",
+   "x": 515,
+   "y": 1128,
+   "width": 10,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl89",
+   "type": "text",
+   "x": 690,
+   "y": 1118,
+   "width": 440,
+   "height": 34,
+   "text": "`scores [T, 256] = sigmoid(logits)`"
+  },
+  {
+   "id": "topk90",
+   "type": "text",
+   "x": 370,
+   "y": 1182,
+   "width": 300,
+   "height": 76,
+   "text": "**top-8** on scores + e_score_correction_bias  \n(bias only picks; weights use raw scores)",
+   "color": "4"
+  },
+  {
+   "id": "norm91",
+   "type": "text",
+   "x": 370,
+   "y": 1298,
+   "width": 300,
+   "height": 56,
+   "text": "**renormalise** the 8 weights to sum 1",
+   "color": "4"
+  },
+  {
+   "id": "wt92",
+   "type": "text",
+   "x": 517,
+   "y": 1394,
+   "width": 6,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl93",
+   "type": "text",
+   "x": 690,
+   "y": 1384,
+   "width": 440,
+   "height": 34,
+   "text": "`weights [T, 8]`"
+  },
+  {
+   "id": "exp94",
+   "type": "text",
+   "x": -670,
+   "y": 1177,
+   "width": 300,
+   "height": 76,
+   "text": "**8 of 256 routed experts** (SwiGLU)  \ngate/up 4096 → 2048, down → 4096  \n25.2M · each, MXFP4",
+   "color": "4"
+  },
+  {
+   "id": "eo95",
+   "type": "text",
+   "x": -602,
+   "y": 1293,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo96",
+   "type": "text",
+   "x": -602,
+   "y": 1307,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo97",
+   "type": "text",
+   "x": -602,
+   "y": 1321,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo98",
+   "type": "text",
+   "x": -602,
+   "y": 1335,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo99",
+   "type": "text",
+   "x": -602,
+   "y": 1349,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo100",
+   "type": "text",
+   "x": -602,
+   "y": 1363,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo101",
+   "type": "text",
+   "x": -602,
+   "y": 1377,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "eo102",
+   "type": "text",
+   "x": -602,
+   "y": 1391,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl103",
+   "type": "text",
+   "x": -1130,
+   "y": 1283,
+   "width": 440,
+   "height": 34,
+   "text": "`expert outputs [T, 8, 4096]`"
+  },
+  {
+   "id": "comb104",
+   "type": "text",
+   "x": -150,
+   "y": 1468,
+   "width": 300,
+   "height": 56,
+   "text": "**weighted sum** Σ wᵢ · expertᵢ(x)",
+   "color": "4"
+  },
+  {
+   "id": "add2105",
+   "type": "text",
+   "x": -150,
+   "y": 1564,
+   "width": 300,
+   "height": 56,
+   "text": "**add residual** h' + moe(x)",
+   "color": "#64748b"
+  },
+  {
+   "id": "bout106",
+   "type": "text",
+   "x": -82,
+   "y": 1660,
+   "width": 164,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl107",
+   "type": "text",
+   "x": 170,
+   "y": 1650,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 4096]  → next layer`"
+  },
+  {
+   "id": "note-layerp",
+   "type": "text",
+   "x": -1300,
+   "y": 1724,
+   "width": 1250,
+   "height": 110,
+   "text": "Per layer: SWA attention **94.4M**, GA attention **89.1M** (fewer KV heads), router 1.0M, 256 experts × 25.2M = **6.44B** stored, 8 × 25.2M = 201.3M used per token. No shared expert (`n_shared_experts: null`)."
+  },
+  {
+   "id": "note-l0",
+   "type": "text",
+   "x": 50,
+   "y": 1724,
+   "width": 1250,
+   "height": 110,
+   "text": "**L0** differs: global attention and a dense SwiGLU FFN 4096 → 16384 → 4096 (201.3M) instead of the MoE. The 3 MTP blocks use SWA attention with the same dense FFN shape."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bh59",
+   "toNode": "bn161",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bn161",
+   "toNode": "bx62",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "bx62",
+   "toNode": "qkv64",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "qkv64",
+   "toNode": "qkvt65",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "qkvt65",
+   "toNode": "split67",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "split67",
+   "toNode": "rope68",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "rope68",
+   "toNode": "att69",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "att69",
+   "toNode": "ot70",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "bx62",
+   "toNode": "qkv72",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "qkv72",
+   "toNode": "qkvt73",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "qkvt73",
+   "toNode": "split75",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "split75",
+   "toNode": "rope76",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "rope76",
+   "toNode": "att77",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "att77",
+   "toNode": "ot78",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "ot70",
+   "toNode": "oproj80",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "ot78",
+   "toNode": "oproj80",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "oproj80",
+   "toNode": "add181",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "add181",
+   "toNode": "bh282",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "bh282",
+   "toNode": "bn284",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "bn284",
+   "toNode": "bxm85",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "bxm85",
+   "toNode": "gate87",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "gate87",
+   "toNode": "sc88",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "sc88",
+   "toNode": "topk90",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "topk90",
+   "toNode": "norm91",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "norm91",
+   "toNode": "wt92",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "bxm85",
+   "toNode": "exp94",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "topk90",
+   "toNode": "exp94",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "top-8 ids",
+   "color": "4"
+  },
+  {
+   "id": "e27",
+   "fromNode": "exp94",
+   "toNode": "eo95",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "eo102",
+   "toNode": "comb104",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "wt92",
+   "toNode": "comb104",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "comb104",
+   "toNode": "add2105",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "add2105",
+   "toNode": "bout106",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

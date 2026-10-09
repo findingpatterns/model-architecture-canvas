@@ -2,7 +2,88 @@
   "name": "DeepSeek-V4-Flash",
   "description": "Architecture colored by weight dtype — FP4 routed experts, FP8 default linears, BF16 overrides.",
   "logo": "logo.svg",
-  "author": { "name": "ModelCanvas", "github": "" },
-  "tags": ["deepseek", "moe", "quantization"],
-  "source": "https://github.com/deepseek-ai"
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "deepseek",
+    "moe",
+    "quantization"
+  ],
+  "source": "https://github.com/deepseek-ai",
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "291B",
+      "number": 290.94,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/model.safetensors.index.json",
+      "note": "Every weight tensor in the checkpoint (incl. the MTP layer), summed from the safetensors headers; packed FP4 bytes count as two values, int64 hash tables excluded."
+    },
+    {
+      "key": "params_active",
+      "value": "13.3B",
+      "number": 13.27,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: 6 of 256 routed experts, lm head included; embedding (a row lookup) and the MTP layer excluded."
+    },
+    {
+      "key": "layers",
+      "value": "43",
+      "number": 43,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "4,096",
+      "number": 4096,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Compressed sparse attention (indexer top-512 + 128-token window), 64 heads, 1 KV head",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "256 (+1 shared)",
+      "number": 256,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-6",
+      "number": 6,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "129,280",
+      "number": 129280,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json",
+      "note": "original_max_position_embeddings 65,536 × YaRN factor 16"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "FP4 experts + FP8",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/config.json",
+      "note": "num_nextn_predict_layers 1"
+    }
+  ]
 }

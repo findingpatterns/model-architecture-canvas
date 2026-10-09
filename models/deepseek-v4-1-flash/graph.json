@@ -1,0 +1,1010 @@
+{
+ "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+ "name": "DeepSeek-V4.1-Flash",
+ "source": "inference/model.py + safetensors headers (all 96,085 tensors)",
+ "totalParams": 763205315794,
+ "nodes": [
+  {
+   "id": "tokens",
+   "label": "text tokens",
+   "kind": "io",
+   "dimOut": 1,
+   "note": "Token ids [S]; width shown as 1 channel."
+  },
+  {
+   "id": "image",
+   "label": "image",
+   "kind": "io",
+   "dimOut": 588,
+   "note": "14\u00d714 RGB patches = 588 values each."
+  },
+  {
+   "id": "vit",
+   "label": "DeepSeek-ViT",
+   "kind": "embed",
+   "dimIn": 588,
+   "dimOut": 1024,
+   "repeat": 32,
+   "tensors": [
+    "vision\\..*"
+   ],
+   "params": 411842560,
+   "dtype": "BF16",
+   "note": "32-layer ViT trained from scratch, 2D-RoPE, d=1024, 16 heads."
+  },
+  {
+   "id": "aligner",
+   "label": "Aligner MLP",
+   "kind": "embed",
+   "dimIn": 9216,
+   "dimOut": 5120,
+   "tensors": [
+    "aligner\\..*"
+   ],
+   "params": 73410560,
+   "dtype": "BF16",
+   "note": "3\u00d73 pixel-unshuffle (9\u00d71024 = 9216) \u2192 2-layer MLP \u2192 5120."
+  },
+  {
+   "id": "embed",
+   "label": "embed",
+   "kind": "embed",
+   "dimIn": 1,
+   "dimOut": 5120,
+   "tensors": [
+    "embed\\.weight",
+    "image_(start|end|newline)"
+   ],
+   "params": 661928960,
+   "dtype": "BF16",
+   "note": "129280 \u00d7 5120 table + learned image delimiters."
+  },
+  {
+   "id": "merge",
+   "label": "merge image spans",
+   "kind": "op",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "note": "Image token slots overwritten by aligner rows."
+  },
+  {
+   "id": "hash",
+   "label": "Engram n-gram hash",
+   "kind": "op",
+   "dimOut": 1,
+   "note": "Up-to-4-gram hashes of text tokens feed Engram at L1 and L14."
+  },
+  {
+   "id": "hcx",
+   "label": "expand \u00d74 (mHC)",
+   "kind": "hc",
+   "dimIn": 5120,
+   "dimOut": 20480,
+   "note": "Residual stream becomes hc_mult=4 parallel copies."
+  },
+  {
+   "id": "stack",
+   "label": "Transformer layers",
+   "kind": "group",
+   "dimIn": 20480,
+   "dimOut": 20480,
+   "repeat": 40,
+   "tensors": [
+    "layers\\..*"
+   ],
+   "params": 747170852464,
+   "note": "Layers 0\u201319 = causal encoder, 20\u201339 = decoder (global KV projected from L20). Params = all 40 layers incl. Engram."
+  },
+  {
+   "id": "hcf",
+   "label": "hc_pre collapse",
+   "kind": "hc",
+   "dimIn": 20480,
+   "dimOut": 5120
+  },
+  {
+   "id": "norm",
+   "label": "final RMSNorm",
+   "kind": "norm",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "norm\\.weight"
+   ],
+   "params": 5120,
+   "dtype": "BF16"
+  },
+  {
+   "id": "head",
+   "label": "lm head",
+   "kind": "out",
+   "dimIn": 5120,
+   "dimOut": 129280,
+   "tensors": [
+    "head\\.weight"
+   ],
+   "params": 661913600,
+   "dtype": "BF16",
+   "note": "5120 \u2192 129280 vocab logits."
+  },
+  {
+   "id": "logits",
+   "label": "next token",
+   "kind": "io",
+   "dimIn": 129280,
+   "dimOut": 1
+  },
+  {
+   "id": "dspark",
+   "label": "DSpark MTP",
+   "kind": "group",
+   "dimIn": 15360,
+   "dimOut": 129280,
+   "repeat": 3,
+   "tensors": [
+    "mtp\\..*"
+   ],
+   "params": 14225362530,
+   "note": "Speculative decoding: taps attention input of L37\u201339 (3\u00d75120), drafts 5 tokens per step."
+  },
+  {
+   "id": "eng",
+   "label": "Engram (L1, L14)",
+   "kind": "embed",
+   "parent": "stack",
+   "dimIn": 20480,
+   "dimOut": 20480,
+   "tensors": [
+    "layers\\.1\\.engram\\..*"
+   ],
+   "params": 98462906368,
+   "dtype": "F8_E4M3",
+   "activeParams": 0,
+   "note": "Conditional memory: hashed n-gram rows \u2192 key per hc copy + value, gated into the stream. ~98B params each, but only a few rows are read per token."
+  },
+  {
+   "id": "hpa",
+   "label": "hc_pre",
+   "kind": "hc",
+   "parent": "stack",
+   "dimIn": 20480,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.hc_attn_.*"
+   ],
+   "params": 491547,
+   "dtype": "F32",
+   "note": "Collapse 4 copies with pre_mix from previous FFN; computes this sublayer's post/comb (Sinkhorn \u00d720)."
+  },
+  {
+   "id": "an",
+   "label": "attn_norm",
+   "kind": "norm",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.attn_norm\\.weight"
+   ],
+   "params": 5120,
+   "dtype": "BF16"
+  },
+  {
+   "id": "attn",
+   "label": "CSA2 attention",
+   "kind": "group",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.attn\\..*"
+   ],
+   "params": 137333184,
+   "note": "Shown for a Full-mode layer (L2). Reuse layers have no compressor/indexer."
+  },
+  {
+   "id": "hqa",
+   "label": "hc_post",
+   "kind": "hc",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 20480,
+   "note": "post\u00b7out + comb\u00b7residual \u2192 4 copies."
+  },
+  {
+   "id": "hpf",
+   "label": "hc_pre",
+   "kind": "hc",
+   "parent": "stack",
+   "dimIn": 20480,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.hc_ffn_.*"
+   ],
+   "params": 491547,
+   "dtype": "F32"
+  },
+  {
+   "id": "fn",
+   "label": "ffn_norm",
+   "kind": "norm",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.ffn_norm\\.weight"
+   ],
+   "params": 5120,
+   "dtype": "BF16"
+  },
+  {
+   "id": "moe",
+   "label": "MoE",
+   "kind": "group",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.ffn\\..*"
+   ],
+   "params": 13626901248,
+   "activeParams": 249692928
+  },
+  {
+   "id": "hqf",
+   "label": "hc_post",
+   "kind": "hc",
+   "parent": "stack",
+   "dimIn": 5120,
+   "dimOut": 20480
+  },
+  {
+   "id": "wqa",
+   "label": "wq_a",
+   "kind": "linear",
+   "parent": "attn",
+   "dimIn": 5120,
+   "dimOut": 1280,
+   "tensors": [
+    "layers\\.2\\.attn\\.wq_a\\.weight"
+   ],
+   "params": 6553600,
+   "dtype": "F8_E4M3"
+  },
+  {
+   "id": "qn",
+   "label": "q_norm",
+   "kind": "norm",
+   "parent": "attn",
+   "dimIn": 1280,
+   "dimOut": 1280,
+   "tensors": [
+    "layers\\.2\\.attn\\.q_norm\\.weight"
+   ],
+   "params": 1280,
+   "dtype": "BF16"
+  },
+  {
+   "id": "wqb",
+   "label": "wq_b",
+   "kind": "linear",
+   "parent": "attn",
+   "dimIn": 1280,
+   "dimOut": 32768,
+   "tensors": [
+    "layers\\.2\\.attn\\.wq_b\\.weight"
+   ],
+   "params": 41943040,
+   "dtype": "F8_E4M3",
+   "note": "64 heads \u00d7 512; RoPE on last 64 dims."
+  },
+  {
+   "id": "wkv",
+   "label": "wkv",
+   "kind": "linear",
+   "parent": "attn",
+   "dimIn": 5120,
+   "dimOut": 512,
+   "tensors": [
+    "layers\\.2\\.attn\\.wkv\\.weight"
+   ],
+   "params": 2621440,
+   "dtype": "F8_E4M3",
+   "note": "Single KV head."
+  },
+  {
+   "id": "kvn",
+   "label": "kv_norm + RoPE",
+   "kind": "norm",
+   "parent": "attn",
+   "dimIn": 512,
+   "dimOut": 512,
+   "tensors": [
+    "layers\\.2\\.attn\\.kv_norm\\.weight"
+   ],
+   "params": 512,
+   "dtype": "BF16"
+  },
+  {
+   "id": "win",
+   "label": "sliding window 128",
+   "kind": "attn",
+   "parent": "attn",
+   "dimIn": 512,
+   "dimOut": 512,
+   "note": "FP8 ring buffer of the last 128 tokens."
+  },
+  {
+   "id": "cmp",
+   "label": "Compressor",
+   "kind": "attn",
+   "parent": "attn",
+   "dimIn": 5120,
+   "dimOut": 512,
+   "tensors": [
+    "layers\\.2\\.attn\\.compressor\\..*"
+   ],
+   "params": 5243392,
+   "dtype": "BF16",
+   "note": "Only KV-source layers (2, 8, 14, 20). Ratio 2 in encoder (gated pooling), 1 in decoder. Cache stored FP4."
+  },
+  {
+   "id": "idx",
+   "label": "Indexer",
+   "kind": "attn",
+   "parent": "attn",
+   "dimIn": 1280,
+   "dimOut": 512,
+   "tensors": [
+    "layers\\.2\\.attn\\.indexer\\..*"
+   ],
+   "params": 5472384,
+   "dtype": "BF16",
+   "note": "32 heads \u00d7 128 scores compressed positions \u2192 top-512. Index sources: 2,8,14,20,24,28,32,36; L24\u201336 search only inside L20's candidate pool."
+  },
+  {
+   "id": "sa",
+   "label": "sparse_attn",
+   "kind": "attn",
+   "parent": "attn",
+   "dimIn": 32768,
+   "dimOut": 32768,
+   "tensors": [
+    "layers\\.2\\.attn\\.attn_sink"
+   ],
+   "params": 64,
+   "dtype": "F32",
+   "note": "Attends over window 128 + top-512 compressed positions, with a learned sink per head."
+  },
+  {
+   "id": "woa",
+   "label": "wo_a (8 groups)",
+   "kind": "linear",
+   "parent": "attn",
+   "dimIn": 32768,
+   "dimOut": 8192,
+   "tensors": [
+    "layers\\.2\\.attn\\.wo_a\\.weight"
+   ],
+   "params": 33554432,
+   "dtype": "F8_E4M3",
+   "note": "Block-diagonal: 8 \u00d7 (4096 \u2192 1024)."
+  },
+  {
+   "id": "wob",
+   "label": "wo_b",
+   "kind": "linear",
+   "parent": "attn",
+   "dimIn": 8192,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.attn\\.wo_b\\.weight"
+   ],
+   "params": 41943040,
+   "dtype": "F8_E4M3"
+  },
+  {
+   "id": "gate",
+   "label": "gate (top-6)",
+   "kind": "moe",
+   "parent": "moe",
+   "dimIn": 5120,
+   "dimOut": 384,
+   "tensors": [
+    "layers\\.2\\.ffn\\.gate\\..*"
+   ],
+   "params": 1966848,
+   "dtype": "F32",
+   "note": "sqrtsoftplus scores, noaux_tc bias, separate bias_vl for image tokens, \u00d71.5 routed scale."
+  },
+  {
+   "id": "routed",
+   "label": "routed experts",
+   "kind": "moe",
+   "parent": "moe",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "repeat": 384,
+   "tensors": [
+    "layers\\.2\\.ffn\\.experts\\..*"
+   ],
+   "params": 13589544960,
+   "dtype": "I8",
+   "activeParams": 212336640,
+   "note": "SwiGLU 5120 \u2192 2304 \u2192 5120, FP4. 6 of 384 active per token."
+  },
+  {
+   "id": "shared",
+   "label": "shared expert",
+   "kind": "moe",
+   "parent": "moe",
+   "dimIn": 5120,
+   "dimOut": 5120,
+   "tensors": [
+    "layers\\.2\\.ffn\\.shared_experts\\..*"
+   ],
+   "params": 35389440,
+   "dtype": "F8_E4M3",
+   "note": "SwiGLU 5120 \u2192 2304 \u2192 5120, FP8, always active."
+  },
+  {
+   "id": "sum",
+   "label": "\u03a3 weighted",
+   "kind": "op",
+   "parent": "moe",
+   "dimIn": 5120,
+   "dimOut": 5120
+  }
+ ],
+ "edges": [
+  [
+   "tokens",
+   "embed"
+  ],
+  [
+   "image",
+   "vit"
+  ],
+  [
+   "vit",
+   "aligner"
+  ],
+  [
+   "aligner",
+   "merge"
+  ],
+  [
+   "embed",
+   "merge"
+  ],
+  [
+   "merge",
+   "hcx"
+  ],
+  [
+   "hcx",
+   "stack"
+  ],
+  [
+   "stack",
+   "hcf"
+  ],
+  [
+   "hcf",
+   "norm"
+  ],
+  [
+   "norm",
+   "head"
+  ],
+  [
+   "head",
+   "logits"
+  ],
+  [
+   "tokens",
+   "hash"
+  ],
+  [
+   "hash",
+   "eng",
+   "hash ids"
+  ],
+  [
+   "stack",
+   "dspark",
+   "L37\u201339 hidden"
+  ],
+  [
+   "eng",
+   "hpa"
+  ],
+  [
+   "hpa",
+   "an"
+  ],
+  [
+   "an",
+   "attn"
+  ],
+  [
+   "attn",
+   "hqa"
+  ],
+  [
+   "hqa",
+   "hpf"
+  ],
+  [
+   "hpf",
+   "fn"
+  ],
+  [
+   "fn",
+   "moe"
+  ],
+  [
+   "moe",
+   "hqf"
+  ],
+  [
+   "wqa",
+   "qn"
+  ],
+  [
+   "qn",
+   "wqb"
+  ],
+  [
+   "wqb",
+   "sa"
+  ],
+  [
+   "wkv",
+   "kvn"
+  ],
+  [
+   "kvn",
+   "win"
+  ],
+  [
+   "win",
+   "sa"
+  ],
+  [
+   "cmp",
+   "idx"
+  ],
+  [
+   "idx",
+   "sa"
+  ],
+  [
+   "sa",
+   "woa"
+  ],
+  [
+   "woa",
+   "wob"
+  ],
+  [
+   "qn",
+   "idx",
+   "qr"
+  ],
+  [
+   "gate",
+   "routed"
+  ],
+  [
+   "routed",
+   "sum"
+  ],
+  [
+   "shared",
+   "sum"
+  ]
+ ],
+ "layers": [
+  {
+   "id": "L0",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "SWA"
+  },
+  {
+   "id": "L1",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 98462906368,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "SWA"
+  },
+  {
+   "id": "L2",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 137333184,
+   "engram": 0,
+   "other": 993334,
+   "active": 388019446,
+   "mode": "Full"
+  },
+  {
+   "id": "L3",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L4",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L5",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L6",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L7",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L8",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 137333184,
+   "engram": 0,
+   "other": 993334,
+   "active": 388019446,
+   "mode": "Full"
+  },
+  {
+   "id": "L9",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L10",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L11",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L12",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L13",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L14",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 137333184,
+   "engram": 98465597952,
+   "other": 993334,
+   "active": 388019446,
+   "mode": "Full"
+  },
+  {
+   "id": "L15",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L16",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L17",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L18",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L19",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L20",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 134711744,
+   "engram": 0,
+   "other": 993334,
+   "active": 385398006,
+   "mode": "Full"
+  },
+  {
+   "id": "L21",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L22",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L23",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L24",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 132024128,
+   "engram": 0,
+   "other": 993334,
+   "active": 382710390,
+   "mode": "Reindex"
+  },
+  {
+   "id": "L25",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L26",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L27",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L28",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 132024128,
+   "engram": 0,
+   "other": 993334,
+   "active": 382710390,
+   "mode": "Reindex"
+  },
+  {
+   "id": "L29",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L30",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L31",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L32",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 132024128,
+   "engram": 0,
+   "other": 993334,
+   "active": 382710390,
+   "mode": "Reindex"
+  },
+  {
+   "id": "L33",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L34",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L35",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L36",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 132024128,
+   "engram": 0,
+   "other": 993334,
+   "active": 382710390,
+   "mode": "Reindex"
+  },
+  {
+   "id": "L37",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L38",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  },
+  {
+   "id": "L39",
+   "experts": 13589544960,
+   "shared": 37356288,
+   "attention": 126617408,
+   "engram": 0,
+   "other": 993334,
+   "active": 377303670,
+   "mode": "Reuse"
+  }
+ ]
+}

@@ -1,0 +1,1720 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1270,
+   "width": 1250,
+   "height": 180,
+   "text": "# Gemma 4 31B-it — model  \nRead top → bottom. **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel). **Boxes = operations**, all the same size; where the parameters live is the pair of bars above. T = sequence length, P = image patches. *Layer* tab = one decoder layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1270,
+   "width": 1250,
+   "height": 180,
+   "text": "**Dense** decoder, 60 layers, pattern [5 × sliding, full] ×10.    \n**Grey rows** — sliding window 1024 · GQA 32 Q / 16 KV × 256 · RoPE θ 10,000.    \n**Cyan rows** — full causal attention · 32 Q / 4 KV × 512 · **K = V** (no v_proj) · proportional RoPE θ 1,000,000 on 128 of 512 dims.    \nAll layers: q/k RMSNorm, attention scale 1, GeGLU 21504, 4 sandwich RMSNorms, learned layer scalar."
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"The cat sat…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -864,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (vocab 262,144)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -768,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -778,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -714,
+   "width": 300,
+   "height": 90,
+   "text": "**embed** — look up row *id*  \n× √5376 ≈ 73.3  \n1.41B · tied to lm head",
+   "color": "6"
+  },
+  {
+   "id": "x6",
+   "type": "text",
+   "x": -65,
+   "y": -584,
+   "width": 430,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 385,
+   "y": -594,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 5376]  (+ image tokens spliced in)`"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -80,
+   "y": -400,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16 KV × 256  \nL0, 6, …, 54",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -80,
+   "y": -318,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16 KV × 256  \nL1, 7, …, 55",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -80,
+   "y": -236,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16 KV × 256  \nL2, 8, …, 56",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -80,
+   "y": -154,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16 KV × 256  \nL3, 9, …, 57",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per4",
+   "type": "text",
+   "x": -80,
+   "y": -72,
+   "width": 460,
+   "height": 56,
+   "text": "sliding 1024 · 16 KV × 256  \nL4, 10, …, 58",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "per5",
+   "type": "text",
+   "x": -80,
+   "y": 10,
+   "width": 460,
+   "height": 56,
+   "text": "full · 4 KV × 512 · K=V  \nL5, 11, …, 59",
+   "color": "5"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": 770,
+   "y": -197,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×10"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -140,
+   "y": -450,
+   "width": 580,
+   "height": 552,
+   "label": "×10 — L0–59, a period of 6 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": 1050,
+   "y": -500,
+   "width": 1080,
+   "height": 40,
+   "text": "**Every layer, L0 → L59** (grey = sliding, cyan = full)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": 1050,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": 1068,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": 1086,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": 1104,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": 1122,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": 1140,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": 1158,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": 1176,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": 1194,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": 1212,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": 1230,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": 1248,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": 1266,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": 1284,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": 1302,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": 1320,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": 1338,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": 1356,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": 1374,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": 1392,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": 1410,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": 1428,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": 1446,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": 1464,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": 1482,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": 1500,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": 1518,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": 1536,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": 1554,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": 1572,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr30",
+   "type": "text",
+   "x": 1590,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr31",
+   "type": "text",
+   "x": 1608,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr32",
+   "type": "text",
+   "x": 1626,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr33",
+   "type": "text",
+   "x": 1644,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr34",
+   "type": "text",
+   "x": 1662,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr35",
+   "type": "text",
+   "x": 1680,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr36",
+   "type": "text",
+   "x": 1698,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr37",
+   "type": "text",
+   "x": 1716,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr38",
+   "type": "text",
+   "x": 1734,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr39",
+   "type": "text",
+   "x": 1752,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr40",
+   "type": "text",
+   "x": 1770,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr41",
+   "type": "text",
+   "x": 1788,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr42",
+   "type": "text",
+   "x": 1806,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr43",
+   "type": "text",
+   "x": 1824,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr44",
+   "type": "text",
+   "x": 1842,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr45",
+   "type": "text",
+   "x": 1860,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr46",
+   "type": "text",
+   "x": 1878,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr47",
+   "type": "text",
+   "x": 1896,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr48",
+   "type": "text",
+   "x": 1914,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr49",
+   "type": "text",
+   "x": 1932,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr50",
+   "type": "text",
+   "x": 1950,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr51",
+   "type": "text",
+   "x": 1968,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr52",
+   "type": "text",
+   "x": 1986,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr53",
+   "type": "text",
+   "x": 2004,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr54",
+   "type": "text",
+   "x": 2022,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr55",
+   "type": "text",
+   "x": 2040,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr56",
+   "type": "text",
+   "x": 2058,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr57",
+   "type": "text",
+   "x": 2076,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr58",
+   "type": "text",
+   "x": 2094,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "lyr59",
+   "type": "text",
+   "x": 2112,
+   "y": -450,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": 1046,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": 1226,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": 1406,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick30",
+   "type": "text",
+   "x": 1586,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L30"
+  },
+  {
+   "id": "note-tick40",
+   "type": "text",
+   "x": 1766,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L40"
+  },
+  {
+   "id": "note-tick50",
+   "type": "text",
+   "x": 1946,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L50"
+  },
+  {
+   "id": "note-tick59",
+   "type": "text",
+   "x": 2108,
+   "y": -400,
+   "width": 60,
+   "height": 30,
+   "text": "L59"
+  },
+  {
+   "id": "note-pattern",
+   "type": "text",
+   "x": -560,
+   "y": 270,
+   "width": 480,
+   "height": 290,
+   "text": "**Layer pattern** — 50 sliding + 10 full layers (L5, L11, … L59; the last layer is always full).  \nSliding layers see the last 1024 tokens; full layers see the whole context with fewer, wider KV heads.  \nKV cache per token per layer: sliding 2 × 16 × 256 = 8,192 values (kept for 1024 tokens at most); full 2 × 4 × 512 = 4,096 — K and V come from the same k_proj, V just skips k_norm's weight and RoPE."
+  },
+  {
+   "id": "note-layer",
+   "type": "text",
+   "x": -560,
+   "y": 600,
+   "width": 480,
+   "height": 200,
+   "text": "**Layer sizes** — sliding 479.0M (attention 132.1M), full 534.0M (attention 187.2M); GeGLU MLP 346.8M in every layer.  \nLogits: tied lm head, then softcap 30·tanh(z / 30).  \nImage tokens attend to each other bidirectionally (use_bidirectional_attention = \"vision\"); text stays causal."
+  },
+  {
+   "id": "img8",
+   "type": "text",
+   "x": -630,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**image** pixels (video: sampled frames)",
+   "color": "#64748b"
+  },
+  {
+   "id": "patch9",
+   "type": "text",
+   "x": -511,
+   "y": -864,
+   "width": 61,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl10",
+   "type": "text",
+   "x": -1090,
+   "y": -874,
+   "width": 440,
+   "height": 34,
+   "text": "`patches [P, 768]  (16×16×3), P = 2,520 by default`"
+  },
+  {
+   "id": "pe11",
+   "type": "text",
+   "x": -630,
+   "y": -810,
+   "width": 300,
+   "height": 90,
+   "text": "**patch embed** 768 → 1152  \n+ learned x / y position tables 2 × 10,240  \n24.5M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vf012",
+   "type": "text",
+   "x": -526,
+   "y": -680,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl13",
+   "type": "text",
+   "x": -1090,
+   "y": -690,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 1152]`"
+  },
+  {
+   "id": "vit14",
+   "type": "text",
+   "x": -630,
+   "y": -626,
+   "width": 300,
+   "height": 90,
+   "text": "**ViT ×27** — bidirectional · 16 heads × 72  \n2D RoPE θ 100 · q/k norm · GeGLU 4304  \n545.1M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vf115",
+   "type": "text",
+   "x": -526,
+   "y": -496,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl16",
+   "type": "text",
+   "x": -1090,
+   "y": -506,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 1152]`"
+  },
+  {
+   "id": "pool17",
+   "type": "text",
+   "x": -630,
+   "y": -442,
+   "width": 300,
+   "height": 90,
+   "text": "**pool** 3×3 patches → 1 token (average)  \n× √1152, standardise (std_bias / std_scale)  \n2.3K",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vf218",
+   "type": "text",
+   "x": -526,
+   "y": -312,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": -1090,
+   "y": -322,
+   "width": 440,
+   "height": 34,
+   "text": "`[P/9, 1152]  (280 per image, 70 per video frame by default)`"
+  },
+  {
+   "id": "vpr20",
+   "type": "text",
+   "x": -630,
+   "y": -258,
+   "width": 300,
+   "height": 90,
+   "text": "**embed_vision** — RMSNorm (no weight)  \n+ linear 1152 → 5376  \n6.2M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vt21",
+   "type": "text",
+   "x": -695,
+   "y": -128,
+   "width": 430,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": -1155,
+   "y": -138,
+   "width": 440,
+   "height": 34,
+   "text": "`image tokens [P/9, 5376]`"
+  },
+  {
+   "id": "ho23",
+   "type": "text",
+   "x": -65,
+   "y": 970,
+   "width": 430,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl24",
+   "type": "text",
+   "x": 385,
+   "y": 960,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 5376]  after L59`"
+  },
+  {
+   "id": "fn25",
+   "type": "text",
+   "x": 0,
+   "y": 1024,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "xf26",
+   "type": "text",
+   "x": -65,
+   "y": 1120,
+   "width": 430,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl27",
+   "type": "text",
+   "x": 385,
+   "y": 1110,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 5376]`"
+  },
+  {
+   "id": "head28",
+   "type": "text",
+   "x": 0,
+   "y": 1174,
+   "width": 300,
+   "height": 72,
+   "text": "**lm head** 5376 → 262,144  \n= the embed table, transposed (tied)",
+   "color": "2"
+  },
+  {
+   "id": "logits29",
+   "type": "text",
+   "x": -550,
+   "y": 1286,
+   "width": 1400,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl30",
+   "type": "text",
+   "x": 870,
+   "y": 1276,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 262144]` — bar clipped (real 20972px)"
+  },
+  {
+   "id": "cap31",
+   "type": "text",
+   "x": 0,
+   "y": 1340,
+   "width": 300,
+   "height": 56,
+   "text": "**softcap** 30·tanh(z / 30)",
+   "color": "2"
+  },
+  {
+   "id": "samp32",
+   "type": "text",
+   "x": 0,
+   "y": 1436,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next33",
+   "type": "text",
+   "x": 0,
+   "y": 1532,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id(s)**",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-taps",
+   "type": "text",
+   "x": 410,
+   "y": -72,
+   "width": 330,
+   "height": 34,
+   "text": "↳ L58 K, V (last sliding) → drafter"
+  },
+  {
+   "id": "note-tapf",
+   "type": "text",
+   "x": 410,
+   "y": 10,
+   "width": 330,
+   "height": 34,
+   "text": "↳ L59 K, V (last full) → drafter"
+  },
+  {
+   "id": "dcat34",
+   "type": "text",
+   "x": 1570,
+   "y": 650,
+   "width": 860,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": 2450,
+   "y": 640,
+   "width": 440,
+   "height": 34,
+   "text": "`[1, 10752] = embed(last token) ‖ last hidden h of the 31B`"
+  },
+  {
+   "id": "dpre36",
+   "type": "text",
+   "x": 1850,
+   "y": 704,
+   "width": 300,
+   "height": 56,
+   "text": "**pre_projection** 10752 → 1024  \n11.0M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "dx37",
+   "type": "text",
+   "x": 1959,
+   "y": 800,
+   "width": 82,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": 2170,
+   "y": 790,
+   "width": 440,
+   "height": 34,
+   "text": "`[1, 1024]`"
+  },
+  {
+   "id": "dblk39",
+   "type": "text",
+   "x": 1850,
+   "y": 854,
+   "width": 300,
+   "height": 90,
+   "text": "**4 drafter layers** [S, S, S, F]  \nq-only attention onto the 31B's K, V · GeGLU 8192  \n184.6M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "dnorm40",
+   "type": "text",
+   "x": 1850,
+   "y": 984,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "dh41",
+   "type": "text",
+   "x": 1959,
+   "y": 1080,
+   "width": 82,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl42",
+   "type": "text",
+   "x": 2170,
+   "y": 1070,
+   "width": 440,
+   "height": 34,
+   "text": "`h' [1, 1024]`"
+  },
+  {
+   "id": "dhead43",
+   "type": "text",
+   "x": 1850,
+   "y": 1134,
+   "width": 300,
+   "height": 90,
+   "text": "**own lm head** 1024 → 262,144  \n(tied to its own embed table)  \n268.4M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "dids44",
+   "type": "text",
+   "x": 1980,
+   "y": 1264,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl45",
+   "type": "text",
+   "x": 2170,
+   "y": 1254,
+   "width": 440,
+   "height": 34,
+   "text": "`draft ids — 6 per round, one per step`"
+  },
+  {
+   "id": "dver46",
+   "type": "text",
+   "x": 1850,
+   "y": 1318,
+   "width": 300,
+   "height": 72,
+   "text": "**verify**: main model scores all 6  \ndrafts in one forward pass",
+   "color": "#64748b"
+  },
+  {
+   "id": "dpost",
+   "type": "text",
+   "x": 1490,
+   "y": 1040,
+   "width": 300,
+   "height": 90,
+   "text": "**post_projection** 1024 → 5376  \nh' becomes the next step's “last hidden”  \n5.5M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "note-taph",
+   "type": "text",
+   "x": 865,
+   "y": 960,
+   "width": 360,
+   "height": 34,
+   "text": "↳ last hidden h + embed(last token) → drafter"
+  },
+  {
+   "id": "note-draft",
+   "type": "text",
+   "x": 1850,
+   "y": 1420,
+   "width": 700,
+   "height": 200,
+   "text": "**MTP drafter, shipped separately** (google/gemma-4-31B-it-assistant, 469.5M, 48 tensors; **not counted** in the bars above). It has no K/V projections: every drafter layer attends with its own queries to the 31B's cached keys/values (sliding layers → L58, full layer → L59) at one fixed position, so it needs no prefill. Each step feeds the token it just drafted (embedded by the 31B's table) plus its projected hidden state back in. use_ordered_embeddings = false, so the centroid-masked head is off and no centroid tensors ship."
+  },
+  {
+   "id": "note-src",
+   "type": "text",
+   "x": -1100,
+   "y": 840,
+   "width": 620,
+   "height": 260,
+   "text": "**Sources.** config.json + safetensors headers of google/gemma-4-31B-it (1188 tensors, all BF16) and of the assistant repo. Dataflow from transformers models/gemma4 and models/gemma4_assistant (GitHub main). No audio tower in this size (audio_config = null). Context 262,144 positions. RMSNorms here scale by w (not 1 + w). The per-layer scalar is a stored 1-element tensor; its value is not shown."
+  },
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1746,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored (main checkpoint, BF16; the separate drafter is not included)** — total 31.27B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1700,
+   "width": 1730,
+   "height": 44,
+   "text": "**GeGLU MLP ×60**",
+   "color": "4"
+  },
+  {
+   "id": "bp1",
+   "type": "text",
+   "x": 830,
+   "y": -1700,
+   "width": 549,
+   "height": 44,
+   "text": "**attention, 50 sliding**",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "bp2",
+   "type": "text",
+   "x": 1379,
+   "y": -1700,
+   "width": 156,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bp3",
+   "type": "text",
+   "x": 1535,
+   "y": -1700,
+   "width": 117,
+   "height": 44,
+   "text": "",
+   "color": "6"
+  },
+  {
+   "id": "bp5",
+   "type": "text",
+   "x": 1652,
+   "y": -1700,
+   "width": 48,
+   "height": 44,
+   "text": "",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1650,
+   "width": 2600,
+   "height": 64,
+   "text": "GeGLU MLP ×60 **20.81B** (66.5%) · attention, 50 sliding **6.61B** (21.1%) · attention, 10 full **1.87B** (6.0%) · embed **1.41B** (4.5%) · vision tower + embed_vision **575.7M** (1.8%) · lm head **0** (tied: same tensor as embed) · norms + layer scalars **1.3M** (<0.1%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1546,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one text token is multiplied by — dense, so every layer weight plus the tied lm head; the lookup and the per-image vision path drop out** — total 30.70B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1500,
+   "width": 1762,
+   "height": 44,
+   "text": "**GeGLU MLP ×60**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 862,
+   "y": -1500,
+   "width": 560,
+   "height": 44,
+   "text": "**attention, 50 sliding**",
+   "color": "#94a3b8"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 1422,
+   "y": -1500,
+   "width": 159,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bc4",
+   "type": "text",
+   "x": 1581,
+   "y": -1500,
+   "width": 119,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1450,
+   "width": 2600,
+   "height": 64,
+   "text": "GeGLU MLP ×60 **20.81B** (67.8%) · attention, 50 sliding **6.61B** (21.5%) · attention, 10 full **1.87B** (6.1%) · lm head **1.41B** (4.6%) · embed **0** (row lookup) · vision tower + embed_vision **0** (runs per image) · norms + layer scalars **1.3M** (<0.1%)"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "x6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "x6",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "per3",
+   "toNode": "per4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "per4",
+   "toNode": "per5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "per5",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e11",
+   "fromNode": "img8",
+   "toNode": "patch9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "patch9",
+   "toNode": "pe11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "pe11",
+   "toNode": "vf012",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vf012",
+   "toNode": "vit14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "vit14",
+   "toNode": "vf115",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "vf115",
+   "toNode": "pool17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "pool17",
+   "toNode": "vf218",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "vf218",
+   "toNode": "vpr20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "vpr20",
+   "toNode": "vt21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "vt21",
+   "toNode": "x6",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "spliced into x"
+  },
+  {
+   "id": "e21",
+   "fromNode": "per5",
+   "toNode": "ho23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "ho23",
+   "toNode": "fn25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "fn25",
+   "toNode": "xf26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "xf26",
+   "toNode": "head28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "head28",
+   "toNode": "logits29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "logits29",
+   "toNode": "cap31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "cap31",
+   "toNode": "samp32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "samp32",
+   "toNode": "next33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "dcat34",
+   "toNode": "dpre36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "dpre36",
+   "toNode": "dx37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "dx37",
+   "toNode": "dblk39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "note-taps",
+   "toNode": "dblk39",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e33",
+   "fromNode": "note-tapf",
+   "toNode": "dblk39",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e34",
+   "fromNode": "dblk39",
+   "toNode": "dnorm40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "dnorm40",
+   "toNode": "dh41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "dh41",
+   "toNode": "dhead43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "dhead43",
+   "toNode": "dids44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "dids44",
+   "toNode": "dver46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "dver46",
+   "toNode": "next33",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "keeps the drafts it agrees with",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e40",
+   "fromNode": "dh41",
+   "toNode": "dpost",
+   "fromSide": "left",
+   "toSide": "right",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e41",
+   "fromNode": "note-taph",
+   "toNode": "dcat34",
+   "fromSide": "right",
+   "toSide": "left",
+   "color": "#f59e0b"
+  }
+ ]
+}

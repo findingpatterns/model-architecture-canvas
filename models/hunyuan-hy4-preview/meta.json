@@ -1,0 +1,100 @@
+{
+  "name": "Tencent Hy4-preview",
+  "description": "770B MoE (49B active, 1M context): 78 layers of Gated DeepSeek Sparse Attention on MLA with IndexCache (an indexer every 4th layer, the next 3 reuse its top-2048 picks), 256-expert top-8 MoE + shared expert, 4-stream iHC residuals and a native MTP layer. Traced from transformers' hy_v4 code and checked against checkpoint tensor shapes.",
+  "logo": "H",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "hunyuan",
+    "tencent",
+    "moe",
+    "sparse-attention",
+    "mla",
+    "mtp"
+  ],
+  "source": "https://huggingface.co/tencent/Hy4-preview",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "780B",
+      "number": 779.96,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "48.3B",
+      "number": 48.31,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "78",
+      "number": 78,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Gated DSA on MLA + IndexCache, 64 heads",
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "256 (+1 shared)",
+      "number": 256,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "120,832",
+      "number": 120832,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/tencent/Hy4-preview/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/tencent/Hy4-preview"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/tencent/Hy4-preview"
+    }
+  ]
+}

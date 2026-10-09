@@ -1,0 +1,101 @@
+{
+  "name": "MiniMax-M3",
+  "description": "MiniMax's native multimodal 427B MoE (24.7B active per text token): 60 GQA layers (64 query / 4 KV heads), 57 of them using MiniMax Sparse Attention where a lightning indexer picks the top 16 of 128-token key blocks, with 4 of 128 routed experts + 1 shared expert, plus an 866M CLIP-style vision tower and projectors for images and video. Built from config.json, safetensors tensor shapes and the transformers minimax_m3_vl code.",
+  "logo": "M",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "minimax",
+    "moe",
+    "gqa",
+    "sparse-attention",
+    "multimodal",
+    "vision"
+  ],
+  "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "427B",
+      "number": 427.04,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "24.7B",
+      "number": 24.73,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "60",
+      "number": 60,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "GQA 64q/4kv + MiniMax Sparse Attention (top-16 × 128-token blocks) on 57 of 60 layers",
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "128 (+1 shared)",
+      "number": 128,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-4",
+      "number": 4,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "200,064",
+      "number": 200064,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3"
+    },
+    {
+      "key": "drafting",
+      "value": "none",
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+      "note": "config.json declares num_mtp_modules = 7, but the checkpoint ships no MTP tensors."
+    }
+  ]
+}

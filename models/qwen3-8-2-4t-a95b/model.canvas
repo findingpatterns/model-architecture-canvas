@@ -1,0 +1,1670 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1270,
+   "width": 1250,
+   "height": 200,
+   "text": "# Qwen3.8-2.4T-A95B — model  \n`Qwen3_5MoeForCausalLM` (`qwen3_5_moe_text`): the Qwen3.5 hybrid design scaled to **2446.18B** stored parameters, text only. One continuous stack L0–91, read top → bottom; layers that repeat are drawn once with **×N**. **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel); **boxes = operations**. T = sequence length. *Layer* tab = one layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1270,
+   "width": 1250,
+   "height": 200,
+   "text": "Layer rows — **Gated DeltaNet** (69 layers, linear attention, fixed-size state) · **gated attention** (23 layers, every 4th, softmax + KV cache). Every layer then runs the same MoE: router picks **10 of 512** experts (SwiGLU, 2048 wide) plus 1 always-on **shared expert**.    \nLayer ≈ **26.26B** (DeltaNet) / **26.24B** (attention), 98% of it routed experts. All weights BF16. Context 262 144 tokens."
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"The cat sat…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -864,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (vocab 248 320)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -768,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -778,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -714,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** — look up row *id*  \n2.03B · 248 320 × 8192",
+   "color": "6"
+  },
+  {
+   "id": "x6",
+   "type": "text",
+   "x": -178,
+   "y": -618,
+   "width": 655,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 498,
+   "y": -628,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 8192]`"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -80,
+   "y": -434,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL0, 4, …, 88",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -80,
+   "y": -352,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL1, 5, …, 89",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -80,
+   "y": -270,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL2, 6, …, 90",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -80,
+   "y": -188,
+   "width": 460,
+   "height": 56,
+   "text": "gated attention + MoE  \nL3, 7, …, 91",
+   "color": "#f97316"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": -310,
+   "y": -313,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×23"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -140,
+   "y": -484,
+   "width": 580,
+   "height": 388,
+   "label": "×23 — L0–91, a period of 4 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": 540,
+   "y": -534,
+   "width": 1656,
+   "height": 40,
+   "text": "**Every layer, L0 → L91** (1 cell = 1 layer; cyan Gated DeltaNet, orange gated attention)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": 540,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": 558,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": 576,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": 594,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": 612,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": 630,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": 648,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": 666,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": 684,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": 702,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": 720,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": 738,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": 756,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": 774,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": 792,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": 810,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": 828,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": 846,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": 864,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": 882,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": 900,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": 918,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": 936,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": 954,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": 972,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": 990,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": 1008,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": 1026,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": 1044,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": 1062,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr30",
+   "type": "text",
+   "x": 1080,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr31",
+   "type": "text",
+   "x": 1098,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr32",
+   "type": "text",
+   "x": 1116,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr33",
+   "type": "text",
+   "x": 1134,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr34",
+   "type": "text",
+   "x": 1152,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr35",
+   "type": "text",
+   "x": 1170,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr36",
+   "type": "text",
+   "x": 1188,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr37",
+   "type": "text",
+   "x": 1206,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr38",
+   "type": "text",
+   "x": 1224,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr39",
+   "type": "text",
+   "x": 1242,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr40",
+   "type": "text",
+   "x": 1260,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr41",
+   "type": "text",
+   "x": 1278,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr42",
+   "type": "text",
+   "x": 1296,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr43",
+   "type": "text",
+   "x": 1314,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr44",
+   "type": "text",
+   "x": 1332,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr45",
+   "type": "text",
+   "x": 1350,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr46",
+   "type": "text",
+   "x": 1368,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr47",
+   "type": "text",
+   "x": 1386,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr48",
+   "type": "text",
+   "x": 1404,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr49",
+   "type": "text",
+   "x": 1422,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr50",
+   "type": "text",
+   "x": 1440,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr51",
+   "type": "text",
+   "x": 1458,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr52",
+   "type": "text",
+   "x": 1476,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr53",
+   "type": "text",
+   "x": 1494,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr54",
+   "type": "text",
+   "x": 1512,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr55",
+   "type": "text",
+   "x": 1530,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr56",
+   "type": "text",
+   "x": 1548,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr57",
+   "type": "text",
+   "x": 1566,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr58",
+   "type": "text",
+   "x": 1584,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr59",
+   "type": "text",
+   "x": 1602,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr60",
+   "type": "text",
+   "x": 1620,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr61",
+   "type": "text",
+   "x": 1638,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr62",
+   "type": "text",
+   "x": 1656,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr63",
+   "type": "text",
+   "x": 1674,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr64",
+   "type": "text",
+   "x": 1692,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr65",
+   "type": "text",
+   "x": 1710,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr66",
+   "type": "text",
+   "x": 1728,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr67",
+   "type": "text",
+   "x": 1746,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr68",
+   "type": "text",
+   "x": 1764,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr69",
+   "type": "text",
+   "x": 1782,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr70",
+   "type": "text",
+   "x": 1800,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr71",
+   "type": "text",
+   "x": 1818,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr72",
+   "type": "text",
+   "x": 1836,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr73",
+   "type": "text",
+   "x": 1854,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr74",
+   "type": "text",
+   "x": 1872,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr75",
+   "type": "text",
+   "x": 1890,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr76",
+   "type": "text",
+   "x": 1908,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr77",
+   "type": "text",
+   "x": 1926,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr78",
+   "type": "text",
+   "x": 1944,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr79",
+   "type": "text",
+   "x": 1962,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr80",
+   "type": "text",
+   "x": 1980,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr81",
+   "type": "text",
+   "x": 1998,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr82",
+   "type": "text",
+   "x": 2016,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr83",
+   "type": "text",
+   "x": 2034,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr84",
+   "type": "text",
+   "x": 2052,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr85",
+   "type": "text",
+   "x": 2070,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr86",
+   "type": "text",
+   "x": 2088,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr87",
+   "type": "text",
+   "x": 2106,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr88",
+   "type": "text",
+   "x": 2124,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr89",
+   "type": "text",
+   "x": 2142,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr90",
+   "type": "text",
+   "x": 2160,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr91",
+   "type": "text",
+   "x": 2178,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": 536,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": 716,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": 896,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick30",
+   "type": "text",
+   "x": 1076,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L30"
+  },
+  {
+   "id": "note-tick40",
+   "type": "text",
+   "x": 1256,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L40"
+  },
+  {
+   "id": "note-tick50",
+   "type": "text",
+   "x": 1436,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L50"
+  },
+  {
+   "id": "note-tick60",
+   "type": "text",
+   "x": 1616,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L60"
+  },
+  {
+   "id": "note-tick70",
+   "type": "text",
+   "x": 1796,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L70"
+  },
+  {
+   "id": "note-tick80",
+   "type": "text",
+   "x": 1976,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L80"
+  },
+  {
+   "id": "note-tick90",
+   "type": "text",
+   "x": 2156,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L90"
+  },
+  {
+   "id": "note-gdn",
+   "type": "text",
+   "x": -1400,
+   "y": -524,
+   "width": 460,
+   "height": 250,
+   "text": "**Gated DeltaNet rows** (69): linear attention. Each layer keeps one recurrent state [128 heads × 128 × 128] = 2 097 152 values, the same size at token 10 or token 262 144 — no KV cache that grows with T. Short causal conv (kernel 4) on q/k/v, per-head decay and write strength (β)."
+  },
+  {
+   "id": "note-full",
+   "type": "text",
+   "x": -900,
+   "y": -524,
+   "width": 460,
+   "height": 220,
+   "text": "**Gated attention rows** (23, L3, L7, …): softmax attention, GQA 64 query : 4 KV heads × 256, a sigmoid output gate per channel, RoPE on 64 of 256 dims. Only these layers cache K/V: 2 048 values per token each."
+  },
+  {
+   "id": "note-moe",
+   "type": "text",
+   "x": 540,
+   "y": -374,
+   "width": 460,
+   "height": 220,
+   "text": "**MoE in every layer**: softmax router over 512 experts → top-10, weights renormalised. Expert = SwiGLU 8192→2048→8192 (50.3M). Shared expert (same width) is added through a sigmoid gate. Per token: 10 + 1 experts of 512 → ~2.1% of FFN weights."
+  },
+  {
+   "id": "note-norm",
+   "type": "text",
+   "x": 1040,
+   "y": -374,
+   "width": 460,
+   "height": 130,
+   "text": "Pre-norm residual blocks; RMSNorm is zero-centred (scale = 1 + w). q/k get their own per-head RMSNorm in the attention layers."
+  },
+  {
+   "id": "note-scale",
+   "type": "text",
+   "x": 1540,
+   "y": -374,
+   "width": 460,
+   "height": 190,
+   "text": "**Same recipe as Qwen3.5-397B-A17B**, scaled: 92 layers × 8192 wide (vs 60 × 4096), 64 q / 4 kv heads, 128 DeltaNet value heads; the MoE shape (512 experts, top-10, 2048 wide) is unchanged. No vision tower ships in this repo."
+  },
+  {
+   "id": "ho8",
+   "type": "text",
+   "x": -178,
+   "y": -30,
+   "width": 655,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl9",
+   "type": "text",
+   "x": -638,
+   "y": -40,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 8192]  after L91`"
+  },
+  {
+   "id": "fn10",
+   "type": "text",
+   "x": 0,
+   "y": 24,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "xf11",
+   "type": "text",
+   "x": -178,
+   "y": 120,
+   "width": 655,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -638,
+   "y": 110,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 8192]`"
+  },
+  {
+   "id": "head13",
+   "type": "text",
+   "x": 0,
+   "y": 174,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** — 8192 → 248 320  \n2.03B · untied",
+   "color": "2"
+  },
+  {
+   "id": "logits14",
+   "type": "text",
+   "x": -750,
+   "y": 270,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": -1210,
+   "y": 260,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 248320]` — bar clipped (real 19866px)"
+  },
+  {
+   "id": "samp16",
+   "type": "text",
+   "x": 0,
+   "y": 324,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next17",
+   "type": "text",
+   "x": 0,
+   "y": 420,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  },
+  {
+   "id": "mcat18",
+   "type": "text",
+   "x": 1395,
+   "y": 130,
+   "width": 1311,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": 2725,
+   "y": 120,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 16384] = norm(embed(token t+1)) ‖ norm(x)`"
+  },
+  {
+   "id": "mfc20",
+   "type": "text",
+   "x": 1900,
+   "y": 184,
+   "width": 300,
+   "height": 56,
+   "text": "**fc** 16384 → 8192  \n134.2M",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mh21",
+   "type": "text",
+   "x": 1722,
+   "y": 280,
+   "width": 655,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": 2398,
+   "y": 270,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 8192]`"
+  },
+  {
+   "id": "mly23",
+   "type": "text",
+   "x": 1900,
+   "y": 334,
+   "width": 300,
+   "height": 56,
+   "text": "**1 gated-attention layer** + MoE  \n26.24B · 512 experts",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mhd24",
+   "type": "text",
+   "x": 1900,
+   "y": 430,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm → shared lm head**",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "mdr25",
+   "type": "text",
+   "x": 1900,
+   "y": 526,
+   "width": 300,
+   "height": 56,
+   "text": "**draft token t+2**",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-mtp",
+   "type": "text",
+   "x": 1900,
+   "y": 612,
+   "width": 600,
+   "height": 170,
+   "text": "Multi-token prediction head (26.38B, 1 layer, its own full 512-expert MoE). `mtp_use_dedicated_embeddings: false` — it reuses the main embed table and lm head (no copies in the checkpoint). Serving engines run it as a draft for speculative decoding (the card: MTP trained with multiple steps); the main model verifies. Wiring per vLLM qwen3_5_mtp.py."
+  },
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1686,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 2446.18B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1640,
+   "width": 2520,
+   "height": 44,
+   "text": "**routed experts (512/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bp2",
+   "type": "text",
+   "x": 1620,
+   "y": -1640,
+   "width": 32,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "bp6",
+   "type": "text",
+   "x": 1652,
+   "y": -1640,
+   "width": 28,
+   "height": 44,
+   "text": "",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1590,
+   "width": 2600,
+   "height": 40,
+   "text": "routed experts (512/layer) **2370.82B** (96.9%) · Gated DeltaNet ×69 **30.25B** (1.2%) · MTP **26.38B** (1.1%) · shared expert + router **5.02B** (0.2%) · gated attention ×23 **9.65B** (0.4%) · embed **2.03B** (0.1%) · lm head **2.03B** (0.1%) · norms **1.5M** (0.0%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1506,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one text token is multiplied by (active weights)** — total 93.25B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1460,
+   "width": 1291,
+   "height": 44,
+   "text": "**routed experts (512/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 391,
+   "y": -1460,
+   "width": 140,
+   "height": 44,
+   "text": "",
+   "color": "#a3e635"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 531,
+   "y": -1460,
+   "width": 843,
+   "height": 44,
+   "text": "**Gated DeltaNet ×69**",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": 1374,
+   "y": -1460,
+   "width": 269,
+   "height": 44,
+   "text": "**gated attention ×23**",
+   "color": "#f97316"
+  },
+  {
+   "id": "bc5",
+   "type": "text",
+   "x": 1643,
+   "y": -1460,
+   "width": 57,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1410,
+   "width": 2600,
+   "height": 40,
+   "text": "routed experts (512/layer) **46.31B** (49.7%) · shared expert + router **5.02B** (5.4%) · Gated DeltaNet ×69 **30.25B** (32.4%) · gated attention ×23 **9.65B** (10.3%) · lm head **2.03B** (2.2%) · embed **0** (row lookup) · MTP **0** (only when drafting) · norms **1.5M** (0.0%)"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "x6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "x6",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "per3",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e9",
+   "fromNode": "per3",
+   "toNode": "ho8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "ho8",
+   "toNode": "fn10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "fn10",
+   "toNode": "xf11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "xf11",
+   "toNode": "head13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "head13",
+   "toNode": "logits14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "logits14",
+   "toNode": "samp16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "samp16",
+   "toNode": "next17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "fn10",
+   "toNode": "mcat18",
+   "fromSide": "right",
+   "toSide": "top",
+   "label": "normed x",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "e17",
+   "fromNode": "mcat18",
+   "toNode": "mfc20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "mfc20",
+   "toNode": "mh21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "mh21",
+   "toNode": "mly23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "mly23",
+   "toNode": "mhd24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "mhd24",
+   "toNode": "mdr25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

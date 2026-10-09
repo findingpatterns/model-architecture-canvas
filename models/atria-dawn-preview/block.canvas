@@ -1,0 +1,860 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1700,
+   "y": -560,
+   "width": 1300,
+   "height": 190,
+   "text": "# One decoder layer — L6 (MoE, runs its own DSA indexer)  \nMLA attention (64 heads, q rank 2048, KV rank 512) restricted by DeepSeek Sparse Attention to the top-2048 tokens per query, then a 256-expert MoE (top-8 + 1 shared). Tensor shapes per token; bars ∝ channels (0.03 px/channel). Weight shapes `out×in` from the safetensors headers."
+  },
+  {
+   "id": "cap-blegend",
+   "type": "text",
+   "x": -350,
+   "y": -560,
+   "width": 1300,
+   "height": 190,
+   "text": "**Layer variants** (config `indexer_types`, `mlp_layer_types`): 21 of 78 layers run the indexer (orange) — L0–2, then every 4th; the other 57 skip it and reuse the previous indexer layer's top-2048 token ids. L0–2 replace the MoE by a dense SwiGLU FFN (12288 hidden, `12288×6144` gate). RoPE (θ = 8000000, interleaved) touches only the 64-dim rope slices."
+  },
+  {
+   "id": "bx30",
+   "type": "text",
+   "x": -92,
+   "y": -300,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl31",
+   "type": "text",
+   "x": 170,
+   "y": -312,
+   "width": 380,
+   "height": 34,
+   "text": "`x [T, 6144]  (residual stream)`"
+  },
+  {
+   "id": "bn132",
+   "type": "text",
+   "x": -150,
+   "y": -251,
+   "width": 300,
+   "height": 56,
+   "text": "**input_layernorm** (RMSNorm)",
+   "color": "3"
+  },
+  {
+   "id": "bxh33",
+   "type": "text",
+   "x": -92,
+   "y": -155,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl34",
+   "type": "text",
+   "x": 170,
+   "y": -167,
+   "width": 380,
+   "height": 34,
+   "text": "`x̂ [T, 6144]`"
+  },
+  {
+   "id": "bqa35",
+   "type": "text",
+   "x": -150,
+   "y": -106,
+   "width": 300,
+   "height": 56,
+   "text": "**q_a_proj** `2048×6144`  \nquery down-projection",
+   "color": "5"
+  },
+  {
+   "id": "bqan36",
+   "type": "text",
+   "x": -150,
+   "y": -10,
+   "width": 300,
+   "height": 56,
+   "text": "**q_a_layernorm** (RMSNorm 2048)",
+   "color": "3"
+  },
+  {
+   "id": "bqr37",
+   "type": "text",
+   "x": -31,
+   "y": 86,
+   "width": 61,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": 170,
+   "y": 74,
+   "width": 380,
+   "height": 34,
+   "text": "`q_resid [T, 2048]`"
+  },
+  {
+   "id": "bqb39",
+   "type": "text",
+   "x": -150,
+   "y": 135,
+   "width": 300,
+   "height": 56,
+   "text": "**q_b_proj** `16384×2048`  \n→ 64 heads × 256",
+   "color": "5"
+  },
+  {
+   "id": "bq40",
+   "type": "text",
+   "x": -246,
+   "y": 231,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": 266,
+   "y": 219,
+   "width": 380,
+   "height": 34,
+   "text": "`q [T, 64×256]`"
+  },
+  {
+   "id": "bqs42",
+   "type": "text",
+   "x": -150,
+   "y": 280,
+   "width": 300,
+   "height": 56,
+   "text": "**split** q_nope 192 | q_rope 64  \nRoPE on q_rope",
+   "color": "5"
+  },
+  {
+   "id": "bq243",
+   "type": "text",
+   "x": -246,
+   "y": 376,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl44",
+   "type": "text",
+   "x": 266,
+   "y": 364,
+   "width": 380,
+   "height": 34,
+   "text": "`q [T, 64, 256]`"
+  },
+  {
+   "id": "bkva45",
+   "type": "text",
+   "x": -1300,
+   "y": -10,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_a_proj_with_mqa** `576×6144`  \n= 512 latent + 64 rope",
+   "color": "5"
+  },
+  {
+   "id": "bkv046",
+   "type": "text",
+   "x": -1159,
+   "y": 86,
+   "width": 17,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": -1700,
+   "y": 74,
+   "width": 380,
+   "height": 34,
+   "text": "`[T, 576]`"
+  },
+  {
+   "id": "bkvn48",
+   "type": "text",
+   "x": -1300,
+   "y": 135,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_a_layernorm** on the 512 latent  \nRoPE on k_rope (64, 1 head)",
+   "color": "3"
+  },
+  {
+   "id": "bkvc49",
+   "type": "text",
+   "x": -1159,
+   "y": 231,
+   "width": 17,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl50",
+   "type": "text",
+   "x": -1700,
+   "y": 219,
+   "width": 380,
+   "height": 34,
+   "text": "`KV cache: c_kv [T, 512] + k_rope [T, 64]`"
+  },
+  {
+   "id": "bkvb51",
+   "type": "text",
+   "x": -1300,
+   "y": 280,
+   "width": 300,
+   "height": 56,
+   "text": "**kv_b_proj** `28672×512`  \n→ 64 heads × (192 k_nope + 256 v)",
+   "color": "5"
+  },
+  {
+   "id": "bkv152",
+   "type": "text",
+   "x": -1580,
+   "y": 376,
+   "width": 860,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl53",
+   "type": "text",
+   "x": -1980,
+   "y": 364,
+   "width": 380,
+   "height": 34,
+   "text": "`[T, 64×448]`"
+  },
+  {
+   "id": "bkvs54",
+   "type": "text",
+   "x": -1300,
+   "y": 425,
+   "width": 300,
+   "height": 56,
+   "text": "**k** = k_nope 192 | k_rope 64 (shared)  \n**v** = 256 per head",
+   "color": "5"
+  },
+  {
+   "id": "bkv255",
+   "type": "text",
+   "x": -1396,
+   "y": 521,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl56",
+   "type": "text",
+   "x": -1796,
+   "y": 509,
+   "width": 380,
+   "height": 34,
+   "text": "`k, v [T, 64, 256] each`"
+  },
+  {
+   "id": "bidxq",
+   "type": "text",
+   "x": 860,
+   "y": -10,
+   "width": 300,
+   "height": 66,
+   "text": "**indexer.wq_b** `4096×2048`  \n32 heads × 128 (from q_resid)",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "bidxk",
+   "type": "text",
+   "x": 1200,
+   "y": -10,
+   "width": 300,
+   "height": 66,
+   "text": "**indexer.wk** `128×6144`  \nwith LayerNorm · 1 key head × 128",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "bidxw",
+   "type": "text",
+   "x": 1540,
+   "y": -10,
+   "width": 300,
+   "height": 66,
+   "text": "**weights_proj** `32×6144`  \nper-head weight per query",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "bisc57",
+   "type": "text",
+   "x": 1200,
+   "y": 126,
+   "width": 300,
+   "height": 66,
+   "text": "**index score** = Σ_heads w · ReLU(q·k)  \nover all earlier tokens (RoPE on 64 dims)",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "bis58",
+   "type": "text",
+   "x": 1318,
+   "y": 232,
+   "width": 64,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl59",
+   "type": "text",
+   "x": 1520,
+   "y": 220,
+   "width": 380,
+   "height": 34,
+   "text": "`score [T, T_ctx]`"
+  },
+  {
+   "id": "bitk60",
+   "type": "text",
+   "x": 1200,
+   "y": 281,
+   "width": 300,
+   "height": 56,
+   "text": "**top-2048** token ids per query  \n9.4M params",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "bit61",
+   "type": "text",
+   "x": 1319,
+   "y": 377,
+   "width": 61,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl62",
+   "type": "text",
+   "x": 1520,
+   "y": 365,
+   "width": 380,
+   "height": 34,
+   "text": "`top-k ids [T, 2048] → reused by L7–9`"
+  },
+  {
+   "id": "batt63",
+   "type": "text",
+   "x": -150,
+   "y": 610,
+   "width": 300,
+   "height": 66,
+   "text": "**sparse MLA attention** · 64 heads  \neach query attends only to its 2048 picked tokens",
+   "color": "5"
+  },
+  {
+   "id": "bo64",
+   "type": "text",
+   "x": -246,
+   "y": 716,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl65",
+   "type": "text",
+   "x": 266,
+   "y": 704,
+   "width": 380,
+   "height": 34,
+   "text": "`o [T, 64×256]`"
+  },
+  {
+   "id": "bop66",
+   "type": "text",
+   "x": -150,
+   "y": 765,
+   "width": 300,
+   "height": 66,
+   "text": "**o_proj** `6144×16384`  \nthen add residual x  \n165.0M · attention",
+   "color": "5"
+  },
+  {
+   "id": "bh67",
+   "type": "text",
+   "x": -92,
+   "y": 871,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl68",
+   "type": "text",
+   "x": 170,
+   "y": 859,
+   "width": 380,
+   "height": 34,
+   "text": "`h [T, 6144]`"
+  },
+  {
+   "id": "bn269",
+   "type": "text",
+   "x": -150,
+   "y": 920,
+   "width": 300,
+   "height": 56,
+   "text": "**post_attention_layernorm** (RMSNorm)",
+   "color": "3"
+  },
+  {
+   "id": "bhh70",
+   "type": "text",
+   "x": -92,
+   "y": 1016,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl71",
+   "type": "text",
+   "x": 170,
+   "y": 1004,
+   "width": 380,
+   "height": 34,
+   "text": "`ĥ [T, 6144]`"
+  },
+  {
+   "id": "brt72",
+   "type": "text",
+   "x": -150,
+   "y": 1065,
+   "width": 300,
+   "height": 66,
+   "text": "**router** `256×6144` · sigmoid  \nscore bias (aux-loss-free) · top-8, renorm ×2.5",
+   "color": "4"
+  },
+  {
+   "id": "brw73",
+   "type": "text",
+   "x": -20,
+   "y": 1171,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl74",
+   "type": "text",
+   "x": 170,
+   "y": 1159,
+   "width": 380,
+   "height": 34,
+   "text": "`8 expert ids + weights per token`"
+  },
+  {
+   "id": "bex75",
+   "type": "text",
+   "x": -150,
+   "y": 1220,
+   "width": 300,
+   "height": 66,
+   "text": "**8 of 256 routed experts** · SwiGLU  \n6144 → 2048 → 6144 each  \n302.0M · active of 9.66B",
+   "color": "4"
+  },
+  {
+   "id": "bshared",
+   "type": "text",
+   "x": 1200,
+   "y": 1220,
+   "width": 300,
+   "height": 66,
+   "text": "**shared expert** · SwiGLU  \n6144 → 2048 → 6144 · 37.7M",
+   "color": "#a3e635"
+  },
+  {
+   "id": "bsum76",
+   "type": "text",
+   "x": -92,
+   "y": 1326,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl77",
+   "type": "text",
+   "x": 170,
+   "y": 1314,
+   "width": 380,
+   "height": 34,
+   "text": "`Σ weighted expert outputs [T, 6144]`"
+  },
+  {
+   "id": "badd78",
+   "type": "text",
+   "x": -150,
+   "y": 1375,
+   "width": 300,
+   "height": 56,
+   "text": "**add** shared + routed  \nplus residual h",
+   "color": "#64748b"
+  },
+  {
+   "id": "bout79",
+   "type": "text",
+   "x": -92,
+   "y": 1471,
+   "width": 184,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl80",
+   "type": "text",
+   "x": 170,
+   "y": 1459,
+   "width": 380,
+   "height": 34,
+   "text": "`x [T, 6144] → next layer`"
+  },
+  {
+   "id": "note-shared-layer",
+   "type": "text",
+   "x": -1700,
+   "y": 610,
+   "width": 520,
+   "height": 150,
+   "text": "On the 57 shared layers the orange indexer is absent (no `indexer.*` tensors); the layer takes the previous indexer layer's top-k ids as-is. The KV cache still holds a fresh latent per layer."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bx30",
+   "toNode": "bn132",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bn132",
+   "toNode": "bxh33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "bxh33",
+   "toNode": "bqa35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "bqa35",
+   "toNode": "bqan36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "bqan36",
+   "toNode": "bqr37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "bqr37",
+   "toNode": "bqb39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "bqb39",
+   "toNode": "bq40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "bq40",
+   "toNode": "bqs42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "bqs42",
+   "toNode": "bq243",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "bn132",
+   "toNode": "bkva45",
+   "fromSide": "left",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "bkva45",
+   "toNode": "bkv046",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "bkv046",
+   "toNode": "bkvn48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "bkvn48",
+   "toNode": "bkvc49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "bkvc49",
+   "toNode": "bkvb51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "bkvb51",
+   "toNode": "bkv152",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "bkv152",
+   "toNode": "bkvs54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "bkvs54",
+   "toNode": "bkv255",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "bqan36",
+   "toNode": "bidxq",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "e18",
+   "fromNode": "bn132",
+   "toNode": "bidxk",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "bn132",
+   "toNode": "bidxw",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "bidxq",
+   "toNode": "bisc57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "bidxk",
+   "toNode": "bisc57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "bidxw",
+   "toNode": "bisc57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "bisc57",
+   "toNode": "bis58",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "bis58",
+   "toNode": "bitk60",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "bitk60",
+   "toNode": "bit61",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "bq243",
+   "toNode": "batt63",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "bkv255",
+   "toNode": "batt63",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e28",
+   "fromNode": "bit61",
+   "toNode": "batt63",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e29",
+   "fromNode": "batt63",
+   "toNode": "bo64",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "bo64",
+   "toNode": "bop66",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "bop66",
+   "toNode": "bh67",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "bh67",
+   "toNode": "bn269",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "bn269",
+   "toNode": "bhh70",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "bhh70",
+   "toNode": "brt72",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "brt72",
+   "toNode": "brw73",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "brw73",
+   "toNode": "bex75",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "bn269",
+   "toNode": "bshared",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "bex75",
+   "toNode": "bsum76",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "bsum76",
+   "toNode": "badd78",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "bshared",
+   "toNode": "badd78",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e41",
+   "fromNode": "badd78",
+   "toNode": "bout79",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

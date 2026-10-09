@@ -1,0 +1,768 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1900,
+   "y": -560,
+   "width": 1500,
+   "height": 170,
+   "text": "# MiniMax-M3 — one decoder layer  \nA MoE layer with MiniMax Sparse Attention (L3–59). Grey bars = tensors (0.05 px/channel, long ones clipped), boxes = operations with their weights per layer. Read top → bottom; the four middle columns run side by side."
+  },
+  {
+   "id": "cap-bnote",
+   "type": "text",
+   "x": -300,
+   "y": -560,
+   "width": 1500,
+   "height": 170,
+   "text": "**Layer variants.** L0–2 have no indexer (left two columns skipped): every query attends all past tokens. They also swap the MoE for a dense SwiGLU-OAI FFN 6144→12288→6144 (226.5M). Attention projections, QK-norm, partial RoPE, norms and residuals are identical in all 60 layers."
+  },
+  {
+   "id": "bx39",
+   "type": "text",
+   "x": -154,
+   "y": -330,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": 174,
+   "y": -342,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 6144] from previous layer`"
+  },
+  {
+   "id": "bn141",
+   "type": "text",
+   "x": -150,
+   "y": -281,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (input_layernorm, × (1+w))",
+   "color": "3"
+  },
+  {
+   "id": "bxn42",
+   "type": "text",
+   "x": -154,
+   "y": -185,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl43",
+   "type": "text",
+   "x": 174,
+   "y": -197,
+   "width": 300,
+   "height": 34,
+   "text": "`x̂ [T, 6144]`"
+  },
+  {
+   "id": "qp44",
+   "type": "text",
+   "x": -500,
+   "y": -96,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 6144 → 64×128  \n50.3M",
+   "color": "1"
+  },
+  {
+   "id": "q45",
+   "type": "text",
+   "x": -555,
+   "y": 0,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl46",
+   "type": "text",
+   "x": -125,
+   "y": -12,
+   "width": 300,
+   "height": 34,
+   "text": "`q [T, 64, 128]`"
+  },
+  {
+   "id": "qn47",
+   "type": "text",
+   "x": -500,
+   "y": 49,
+   "width": 300,
+   "height": 56,
+   "text": "**q_norm** per head (128) · **RoPE** on first 64 dims",
+   "color": "1"
+  },
+  {
+   "id": "qo48",
+   "type": "text",
+   "x": -555,
+   "y": 145,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl49",
+   "type": "text",
+   "x": -125,
+   "y": 133,
+   "width": 300,
+   "height": 34,
+   "text": "`q [T, 64, 128]`"
+  },
+  {
+   "id": "kvp50",
+   "type": "text",
+   "x": 400,
+   "y": -96,
+   "width": 300,
+   "height": 56,
+   "text": "**k_proj, v_proj** 6144 → 4×128 each  \n6.3M",
+   "color": "1"
+  },
+  {
+   "id": "kv51",
+   "type": "text",
+   "x": 524,
+   "y": 0,
+   "width": 51,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl52",
+   "type": "text",
+   "x": 720,
+   "y": -12,
+   "width": 300,
+   "height": 34,
+   "text": "`k, v [T, 4, 128]`"
+  },
+  {
+   "id": "kn53",
+   "type": "text",
+   "x": 400,
+   "y": 49,
+   "width": 300,
+   "height": 56,
+   "text": "k: **k_norm** per head · **RoPE** first 64 dims",
+   "color": "1"
+  },
+  {
+   "id": "kvc54",
+   "type": "text",
+   "x": 524,
+   "y": 145,
+   "width": 51,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl55",
+   "type": "text",
+   "x": 720,
+   "y": 133,
+   "width": 300,
+   "height": 34,
+   "text": "`KV cache: 1024 values / token / layer`"
+  },
+  {
+   "id": "ikp56",
+   "type": "text",
+   "x": -1850,
+   "y": -96,
+   "width": 300,
+   "height": 80,
+   "text": "**index_k_proj** 6144→128  \n+ RMSNorm · RoPE first 64  \n0.8M",
+   "color": "5"
+  },
+  {
+   "id": "ik57",
+   "type": "text",
+   "x": -1708,
+   "y": 24,
+   "width": 16,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl58",
+   "type": "text",
+   "x": -2170,
+   "y": 12,
+   "width": 300,
+   "height": 34,
+   "text": "`k_I [T, 128] (cached, 1 head)`"
+  },
+  {
+   "id": "iqp59",
+   "type": "text",
+   "x": -1250,
+   "y": -96,
+   "width": 300,
+   "height": 80,
+   "text": "**index_q_proj** 6144→4×128  \n+ RMSNorm · RoPE first 64  \n3.1M",
+   "color": "5"
+  },
+  {
+   "id": "iqt60",
+   "type": "text",
+   "x": -1113,
+   "y": 24,
+   "width": 26,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl61",
+   "type": "text",
+   "x": -930,
+   "y": 12,
+   "width": 300,
+   "height": 34,
+   "text": "`q_I [T, 4, 128]`"
+  },
+  {
+   "id": "isc62",
+   "type": "text",
+   "x": -1250,
+   "y": 73,
+   "width": 300,
+   "height": 80,
+   "text": "score = q_I,h · k_I (causal) · **max-pool** over 128-key blocks",
+   "color": "5"
+  },
+  {
+   "id": "isco63",
+   "type": "text",
+   "x": -1140,
+   "y": 193,
+   "width": 80,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl64",
+   "type": "text",
+   "x": -930,
+   "y": 181,
+   "width": 300,
+   "height": 34,
+   "text": "`block scores [T, 4, T/128]`"
+  },
+  {
+   "id": "itop65",
+   "type": "text",
+   "x": -1250,
+   "y": 242,
+   "width": 300,
+   "height": 56,
+   "text": "local 1 block forced in · **top-16** blocks per head",
+   "color": "5"
+  },
+  {
+   "id": "iids66",
+   "type": "text",
+   "x": -1180,
+   "y": 338,
+   "width": 160,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl67",
+   "type": "text",
+   "x": -930,
+   "y": 326,
+   "width": 300,
+   "height": 34,
+   "text": "`block ids [T, 4, 16]`"
+  },
+  {
+   "id": "att68",
+   "type": "text",
+   "x": -150,
+   "y": 447,
+   "width": 300,
+   "height": 80,
+   "text": "**block-sparse GQA attention** — 64 heads in 4 groups; each group reads its 16×128 picked keys",
+   "color": "1"
+  },
+  {
+   "id": "ao69",
+   "type": "text",
+   "x": -205,
+   "y": 567,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl70",
+   "type": "text",
+   "x": 225,
+   "y": 555,
+   "width": 300,
+   "height": 34,
+   "text": "`o [T, 64×128]`"
+  },
+  {
+   "id": "op71",
+   "type": "text",
+   "x": -150,
+   "y": 616,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 8192 → 6144  \n50.3M",
+   "color": "1"
+  },
+  {
+   "id": "ao272",
+   "type": "text",
+   "x": -154,
+   "y": 712,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl73",
+   "type": "text",
+   "x": 174,
+   "y": 700,
+   "width": 300,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "r174",
+   "type": "text",
+   "x": -150,
+   "y": 761,
+   "width": 300,
+   "height": 56,
+   "text": "**+ residual** (x from the top)",
+   "color": "#64748b"
+  },
+  {
+   "id": "h175",
+   "type": "text",
+   "x": -154,
+   "y": 857,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl76",
+   "type": "text",
+   "x": 174,
+   "y": 845,
+   "width": 300,
+   "height": 34,
+   "text": "`h [T, 6144]`"
+  },
+  {
+   "id": "bn277",
+   "type": "text",
+   "x": -150,
+   "y": 906,
+   "width": 300,
+   "height": 56,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "hn78",
+   "type": "text",
+   "x": -154,
+   "y": 1002,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl79",
+   "type": "text",
+   "x": -474,
+   "y": 990,
+   "width": 300,
+   "height": 34,
+   "text": "`ĥ [T, 6144]`"
+  },
+  {
+   "id": "rt80",
+   "type": "text",
+   "x": -150,
+   "y": 1051,
+   "width": 300,
+   "height": 80,
+   "text": "**router** 6144→128 (F32), sigmoid · top-4 by score+bias · weights normalised  \n0.8M",
+   "color": "4"
+  },
+  {
+   "id": "shexp",
+   "type": "text",
+   "x": 350,
+   "y": 1051,
+   "width": 300,
+   "height": 80,
+   "text": "**shared expert** (always on)    \nSwiGLU-OAI 6144→3072→6144    \n56.6M",
+   "color": "#22c55e"
+  },
+  {
+   "id": "rid81",
+   "type": "text",
+   "x": -20,
+   "y": 1171,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl82",
+   "type": "text",
+   "x": 170,
+   "y": 1159,
+   "width": 300,
+   "height": 34,
+   "text": "`4 expert ids + weights / token`"
+  },
+  {
+   "id": "rex83",
+   "type": "text",
+   "x": -150,
+   "y": 1220,
+   "width": 300,
+   "height": 80,
+   "text": "**4 of 128 routed experts**, each SwiGLU-OAI 6144→3072→6144  \n56.6M · each · 7.25B all",
+   "color": "4"
+  },
+  {
+   "id": "sum84",
+   "type": "text",
+   "x": -150,
+   "y": 1340,
+   "width": 300,
+   "height": 80,
+   "text": "**Σ** weighted experts **×2.0** + shared expert, **+ residual**",
+   "color": "#64748b"
+  },
+  {
+   "id": "bout85",
+   "type": "text",
+   "x": -154,
+   "y": 1460,
+   "width": 307,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl86",
+   "type": "text",
+   "x": 174,
+   "y": 1448,
+   "width": 300,
+   "height": 34,
+   "text": "`x [T, 6144] → next layer`"
+  },
+  {
+   "id": "note-kv",
+   "type": "text",
+   "x": 1150,
+   "y": -116,
+   "width": 520,
+   "height": 150,
+   "text": "GQA: 16 query heads share each K/V head, so the cache holds 1024 numbers per token per layer (+ 128 for the indexer key). The indexer has one head per KV group (4 = 4) and no value path; it only decides which key blocks the main attention may read."
+  },
+  {
+   "id": "note-act",
+   "type": "text",
+   "x": 700,
+   "y": 747,
+   "width": 560,
+   "height": 170,
+   "text": "SwiGLU-OAI (experts, shared expert, dense FFN): gate clamped ≤ 7.0, up clamped to ±7.0, out = (up + 1) · gate · σ(1.702·gate). Experts store w1 = gate, w3 = up, w2 = down, each 3072×6144."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bx39",
+   "toNode": "bn141",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bn141",
+   "toNode": "bxn42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "bxn42",
+   "toNode": "qp44",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "qp44",
+   "toNode": "q45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "q45",
+   "toNode": "qn47",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "qn47",
+   "toNode": "qo48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "bxn42",
+   "toNode": "kvp50",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "kvp50",
+   "toNode": "kv51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "kv51",
+   "toNode": "kn53",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "kn53",
+   "toNode": "kvc54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "bxn42",
+   "toNode": "ikp56",
+   "fromSide": "left",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "ikp56",
+   "toNode": "ik57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "bxn42",
+   "toNode": "iqp59",
+   "fromSide": "left",
+   "toSide": "right"
+  },
+  {
+   "id": "e13",
+   "fromNode": "iqp59",
+   "toNode": "iqt60",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "iqt60",
+   "toNode": "isc62",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "ik57",
+   "toNode": "isc62",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e16",
+   "fromNode": "isc62",
+   "toNode": "isco63",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "isco63",
+   "toNode": "itop65",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "itop65",
+   "toNode": "iids66",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "qo48",
+   "toNode": "att68",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "kvc54",
+   "toNode": "att68",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "iids66",
+   "toNode": "att68",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e22",
+   "fromNode": "att68",
+   "toNode": "ao69",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "ao69",
+   "toNode": "op71",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "op71",
+   "toNode": "ao272",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "ao272",
+   "toNode": "r174",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "r174",
+   "toNode": "h175",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "h175",
+   "toNode": "bn277",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "bn277",
+   "toNode": "hn78",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "hn78",
+   "toNode": "rt80",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "hn78",
+   "toNode": "shexp",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "rt80",
+   "toNode": "rid81",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "rid81",
+   "toNode": "rex83",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "rex83",
+   "toNode": "sum84",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "shexp",
+   "toNode": "sum84",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e35",
+   "fromNode": "sum84",
+   "toNode": "bout85",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

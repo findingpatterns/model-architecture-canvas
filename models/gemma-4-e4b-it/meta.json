@@ -1,0 +1,101 @@
+{
+  "name": "Gemma 4 E4B-it",
+  "description": "Google DeepMind's on-device Gemma 4 (\"4B effective\", 8.0B stored): 42 decoder layers in a [5 × sliding-window (512), 1 × full] pattern with GQA 8/2 (head 256 sliding, 512 full with p-RoPE); a 42 × 256 per-layer-embedding table (2.8B, lookup only) feeds every layer its own code, and the last 18 layers share the K/V of L22 / L23 instead of computing their own. A 16-layer ViT and a 12-layer Conformer bring in images and audio; tied 262K-vocab head with logit softcap 30. Numbers from config.json and the safetensors header.",
+  "logo": "G4",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "gemma",
+    "google",
+    "dense",
+    "multimodal",
+    "on-device",
+    "per-layer-embeddings",
+    "kv-sharing"
+  ],
+  "source": "https://huggingface.co/google/gemma-4-E4B-it",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "8.00B",
+      "number": 8.0,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/model.safetensors",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. Single-file checkpoint (no index); includes the 2.82B per-layer-embedding table and 55M of K/V weights that the 18 KV-shared layers never load."
+    },
+    {
+      "key": "params_active",
+      "value": "4.64B",
+      "number": 4.64,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/model.safetensors",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. Also excludes the per-layer-embedding table (a row lookup) and the unused K/V of the KV-shared layers. The lm head is tied to the embedding (0.67B, counted here as the head)."
+    },
+    {
+      "key": "layers",
+      "value": "42",
+      "number": 42,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,560",
+      "number": 2560,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-512 5 : 1 full, GQA 8 q / 2 kv (head 256 sliding · 512 full) · last 18 layers reuse K/V",
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "dense",
+      "number": 0,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "— (dense)",
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "262,144",
+      "number": 262144,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "128K",
+      "number": 131072,
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/blob/main/model.safetensors"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video, audio",
+      "source": "https://huggingface.co/google/gemma-4-E4B-it/raw/main/README.md",
+      "note": "Card: processes Text, Image, Video, and Audio (audio native on E2B/E4B/12B); video = frame sequences via the vision encoder."
+    },
+    {
+      "key": "drafting",
+      "value": "none",
+      "source": "https://huggingface.co/google/gemma-4-E4B-it"
+    }
+  ]
+}
