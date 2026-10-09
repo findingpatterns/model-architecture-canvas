@@ -1,0 +1,691 @@
+{
+  "schemaVersion": 1,
+  "id": "rtx-5090",
+  "name": "NVIDIA GeForce RTX 5090",
+  "vendor": "NVIDIA",
+  "arch": "Blackwell (consumer, GB202)",
+  "disclaimer": "Illustrative geometry, drawn to the same unit scale as the data-center Blackwell (B200) model for size comparison. GB202's exact die outline, GDDR7 package footprint and SM grid layout are not published by NVIDIA; the die box approximates the ~744-762 mm² figures reported by independent teardowns/analysts, and the SM/GDDR7 grids are symbolic, not an exact floorplan.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "media": "#9a4fbf",
+    "graphics": "#c0392b"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.6, 15],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Standard organic flip-chip substrate on a consumer graphics card PCB. Unlike B200, there is no silicon interposer or CoWoS bridge: this is a single monolithic die with GDDR7 chips wire-bonded directly around it, the same packaging style as every other gaming GPU.",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "GB202 die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 7.2],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 2.2,
+      "desc": "One monolithic die — the opposite packaging bet from the data-center B200, which is two reticle-limited dies joined by a 10 TB/s NV-HBI link. GB202 stays within a single reticle, so there is no die-to-die interconnect, but the transistor budget is capped by the reticle limit instead of being doubled across two dies. Holds GPCs/SMs, 96 MB of enabled L2, GDDR7 memory controllers, the display engine, video encode/decode blocks and PCIe I/O. Same architecture family name as B200 (\"Blackwell\"), but a completely different chip aimed at graphics + local AI inference rather than data-center training.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "92.2 billion",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4N (custom, same process family as the data-center Hopper/Blackwell 4N/4NP nodes, not a plain \"4nm\")",
+          "source": "https://videocardz.com/newz/nvidia-rtx-50-gb202-gaming-gpu-reportedly-features-the-same-tsmc-4np-process-as-b100"
+        },
+        {
+          "label": "Die size",
+          "value": "~744-762 mm² (not officially published; independent estimates converge near 750 mm²)",
+          "estimate": true
+        },
+        {
+          "label": "SMs enabled",
+          "value": "170 of the full GB202's 192 SMs (21,760 CUDA cores)",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        },
+        {
+          "label": "Tensor Memory (TMEM)",
+          "value": "Not present. Consumer Blackwell SMs use mma.sync / wgmma.async and accumulate directly in the register file, the same model as Ada — B200's dedicated TMEM accumulator and tcgen05.mma instruction are data-center-only.",
+          "estimate": true
+        },
+        {
+          "label": "NVLink",
+          "value": "None. RTX 5090 has no NVLink; multi-GPU and host links go over PCIe only.",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache (96 MB enabled)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.7, 0.08, 0.9],
+        "pos": [0, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2, buffering data between GDDR7 and all SMs. The full GB202 die has 128 MB of L2; the RTX 5090 SKU enables 96 MB of it (the rest is cut down along with the disabled SMs). Framebuffer tiles, textures and hot weights for local inference all land here before GDDR7.",
+      "specs": [
+        {
+          "label": "Enabled capacity",
+          "value": "96 MB (of 128 MB on the full GB202 die)",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc",
+      "parent": "die",
+      "name": "GDDR7 memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.5, 0.08, 7.6],
+        "pos": [-3, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "512-bit GDDR7 PHY (8x 64-bit channels, clamshell-mounted chips on both sides of the PCB). No HBM PHY, no interposer routing — GDDR7 pins wire straight to the substrate, which is why a gaming GPU board looks nothing like an SXM module.",
+      "specs": [
+        {
+          "label": "Bus width",
+          "value": "512-bit",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        },
+        {
+          "label": "Memory type",
+          "value": "GDDR7 (not HBM3e like B200)",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        }
+      ],
+      "role": "memory-controller"
+    },
+    {
+      "id": "video-engine",
+      "parent": "die",
+      "name": "Video encode/decode engines",
+      "group": "media",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.9],
+        "pos": [2.6, 0.74, -3.3]
+      },
+      "explode": 3.2,
+      "desc": "3x 9th-generation NVENC encoders + 2x 6th-generation NVDEC decoders. A graphics-card feature with no equivalent on B200, which has no display or media engines at all. Triple encoders let the 5090 export video roughly 60% faster than the RTX 4090 by splitting a frame or stream across engines.",
+      "specs": [
+        {
+          "label": "Encoders",
+          "value": "3x NVENC (9th gen)",
+          "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+        },
+        {
+          "label": "Decoders",
+          "value": "2x NVDEC (6th gen)",
+          "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+        }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "display-engine",
+      "parent": "die",
+      "name": "Display engine",
+      "group": "graphics",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.4],
+        "pos": [2.6, 0.74, 3.3]
+      },
+      "explode": 3.2,
+      "desc": "Drives 3x DisplayPort 2.1b (UHBR20, up to 80 Gbit/s per link) and 1x HDMI 2.1b directly off the die — another graphics-only block B200 has no reason to carry, since it never drives a monitor.",
+      "specs": [
+        {
+          "label": "Outputs",
+          "value": "3x DisplayPort 2.1b, 1x HDMI 2.1b",
+          "source": "https://videocardz.com/newz/nvidia-geforce-rtx-5090-to-pcie-5-0-interface-displayport-2-1a-uhbr20-and-a-single-12x-2x6-power-connector"
+        },
+        {
+          "label": "Max resolution",
+          "value": "4K @ 480 Hz or 8K @ 165 Hz (with DSC)",
+          "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+        }
+      ],
+      "role": "display-engine"
+    },
+    {
+      "id": "rop",
+      "parent": "die",
+      "name": "ROPs (render output units)",
+      "group": "graphics",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.4],
+        "pos": [-2.6, 0.74, 3.3]
+      },
+      "explode": 3.2,
+      "desc": "Render Output units tied to the memory/L2 partitions. Blend, resolve anti-aliasing and write finished pixels to the framebuffer in GDDR7 — the last stop in the graphics pipeline, and a unit type that has no reason to exist on a training accelerator like B200.",
+      "role": "rop"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe 5.0",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [0, 0.74, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "PCIe 5.0 x16 is the only off-chip link. B200 instead carries NVLink 5 (1.8 TB/s per GPU) for GPU-to-GPU traffic through NVSwitch — the RTX 5090 has no NVLink fabric at all, so multi-GPU and host traffic both go over this single PCIe link.",
+      "specs": [
+        {
+          "label": "Interconnect",
+          "value": "PCIe 5.0 x16 (no NVLink)",
+          "source": "https://videocardz.com/newz/nvidia-geforce-rtx-5090-to-pcie-5-0-interface-displayport-2-1a-uhbr20-and-a-single-12x-2x6-power-connector"
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs (bank A)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.14, 0.58],
+        "pos": [-2.4, 0.77, -3.3]
+      },
+      "repeat": {
+        "count": [9, 1, 5],
+        "step": [0.52, 0, 0.72]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors. Each SM carries 4 fifth-generation Tensor Cores, 1 fourth-generation RT core, texture units and L1/shared memory — no Tensor Memory, unlike B200's SMs. The grid is symbolic (this model does not claim an exact SM floorplan); 170 of 192 physical SMs are enabled on this SKU. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "170 enabled (symbolic grid)",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs (bank B)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.14, 0.58],
+        "pos": [-2.4, 0.77, 0.9]
+      },
+      "repeat": {
+        "count": [9, 1, 5],
+        "step": [0.52, 0, 0.72]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid), second bank.",
+      "role": "sm-array"
+    },
+    {
+      "id": "gddr-left",
+      "parent": "package",
+      "name": "GDDR7 chips (left bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.3, 0.8],
+        "pos": [-6.6, 0.65, -4.2]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.1, 0, 2.6]
+      },
+      "explode": 2.3,
+      "desc": "Discrete GDDR7 DRAM packages, surface-mounted on the PCB in clamshell pairs around the die — no TSVs, no HBM base die, no interposer. 32 GB total across 16 chips (2 GB each) feeding the 512-bit bus at a rated 1,792 GB/s, far below B200's 8 TB/s per GPU but far cheaper per GB and sufficient for a graphics/gaming + local-inference workload.",
+      "specs": [
+        {
+          "label": "Capacity (whole GPU)",
+          "value": "32 GB GDDR7",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        },
+        {
+          "label": "Bandwidth (whole GPU)",
+          "value": "1,792 GB/s (512-bit bus)",
+          "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+        },
+        {
+          "label": "Chip count / arrangement",
+          "value": "Drawn as 16 packages (8 left, 8 right), 2 GB each; exact clamshell placement not published",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr-right",
+      "parent": "package",
+      "name": "GDDR7 chips (right bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.3, 0.8],
+        "pos": [6.6, 0.65, -4.2]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.1, 0, 2.6]
+      },
+      "explode": 2.3,
+      "desc": "Second bank of GDDR7 packages, mirroring the left bank on the other side of the die.",
+      "role": "gddr-memory"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by a block's threads, combined with the L1 cache (same unified design as Ada/Hopper-class SMs). Holds operand tiles for the Tensor Cores and texel data for the texture units.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "~128 KB (Ada/Blackwell-consumer class; CUDA caps shared memory at 99 KB per block)",
+              "estimate": true
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (5th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.35, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies matrix tiles per instruction (mma.sync / wgmma.async), with FP4/FP8/BF16 inputs — new FP4 support versus Ada, which stopped at FP8. Unlike B200's Tensor Cores, there is no tcgen05.mma and no Tensor Memory: partial sums accumulate straight into the register file, the older (Ada-style) accumulation model.",
+          "specs": [
+            {
+              "label": "Lowest precision",
+              "value": "FP4",
+              "source": "https://www.spheron.network/blog/nvidia-rtx-5090-specs/"
+            },
+            {
+              "label": "Count (whole GPU)",
+              "value": "680 (4 per SM x 170 enabled SMs)",
+              "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, -0.05, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers. Because this SM has no Tensor Memory, the Tensor Core's accumulators live here directly instead of in a separate accumulator memory like B200's TMEM.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 x 64 KB)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 0.25, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Issues ready warps each cycle; scalar CUDA cores (FP32/INT32) run the epilogue — bias, activation, blend inputs, quantization — after Tensor Core and RT core results land in registers.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "rt-core",
+          "parent": "smem",
+          "name": "RT core (4th gen)",
+          "group": "graphics",
+          "color": "#c0392b",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [1.25, 0.35, -0.55]
+          },
+          "desc": "Fixed-function ray/triangle and BVH-traversal hardware, one per SM (170 total). Adds hardware support for linear-swept spheres (useful for hair/fur) and an improved Opacity Micromap Engine over the 3rd-gen RT cores in Ada. B200 has no RT cores at all — it is a pure compute/AI die with no graphics pipeline.",
+          "specs": [
+            {
+              "label": "Count (whole GPU)",
+              "value": "170 (1 per SM)",
+              "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+            }
+          ],
+          "role": "rt-core"
+        },
+        {
+          "id": "texture-unit",
+          "parent": "smem",
+          "name": "Texture unit",
+          "group": "graphics",
+          "color": "#d9644a",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.2, 0.9],
+            "pos": [1.25, -0.05, 0.55]
+          },
+          "desc": "Samples and filters texture data for shaders (and increasingly for neural-rendering/DLSS feature extraction). Another graphics-pipeline block with no B200 equivalent.",
+          "role": "texture-unit"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-left-to-die",
+      "from": "gddr-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr-right-to-die",
+      "from": "gddr-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-pcie",
+      "from": "die",
+      "to": "pcie",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights/activations (for local AI inference) and the framebuffer/textures (for rendering) sit in GDDR7, not HBM.",
+      "focus": ["gddr-left", "gddr-right"],
+      "dot": "gddr-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "gddr"
+    },
+    {
+      "text": "2. The 512-bit GDDR7 memory controller reads at up to 1,792 GB/s — far below B200's 8 TB/s per GPU, but plenty for a graphics + local-inference part.",
+      "focus": ["mc"],
+      "dot": "mc",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the 96 MB of enabled L2 (128 MB exists on the full GB202 die; this SKU enables 96 MB along with its 170 of 192 SMs).",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. Tiles move into per-SM L1/shared memory, ready for the Tensor Cores, RT cores and texture units.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "5. The 5th-gen Tensor Cores multiply tiles in FP4/FP8/BF16 — same new FP4 support as B200, for on-device AI (DLSS 4, local LLM inference).",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. Partial sums accumulate directly in the register file — there is no Tensor Memory here, unlike B200, so no dedicated accumulator stage exists.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "7. Epilogue: CUDA cores apply bias/activation/quantization to the Tensor Core result.",
+      "focus": ["warp-scheduler"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "8. For rendering, the RT core (4th gen) walks the BVH and tests ray/triangle intersections in fixed-function hardware — a unit B200 simply doesn't have.",
+      "focus": ["rt-core"],
+      "dot": "rt-core",
+      "drill": "sm-detail",
+      "stage": "rt-core"
+    },
+    {
+      "text": "9. The texture unit samples and filters surface textures for the shaded pixel.",
+      "focus": ["texture-unit"],
+      "dot": "texture-unit",
+      "drill": "sm-detail",
+      "stage": "texture-unit"
+    },
+    {
+      "text": "10. ROPs blend, resolve anti-aliasing and write the finished pixel to the GDDR7 framebuffer.",
+      "focus": ["rop"],
+      "dot": "rop",
+      "drill": null,
+      "stage": "rop"
+    },
+    {
+      "text": "11. Finished frames are encoded by the 3x NVENC engines and/or driven out through the display engine (3x DP 2.1b, HDMI 2.1b); any host/multi-GPU traffic goes over PCIe 5.0 — there is no NVLink fabric on this part.",
+      "focus": ["video-engine", "display-engine", "pcie"],
+      "dot": "pcie",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "92.2 billion (1 die)",
+      "number": 92.2,
+      "role": "compute-die",
+      "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+    },
+    {
+      "key": "dies",
+      "value": "1, monolithic (vs 2 dies + NV-HBI on B200)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+    },
+    {
+      "key": "die_area",
+      "value": "750 mm²",
+      "number": 750,
+      "role": "compute-die",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "750 mm² (1 die)",
+      "number": 750,
+      "role": "compute-die",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4nm 4N (NVIDIA custom process)",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "575 W TGP (per card)",
+      "number": 575,
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "170 SMs enabled (of 192 on the full GB202 die)",
+      "number": 170,
+      "role": "sm-array",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation (no Tensor Memory, unlike B200's 5th-gen Tensor Cores)",
+      "role": "tensor-core",
+      "source": "https://www.spheron.network/blog/nvidia-rtx-5090-specs/"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP4",
+      "role": "tensor-core",
+      "source": "https://www.spheron.network/blog/nvidia-rtx-5090-specs/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "1.676 PFLOPS dense, FP32 accumulate (3,352 AI TOPS with sparsity)",
+      "number": 1.676,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "0.838 PFLOPS dense with FP16 accumulate (0.419 with FP32 accumulate)",
+      "number": 0.838,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "1.676 PFLOPS with sparsity, FP16 accumulate (0.838 with FP32 accumulate)",
+      "number": 1.676,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "int8_dense",
+      "value": "838 TOPS dense (1,676 with sparsity)",
+      "number": 838,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "209.5 TFLOPS dense BF16, FP32 accumulate (FP16 with FP16 accumulate: 419)",
+      "number": 209.5,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "104.8 TFLOPS dense (209.5 with sparsity)",
+      "number": 104.8,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "rt_cores",
+      "value": "170 (4th gen)",
+      "number": 170,
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "l2_cache",
+      "value": "96 MB enabled (of 128 MB on the full GB202 die)",
+      "number": 96,
+      "role": "l2-cache",
+      "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "32 GB GDDR7 (per card)",
+      "number": 32,
+      "role": "gddr-memory",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "1.792 TB/s (1,792 GB/s, 512-bit @ 28 Gbps)",
+      "number": 1.792,
+      "role": "gddr-memory",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Standard organic substrate, no CoWoS/interposer (no HBM to route)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die drawn at ~26 x 29 mm (~750 mm², estimate - GB202's exact outline is not published); GDDR7 package footprint is an illustrative stand-in, not an exact pad size",
+    "estimate": true
+  }
+}

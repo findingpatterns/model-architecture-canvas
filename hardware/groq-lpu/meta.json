@@ -1,0 +1,8 @@
+{
+  "name": "Groq LPU (GroqChip)",
+  "description": "Tensor Streaming Processor: a functionally-sliced monolithic die (MXM/SXM/MEM/VXM slices, mirrored hemispheres), 230 MB on-chip SRAM, no HBM, compiler-scheduled deterministic streaming.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["groq", "lpu", "tsp", "inference"],
+  "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+}

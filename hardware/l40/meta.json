@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA L40",
+  "description": "Ada Lovelace AD102 data-center GPU for rendering, virtual workstations and AI: 48GB GDDR6 ECC, 96MB L2, 4th-gen Tensor Cores (FP8), 3rd-gen RT Cores, 4x DisplayPort, 300W.",
+  "kind": "hardware",
+  "tags": ["nvidia", "ada-lovelace", "ad102", "gpu", "gddr6", "rendering", "rtx-vws"],
+  "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

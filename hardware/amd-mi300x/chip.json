@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "id": "amd-mi300x",
+  "name": "AMD Instinct MI300X",
+  "vendor": "AMD",
+  "arch": "CDNA 3",
+  "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). IOD/XCD die sizes come from third-party die-shot analysis, not AMD's own numbers. CU grid, Matrix Core and ALU layouts are illustrative, not exact floorplans.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "io-die": "#6b4fa0"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "OAM package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [17, 0.6, 17], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "Organic substrate of the OAM module. Routes power and xGMI/PCIe signals from the package to the baseboard.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Silicon interposer (CoWoS-S)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [14, 0.3, 14], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "TSMC CoWoS-S: a single large silicon interposer (reported ~3.3x reticle size) carrying all 12 logic dies and 8 HBM3 stacks. The 8 XCDs are additionally 3D-stacked onto the 4 IODs with TSMC's SoIC hybrid bonding — unlike B200's two side-by-side dies on one reticle, MI300X vertically stacks compute on top of I/O.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-S (2.5D) + SoIC (3D hybrid bonding, XCD-on-IOD)",
+          "source": "https://newsletter.semianalysis.com/p/amd-mi300-taming-the-hype-ai-performance"
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "infinity-fabric-link",
+      "parent": "interposer",
+      "name": "Infinity Fabric AP mesh",
+      "group": "io",
+      "geom": { "type": "box", "size": [5.2, 0.1, 5.2], "pos": [0, 0.62, 0] },
+      "explode": 1.5,
+      "desc": "Infinity Fabric Advanced Package links wiring all 4 IODs together, keeping the whole package coherent as one GPU — the MI300X analog of B200's NV-HBI, but a full mesh across 4 dies instead of a single bridge between 2.",
+      "specs": [
+        {
+          "label": "Scope",
+          "value": "Coherent fabric across all 4 IODs + 8 XCDs",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "xgmi-link",
+      "parent": "package",
+      "name": "xGMI links",
+      "group": "io",
+      "geom": { "type": "box", "size": [3, 0.2, 0.4], "pos": [0, 0.9, 7.2] },
+      "explode": 2,
+      "desc": "Off-package GPU-to-GPU interconnect. Each MI300X has 7 xGMI links forming a fully-connected mesh to its 7 peers in an 8-GPU OAM baseboard — the MI300X analog of NVLink.",
+      "specs": [
+        {
+          "label": "Aggregate bandwidth (per GPU)",
+          "value": "896 GB/s bidirectional (7 peer links)",
+          "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/platform.html"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "iod-0",
+      "parent": "interposer",
+      "name": "IOD 0",
+      "group": "io-die",
+      "geom": { "type": "box", "size": [4.4, 0.5, 4.4], "pos": [-2.4, 0.85, -2.4] },
+      "explode": 2,
+      "desc": "I/O die 0 (TSMC N6). Holds memory controllers, part of the 256 MB Infinity Cache, Infinity Fabric and xGMI/PCIe PHYs for the 2 XCDs stacked on top of it.",
+      "specs": [
+        {
+          "label": "Process",
+          "value": "TSMC N6",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        },
+        {
+          "label": "Die size",
+          "value": "~366 mm² (third-party die-shot estimate, not published by AMD)",
+          "estimate": true
+        }
+      ],
+      "role": "io-die"
+    },
+    {
+      "id": "iod-1",
+      "parent": "interposer",
+      "name": "IOD 1",
+      "group": "io-die",
+      "geom": { "type": "box", "size": [4.4, 0.5, 4.4], "pos": [2.4, 0.85, -2.4] },
+      "explode": 2,
+      "desc": "I/O die 1, identical to IOD 0.",
+      "role": "io-die"
+    },
+    {
+      "id": "iod-2",
+      "parent": "interposer",
+      "name": "IOD 2",
+      "group": "io-die",
+      "geom": { "type": "box", "size": [4.4, 0.5, 4.4], "pos": [-2.4, 0.85, 2.4] },
+      "explode": 2,
+      "desc": "I/O die 2, identical to IOD 0.",
+      "role": "io-die"
+    },
+    {
+      "id": "iod-3",
+      "parent": "interposer",
+      "name": "IOD 3",
+      "group": "io-die",
+      "geom": { "type": "box", "size": [4.4, 0.5, 4.4], "pos": [2.4, 0.85, 2.4] },
+      "explode": 2,
+      "desc": "I/O die 3, identical to IOD 0.",
+      "role": "io-die"
+    },
+    {
+      "id": "icache-0",
+      "parent": "iod-0",
+      "name": "Infinity Cache slice",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [4.0, 0.06, 1.0], "pos": [-2.4, 1.14, -3.5] },
+      "explode": 2.6,
+      "desc": "One of 4 slices of the 256 MB Infinity Cache (AMD's MALL), spread across the IODs. Absorbs repeated HBM traffic before it reaches the XCDs — the MI300X analog of B200's L2, but one level further from compute, shared by all 8 XCDs.",
+      "specs": [
+        {
+          "label": "Total size (4 slices)",
+          "value": "256 MB",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        }
+      ],
+      "role": "infinity-cache"
+    },
+    {
+      "id": "icache-1",
+      "parent": "iod-1",
+      "name": "Infinity Cache slice",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [4.0, 0.06, 1.0], "pos": [2.4, 1.14, -3.5] },
+      "explode": 2.6,
+      "desc": "Infinity Cache slice on IOD 1.",
+      "role": "infinity-cache"
+    },
+    {
+      "id": "icache-2",
+      "parent": "iod-2",
+      "name": "Infinity Cache slice",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [4.0, 0.06, 1.0], "pos": [-2.4, 1.14, 1.3] },
+      "explode": 2.6,
+      "desc": "Infinity Cache slice on IOD 2.",
+      "role": "infinity-cache"
+    },
+    {
+      "id": "icache-3",
+      "parent": "iod-3",
+      "name": "Infinity Cache slice",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [4.0, 0.06, 1.0], "pos": [2.4, 1.14, 1.3] },
+      "explode": 2.6,
+      "desc": "Infinity Cache slice on IOD 3.",
+      "role": "infinity-cache"
+    },
+    {
+      "id": "mc-iod0",
+      "parent": "iod-0",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.06, 4.0], "pos": [-4.1, 1.14, -2.4] },
+      "explode": 2.6,
+      "desc": "HBM3 memory controllers + PHY on IOD 0, driving the two nearest HBM stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-iod1",
+      "parent": "iod-1",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.06, 4.0], "pos": [4.1, 1.14, -2.4] },
+      "explode": 2.6,
+      "desc": "HBM3 memory controllers + PHY on IOD 1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-iod2",
+      "parent": "iod-2",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.06, 4.0], "pos": [-4.1, 1.14, 2.4] },
+      "explode": 2.6,
+      "desc": "HBM3 memory controllers + PHY on IOD 2.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-iod3",
+      "parent": "iod-3",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.06, 4.0], "pos": [4.1, 1.14, 2.4] },
+      "explode": 2.6,
+      "desc": "HBM3 memory controllers + PHY on IOD 3.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "xcd-iod0",
+      "parent": "iod-0",
+      "name": "XCDs (on IOD 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [2.6, 0.3, 2.6], "pos": [-3.8, 1.3, -2.4] },
+      "repeat": { "count": [2, 1, 1], "step": [2.8, 0, 0] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "2 of the 8 Accelerator Complex Dies (XCDs), hybrid-bonded (SoIC) on top of IOD 0. Each XCD is its own TSMC N5 compute chiplet with CUs, a local 4 MB L2 and an Infinity Fabric link down to the IOD. Click **Open** to look inside one XCD.",
+      "specs": [
+        {
+          "label": "XCDs on this IOD",
+          "value": "2 (8 total across the package)",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC N5",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        },
+        {
+          "label": "Die size",
+          "value": "~115 mm² per XCD (community die-shot estimate, not published by AMD)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "xcd-iod1",
+      "parent": "iod-1",
+      "name": "XCDs (on IOD 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [2.6, 0.3, 2.6], "pos": [1.0, 1.3, -2.4] },
+      "repeat": { "count": [2, 1, 1], "step": [2.8, 0, 0] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "2 of the 8 XCDs, stacked on top of IOD 1.",
+      "role": "compute-die"
+    },
+    {
+      "id": "xcd-iod2",
+      "parent": "iod-2",
+      "name": "XCDs (on IOD 2)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [2.6, 0.3, 2.6], "pos": [-3.8, 1.3, 2.4] },
+      "repeat": { "count": [2, 1, 1], "step": [2.8, 0, 0] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "2 of the 8 XCDs, stacked on top of IOD 2.",
+      "role": "compute-die"
+    },
+    {
+      "id": "xcd-iod3",
+      "parent": "iod-3",
+      "name": "XCDs (on IOD 3)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [2.6, 0.3, 2.6], "pos": [1.0, 1.3, 2.4] },
+      "repeat": { "count": [2, 1, 1], "step": [2.8, 0, 0] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "2 of the 8 XCDs, stacked on top of IOD 3.",
+      "role": "compute-die"
+    },
+    {
+      "id": "hbm-base-west",
+      "parent": "interposer",
+      "name": "HBM3 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [-6.3, 0.66, -4.425] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each of the 4 west-side HBM3 stacks: the PHY talking to the IODs through the interposer.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-west",
+      "parent": "hbm-base-west",
+      "name": "HBM3 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [-6.3, 0.78, -4.425] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs. 4 of the 8 HBM3 stacks surrounding the package. MI300X decode is usually bound by this bandwidth, same as B200.",
+      "specs": [
+        {
+          "label": "Capacity (per GPU)",
+          "value": "192 GB",
+          "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+        },
+        {
+          "label": "Bandwidth (per GPU)",
+          "value": "5.3 TB/s",
+          "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+        },
+        {
+          "label": "Stacks",
+          "value": "8",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-east",
+      "parent": "interposer",
+      "name": "HBM3 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [6.3, 0.66, -4.425] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die for the 4 east-side HBM3 stacks.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-east",
+      "parent": "hbm-base-east",
+      "name": "HBM3 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [6.3, 0.78, -4.425] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies for the 4 east-side HBM3 stacks.",
+      "role": "hbm-stack"
+    }
+  ],
+  "scenes": {
+    "xcd-detail": {
+      "anchor": "xcd-iod0",
+      "offset": [0, 3.5, 1.6],
+      "components": [
+        {
+          "id": "cu-array",
+          "name": "Compute Units (CUs)",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": { "type": "box", "size": [0.4, 0.15, 0.55], "pos": [-4.5, 0, -0.325] },
+          "repeat": { "count": [19, 1, 2], "step": [0.5, 0, 0.65] },
+          "drill": "cu-detail",
+          "desc": "38 active Compute Units per XCD (40 physically present, 2 disabled for yield). Each CU holds 4 SIMD-16 vector units, 4 Matrix Cores and 64 KB of LDS — the CDNA analog of an SM. The grid is symbolic, not the real floorplan. Click **Open** to look inside one CU.",
+          "specs": [
+            {
+              "label": "CU count (per XCD)",
+              "value": "38 active CUs (40 physical)",
+              "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+            }
+          ],
+          "role": "sm-array"
+        },
+        {
+          "id": "l2-xcd",
+          "name": "L2 cache (per XCD)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [4.2, 0.2, 0.4], "pos": [0, 0.3, -1.3] },
+          "desc": "Local L2 cache shared by all 38 CUs on this XCD, fed from the IOD's Infinity Cache slice below.",
+          "specs": [
+            {
+              "label": "Size (per XCD)",
+              "value": "4 MB",
+              "source": "https://rocm.docs.amd.com/en/docs-6.3.3/conceptual/gpu-arch/mi300.html"
+            }
+          ],
+          "role": "l2-cache"
+        }
+      ]
+    },
+    "cu-detail": {
+      "anchor": "xcd-iod0",
+      "offset": [4, 3.5, 1.6],
+      "components": [
+        {
+          "id": "lds",
+          "name": "LDS (Local Data Share)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [2.0, 0.2, 1.6], "pos": [0, 0, 0] },
+          "desc": "Programmable scratchpad shared by the wavefronts of a workgroup — the CDNA analog of CUDA shared memory. Operand tiles are staged here before Matrix Core issue.",
+          "specs": [
+            {
+              "label": "Size (per CU)",
+              "value": "64 KB",
+              "source": "https://rocm.docs.amd.com/en/docs-6.3.3/conceptual/gpu-arch/mi300.html"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "matrix-core",
+          "parent": "lds",
+          "name": "Matrix Core (MFMA)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [0.5, 0.25, 0.6], "pos": [-0.9, 0.3, -0.4] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Executes `v_mfma_*` instructions that multiply whole matrix fragments per wavefront, with FP64/FP32/FP16/BF16/FP8/INT8/INT4 inputs and 2:4 structured sparsity. 4 Matrix Cores per CU; almost all AI FLOPs happen here.",
+          "specs": [
+            {
+              "label": "Matrix Cores per CU",
+              "value": "4",
+              "source": "https://chipsandcheese.com/p/amds-cdna-3-compute-architecture"
+            },
+            {
+              "label": "Supported precisions",
+              "value": "FP64, FP32, TF32, BF16, FP16, FP8 (E4M3/E5M2), INT8, INT4",
+              "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "vector-alu",
+          "parent": "lds",
+          "name": "SIMD vector ALUs",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": { "type": "box", "size": [0.5, 0.2, 0.6], "pos": [-0.9, 0.3, 0.4] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "4 SIMD-16 units (64 lanes total) running FP32/INT32 — the CDNA equivalent of CUDA cores. Used for the epilogue (bias, activation, quantization) and non-matrix work.",
+          "specs": [
+            {
+              "label": "Lanes (per CU)",
+              "value": "64 (4 SIMD × 16)",
+              "source": "https://chipsandcheese.com/p/amds-cdna-3-compute-architecture"
+            }
+          ],
+          "role": "vector-engine"
+        },
+        {
+          "id": "register-file",
+          "parent": "matrix-core",
+          "name": "VGPR register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.5, 0.15, 0.6], "pos": [-0.9, 0.55, -0.4] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Per-SIMD vector register file. MFMA accumulators and operands live here across K iterations of a GEMM tile.",
+          "specs": [
+            {
+              "label": "Size (per CU)",
+              "value": "~256 KB (4 × 64 KB, typical CDNA VGPR sizing)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "wavefront-scheduler",
+          "parent": "register-file",
+          "name": "Wavefront scheduler",
+          "group": "control",
+          "geom": { "type": "box", "size": [0.5, 0.1, 0.6], "pos": [-0.9, 0.7, -0.4] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Each SIMD issues one ready wavefront (64 threads) per cycle to the Matrix Core or vector ALUs — the CDNA analog of a warp scheduler.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-to-iod0",
+      "from": "hbm-dram-west",
+      "to": "iod-0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-iod1",
+      "from": "hbm-dram-east",
+      "to": "iod-1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "iod-fabric",
+      "from": "iod-0",
+      "to": "iod-1",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "icache-to-xcd",
+      "from": "icache-0",
+      "to": "xcd-iod0",
+      "group": "memory",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weight and activation tiles sit in HBM3, 8 stacks surrounding the 4 IODs.",
+      "focus": ["hbm-dram-west", "hbm-dram-east", "hbm-base-west", "hbm-base-east"],
+      "dot": "hbm-dram-west",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. A memory controller in the IOD reads its local HBM3 stack.",
+      "focus": ["mc-iod0"],
+      "dot": "mc-iod0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the tile lives in another IOD's HBM, Infinity Fabric AP carries it across the package — coherent across all 4 IODs, not just one bridge.",
+      "focus": ["infinity-fabric-link"],
+      "dot": "infinity-fabric-link",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. The tile lands in this IOD's slice of the 256 MB Infinity Cache.",
+      "focus": ["icache-0"],
+      "dot": "icache-0",
+      "stage": "infinity-cache"
+    },
+    {
+      "text": "5. The XCD stacked above pulls the tile into its own 4 MB L2 cache.",
+      "focus": ["l2-xcd"],
+      "dot": "l2-xcd",
+      "drill": "xcd-detail",
+      "stage": "l2"
+    },
+    {
+      "text": "6. A wavefront copies the operand tile from L2 into the CU's 64 KB LDS.",
+      "focus": ["lds"],
+      "dot": "lds",
+      "drill": "cu-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "7. The wavefront issues a v_mfma instruction: the CU's 4 Matrix Cores multiply the tile (e.g. in FP8).",
+      "focus": ["matrix-core"],
+      "dot": "matrix-core",
+      "drill": "cu-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate in the VGPR register file across K. Steps 6-8 repeat along K.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "cu-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: results move to vector ALUs, which add bias, apply activation, and quantize.",
+      "focus": ["vector-alu", "wavefront-scheduler"],
+      "dot": "vector-alu",
+      "drill": "cu-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. Results write back to HBM through the IOD; with tensor parallelism, xGMI all-reduces with the other 7 GPUs.",
+      "focus": ["xgmi-link"],
+      "dot": "xgmi-link",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "153 billion (12 dies)",
+      "number": 153,
+      "role": "compute-die",
+      "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+    },
+    {
+      "key": "dies",
+      "value": "12 (8 XCD + 4 IOD), joined by Infinity Fabric + SoIC hybrid bonding",
+      "number": 12,
+      "role": "compute-die",
+      "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+    },
+    {
+      "key": "die_area",
+      "value": "~115 mm² per XCD; ~366 mm² per IOD (third-party die-shot estimates; AMD does not publish exact die sizes)",
+      "number": 115,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~2,382 mm² (8 XCD + 4 IOD, estimate)",
+      "number": 2382,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC N5 (XCD) / N6 (IOD)",
+      "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "750 W peak typical board power (OAM)",
+      "number": 750,
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "compute_units",
+      "value": "304 CUs (38 active x 8 XCDs)",
+      "number": 304,
+      "role": "sm-array",
+      "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "CDNA 3 Matrix Core",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "INT4",
+      "role": "tensor-core",
+      "source": "https://hc2024.hotchips.org/assets/program/conference/day1/23_HC2024.AMD.MI300X.ASmith(MI300X).v1.Final.20240817.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "2.61 PFLOPS dense FP8 (E4M3/E5M2), per GPU",
+      "number": 2.61,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "5.22 PFLOPS (2.61 PFLOPS dense x2 structured sparsity)",
+      "number": 5.22,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "int8_dense",
+      "value": "2,600 TOPS dense INT8 (2.6 POPS), per GPU",
+      "number": 2600,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "1,300 TFLOPS dense BF16 / FP16 matrix (1.3 PFLOPS), per GPU",
+      "number": 1300,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "653.7 TFLOPS dense TF32 matrix, per GPU",
+      "number": 653.7,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~288 MB: 256 MB Infinity Cache + 32 MB L2 (8 x 4 MB); excludes L1, LDS and register files",
+      "number": 288,
+      "role": "infinity-cache",
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-3-white-paper.pdf",
+      "estimate": true
+    },
+    {
+      "key": "on_chip_sram_bandwidth",
+      "value": "17.2 TB/s peak Infinity Cache bandwidth (aggregate)",
+      "number": 17.2,
+      "role": "infinity-cache",
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-3-white-paper.pdf"
+    },
+    {
+      "key": "l2_cache",
+      "value": "32 MB total (4 MB x 8 XCDs; plus 256 MB Infinity Cache not counted here)",
+      "number": 32,
+      "role": "l2-cache",
+      "source": "https://rocm.docs.amd.com/en/docs-6.3.3/conceptual/gpu-arch/mi300.html"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "192 GB HBM3",
+      "number": 192,
+      "role": "hbm-stack",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "5.3 TB/s",
+      "number": 5.3,
+      "role": "hbm-stack",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "896 GB/s aggregate xGMI (7 peer links per GPU)",
+      "number": 896,
+      "role": "nvlink",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/platform.html"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "128 GB/s PCIe 5.0 x16 host link (bidirectional; no coherent CPU-GPU link)",
+      "number": 128,
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+    },
+    {
+      "key": "mig_instances",
+      "value": "8 compute partitions (CPX: one per XCD)",
+      "number": 8,
+      "role": "compute-die",
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-3-white-paper.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS-S + SoIC (3D hybrid bonding)",
+      "role": "interposer",
+      "source": "https://newsletter.semianalysis.com/p/amd-mi300-taming-the-hype-ai-performance"
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "XCD ≈ 10.7×10.7 mm (die-shot estimate, ~115 mm²); IOD ≈ 19×19 mm (die-shot estimate, ~366 mm²); HBM3 stack ≈ 11×11 mm (estimate, same basis as B200)",
+    "estimate": true
+  }
+}

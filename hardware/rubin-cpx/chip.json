@@ -1,0 +1,560 @@
+{
+  "schemaVersion": 1,
+  "id": "rubin-cpx",
+  "name": "NVIDIA Rubin CPX",
+  "vendor": "NVIDIA",
+  "arch": "Rubin (CPX variant)",
+  "disclaimer": "Illustrative geometry. Rubin CPX's exact die size and GDDR7 chip footprint are not published by NVIDIA; drawn to the same unit scale as other chips in this set using the TSMC reticle limit as a stand-in for die size (estimate). Memory chip count, SM grid and video/attention block counts are symbolic, not exact.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "media": "#9a4fbf"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.6, 15],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Standard organic flip-chip substrate. Unlike NVIDIA's HBM parts, Rubin CPX needs no silicon interposer or CoWoS bridge: GDDR7 chips wire-bond straight to the substrate like a gaming GPU board, which is a big part of why this part is cheaper per GB than an HBM-equipped Rubin.",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "Rubin CPX compute die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 2.2,
+      "desc": "A single monolithic die — a deliberate break from Blackwell's two-die MCM. NVIDIA's slide emphasizes 'monolithic die design'; going single-die removes the die-to-die link entirely and simplifies yield math, at the cost of being capped by the reticle limit for total transistor budget. Holds SMs, L2, GDDR7 memory controllers, the attention-acceleration hardware and the video encode/decode engines.",
+      "specs": [
+        {
+          "label": "Die design",
+          "value": "Monolithic (single die)",
+          "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+        },
+        {
+          "label": "NVFP4 compute",
+          "value": "Up to 30 PFLOPS NVFP4 (announced)",
+          "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+        },
+        {
+          "label": "Die size",
+          "value": "Not published; drawn at the ~26×33 mm TSMC reticle limit used for the Blackwell die, as a size stand-in only",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.9],
+        "pos": [0, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "On-die L2, shared by all SMs. During prefill it holds the full prompt's activations and the KV cache being built for the context window — the whole reason this part exists is to crunch through that prompt fast.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc",
+      "parent": "die",
+      "name": "GDDR7 memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.5, 0.08, 7.6],
+        "pos": [-3, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "GDDR7 PHY: fewer, faster pins per byte than an HBM PHY, so it costs less silicon and package area for a given capacity — the trade-off is lower aggregate bandwidth than HBM for the same GPU. That trade works for prefill because prefill re-uses the loaded prompt across a large compute-heavy matmul instead of re-reading weights once per output token.",
+      "specs": [
+        {
+          "label": "Memory type",
+          "value": "GDDR7 (not HBM)",
+          "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+        }
+      ],
+      "role": "memory-controller"
+    },
+    {
+      "id": "video-engine",
+      "parent": "die",
+      "name": "Video encode/decode engines",
+      "group": "media",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.9],
+        "pos": [2.6, 0.74, -3.3]
+      },
+      "explode": 3.2,
+      "desc": "On-die NVENC/NVDEC blocks, reported at roughly 4x the video encode/decode throughput of a standard Rubin GPU. Lets Rubin CPX ingest and tokenize hour-long video directly on-chip for million-token multimodal context, without round-tripping frames through a separate CPU/GPU decode step.",
+      "specs": [
+        {
+          "label": "Video engines",
+          "value": "Integrated NVENC + NVDEC, ~4x a standard Rubin GPU's throughput (exact engine count not disclosed by NVIDIA)",
+          "source": "https://wccftech.com/nvidia-rubin-cpx-gpu-128-gb-gddr7-30-exaflops-ai-compute/"
+        }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "io",
+      "parent": "die",
+      "name": "PCIe 6.0 / scale-out fabric",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [0, 0.74, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Rubin CPX trays reportedly lean on PCIe 6.0 for host and GPU-to-GPU links rather than a full NVLink-C2C fabric — another cost lever versus the HBM Rubin, which needs the fatter coherent fabric to move KV cache for decode.",
+      "specs": [
+        {
+          "label": "Interconnect",
+          "value": "PCIe 6.0 (reported), not NVLink-C2C",
+          "source": "https://www.theregister.com/2025/09/10/nvidia_rubin_cpx/"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs (bank A)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-2.196, 0.77, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors. Each SM carries Tensor Cores for NVFP4 matmuls plus the new hardware attention-acceleration path. The grid is symbolic — this model does not claim an exact SM count. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "not modeled (symbolic grid)",
+          "estimate": true
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs (bank B)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-2.196, 0.77, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid), second bank.",
+      "role": "sm-array"
+    },
+    {
+      "id": "gddr-left",
+      "parent": "package",
+      "name": "GDDR7 chips (left bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [-6.3, 0.65, -4.5]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.3, 0, 3]
+      },
+      "explode": 2.3,
+      "desc": "Discrete GDDR7 DRAM packages, surface-mounted directly on the substrate — no through-silicon-via stack, no HBM base die, no interposer. Cheaper per GB and per package than HBM, but each chip's own I/O is narrower, so the GPU needs many chips around the die to reach useful aggregate bandwidth. 128 GB announced, split across left and right banks here.",
+      "specs": [
+        {
+          "label": "Capacity (whole GPU)",
+          "value": "128 GB GDDR7 (announced)",
+          "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+        },
+        {
+          "label": "Memory type",
+          "value": "GDDR7, not HBM — chosen because prefill is compute-bound, not bandwidth-bound",
+          "source": "https://www.theregister.com/2025/09/10/nvidia_rubin_cpx/"
+        },
+        {
+          "label": "Chip count / arrangement",
+          "value": "Drawn as 16 packages (8 left, 8 right); exact die-count per GPU not disclosed",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr-right",
+      "parent": "package",
+      "name": "GDDR7 chips (right bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [6.3, 0.65, -4.5]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.3, 0, 3]
+      },
+      "explode": 2.3,
+      "desc": "Second bank of GDDR7 packages, mirroring the left bank on the other side of the die.",
+      "role": "gddr-memory"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by a block's threads. TMA fills it with Q/K/V and weight tiles; Tensor Cores and the attention unit both read operands straight from here.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "~256 KB (carried over from Blackwell-class SM design; Rubin's exact figure not published)",
+              "estimate": true
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0.35, 0]
+          },
+          "desc": "Dedicated accumulator memory for Tensor Core MMAs, inherited from Blackwell's Tensor Memory design. Frees registers so larger NVFP4 tiles can be processed per instruction.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "~256 KB (Blackwell-class estimate; Rubin's exact figure not published)",
+              "estimate": true
+            }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Tensor Core",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies whole NVFP4 matrix tiles per instruction — the bulk of prefill's FFN and projection FLOPs. NVIDIA rates the GPU at up to 30 PFLOPS NVFP4; almost all of it is spent here during the compute-bound prefill pass.",
+          "specs": [
+            {
+              "label": "Lowest precision",
+              "value": "NVFP4",
+              "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "attention-unit",
+          "parent": "tmem",
+          "name": "Attention-acceleration unit",
+          "group": "compute",
+          "color": "#7a3fb0",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Fixed-function hardware for the attention pattern itself — QK^T, softmax and the AV reduction — rather than running it as generic Tensor Core matmuls plus a softmax kernel. NVIDIA reports 3x the attention throughput of a GB300 NVL72 system; prefill's O(n²) attention cost over a million-token context is exactly the workload this block targets.",
+          "specs": [
+            {
+              "label": "Attention throughput",
+              "value": "3x a GB300 NVL72 system (announced)",
+              "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+            }
+          ],
+          "role": "attention-unit"
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage, one slice per SM sub-partition.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "~256 KB (Blackwell-class estimate)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Issues ready warps each cycle; scalar CUDA cores run the epilogue (bias, activation, quantization) after the Tensor Core and attention-unit results land.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole tensor tiles between L2/GDDR7 and shared memory asynchronously, without spending threads — same mechanism as Blackwell's TMA.",
+          "role": "tma"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-left-to-die",
+      "from": "gddr-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr-right-to-die",
+      "from": "gddr-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-io",
+      "from": "die",
+      "to": "io",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. The prompt/context tokens and their weights sit in GDDR7, not HBM — cheaper per GB, and prefill doesn't need HBM-class bandwidth.",
+      "focus": ["gddr-left", "gddr-right"],
+      "dot": "gddr-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "gddr"
+    },
+    {
+      "text": "2. The GDDR7 memory controller reads activations and weights. GDDR7's narrower, slower interface is fine here: prefill is compute-bound, so the GPU is limited by FLOPs, not by how fast it can pull bytes.",
+      "focus": ["mc"],
+      "dot": "mc",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the shared L2 cache, which holds the whole prompt's activations and the KV cache being built as the context is processed.",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. TMA copies Q/K/V and weight tiles from L2 into shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "5. Tiles sit in shared memory, ready for both the Tensor Cores and the attention unit.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. The attention-acceleration unit runs QK^T, softmax and the AV reduction in hardware — 3x a GB300 NVL72 by NVIDIA's numbers — instead of emulating it with generic matmuls.",
+      "focus": ["attention-unit"],
+      "dot": "attention-unit",
+      "drill": "sm-detail",
+      "stage": "attention"
+    },
+    {
+      "text": "7. Tensor Cores multiply the FFN/projection tiles in NVFP4 — this is where most of the 30 PFLOPS announced for Rubin CPX is spent.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate in TMEM rather than in registers. Steps 4-8 repeat for every tile along the context length.",
+      "focus": ["tmem"],
+      "dot": "tmem",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: results move TMEM -> registers; CUDA cores add bias, apply activation, quantize back to NVFP4.",
+      "focus": ["register-file", "warp-scheduler"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. The finished KV cache writes back to GDDR7 and hands off over PCIe 6.0 to a separate HBM-equipped Rubin GPU for decode — which IS memory-bandwidth-bound, re-reading weights and KV cache once per output token, so it needs HBM instead.",
+      "focus": ["io"],
+      "dot": "io",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "11. For video/multimodal context, the on-die NVENC/NVDEC engines decode frames directly into tokens for prefill, at roughly 4x a standard Rubin's video throughput — no separate decode card needed.",
+      "focus": ["video-engine"],
+      "dot": "video-engine",
+      "drill": null,
+      "stage": "video-engine"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "1 (monolithic, vs 2 on B200/GB200)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+    },
+    {
+      "key": "die_area",
+      "value": "Not published; drawn at ~858 mm² (TSMC reticle limit, used as a size stand-in)",
+      "number": 858,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "tdp",
+      "value": "~800 W chip (~880 W module; SemiAnalysis estimate, not published by NVIDIA)",
+      "number": 800,
+      "source": "https://newsletter.semianalysis.com/p/another-giant-leap-the-rubin-cpx-specialized-accelerator-rack",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "NVFP4",
+      "role": "tensor-core",
+      "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "~20 PFLOPS dense NVFP4 (NVIDIA's 30 PFLOPS headline is the sparse figure; 3:2 ratio per SemiAnalysis)",
+      "number": 20,
+      "role": "tensor-core",
+      "source": "https://newsletter.semianalysis.com/p/another-giant-leap-the-rubin-cpx-specialized-accelerator-rack",
+      "estimate": true
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "128 GB GDDR7",
+      "number": 128,
+      "role": "gddr-memory",
+      "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "~2 TB/s (estimate: 512-bit bus at ~32 Gbps GDDR7; not published by NVIDIA)",
+      "number": 2,
+      "role": "gddr-memory",
+      "source": "https://newsletter.semianalysis.com/p/another-giant-leap-the-rubin-cpx-specialized-accelerator-rack",
+      "estimate": true
+    },
+    {
+      "key": "packaging",
+      "value": "Standard organic substrate, no CoWoS/interposer (no HBM to route)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die drawn at the ~26 x 33 mm TSMC reticle limit (Blackwell-class, used as a stand-in — Rubin CPX's real die size is not published); GDDR7 package ~4 x 3.6 mm footprint drawn per unit (estimate, not a real IC's exact pad size)",
+    "estimate": true
+  }
+}

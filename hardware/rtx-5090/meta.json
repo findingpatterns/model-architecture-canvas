@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA GeForce RTX 5090",
+  "description": "Consumer Blackwell (GB202): one monolithic 750 mm² die, 32 GB GDDR7, 170 SMs with 5th-gen Tensor Cores (FP4, no Tensor Memory) and 4th-gen RT cores, no NVLink.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "blackwell", "gpu", "consumer", "gaming"],
+  "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5090/"
+}

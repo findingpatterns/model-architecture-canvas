@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA GB300 Grace Blackwell Ultra Superchip",
+  "description": "1 Grace CPU (72 Neoverse V2 cores, LPDDR5X) + 2 B300 GPUs joined by 900 GB/s coherent NVLink-C2C; each B300 is two Blackwell Ultra dies with 288 GB HBM3e, scaling out over NVLink 5 to NVL72.",
+  "kind": "hardware",
+  "tags": ["nvidia", "blackwell-ultra", "grace", "superchip", "gpu", "cpu"],
+  "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

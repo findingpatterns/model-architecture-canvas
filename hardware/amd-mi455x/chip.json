@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "id": "amd-mi455x",
+  "name": "AMD Instinct MI455X",
+  "vendor": "AMD",
+  "arch": "CDNA 5 (\"CDNA Next\")",
+  "disclaimer": "MI455X was unveiled at AMD's Advancing AI 2026 event for the Helios rack platform; it is not yet shipping. Figures below are AMD's announced specs. Die counts, cache size and fabric bandwidth come from AMD's own disclosure plus press coverage of the reveal; exact die sizes, floorplan and packaging process were not published, so all geometry/layout is illustrative and marked estimate.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [34, 0.6, 20], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "Multi-die organic substrate carrying 12 chiplets (8 compute, 2 fabric/cache, 2 I/O) and 12 HBM4 stacks. AMD has not published package dimensions or the exact advanced-packaging process used.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Silicon interposer / bridges",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [30, 0.3, 17], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "Carries the fine die-to-die wiring between XCD compute chiplets, the two fabric/cache dies, the I/O dies and the HBM4 stacks. AMD has not disclosed whether this is CoWoS-style silicon bridges, a full interposer, or hybrid bonding directly between dies (MI300-series used TSMC SoIC 3D stacking for some layers) — packaging approach is an estimate.",
+      "specs": [
+        { "label": "Packaging", "value": "Multi-die chiplet package (exact process not disclosed)", "estimate": true }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "iod-left",
+      "parent": "interposer",
+      "name": "I/O die (left)",
+      "group": "io",
+      "geom": { "type": "box", "size": [2, 0.4, 10], "pos": [-13.5, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "One of two I/O dies. Terminates external links: UALink-over-Ethernet scale-up to the rest of the Helios rack, Infinity Fabric to the host EPYC CPU, and PCIe Gen6 / AMD AI-NIC scale-out.",
+      "specs": [
+        { "label": "Dies", "value": "2 I/O dies per GPU", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+      ],
+      "role": "io-die"
+    },
+    {
+      "id": "iod-right",
+      "parent": "interposer",
+      "name": "I/O die (right)",
+      "group": "io",
+      "geom": { "type": "box", "size": [2, 0.4, 10], "pos": [13.5, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Second I/O die, mirrors iod-left.",
+      "role": "io-die"
+    },
+    {
+      "id": "ualink-left",
+      "parent": "iod-left",
+      "name": "UALink-over-Ethernet (scale-up)",
+      "group": "io",
+      "geom": { "type": "box", "size": [1.6, 0.15, 8], "pos": [-13.5, 1.02, 0] },
+      "explode": 2.6,
+      "desc": "72 UALoE (UALink-over-Ethernet) lanes give GPU-to-GPU scale-up bandwidth across the Helios rack, independent of PCIe/NIC scale-out links.",
+      "specs": [
+        { "label": "Scale-up bandwidth (bidirectional)", "value": "3.6 TB/s", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" },
+        { "label": "Lanes", "value": "72 UALoE lanes", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+      ],
+      "role": "ualink"
+    },
+    {
+      "id": "infinity-fabric-host",
+      "parent": "iod-right",
+      "name": "Infinity Fabric (host link)",
+      "group": "io",
+      "geom": { "type": "box", "size": [1.2, 0.15, 2], "pos": [13.5, 1.02, 4] },
+      "explode": 2.6,
+      "desc": "Coherent Infinity Fabric link to the host AMD EPYC (Venice) CPU; separate from the UALink scale-up fabric and from PCIe/NIC scale-out.",
+      "specs": [
+        { "label": "Host link bandwidth (bidirectional)", "value": "256 GB/s", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+      ],
+      "role": "infinity-fabric"
+    },
+    {
+      "id": "fcd-left",
+      "parent": "interposer",
+      "name": "Fabric + Cache die (left)",
+      "group": "memory",
+      "color": "#c07a2e",
+      "geom": { "type": "box", "size": [8, 0.35, 8], "pos": [-5.6, 0.78, 0] },
+      "explode": 1.6,
+      "desc": "One of two Fabric-and-Cache Dies (FCD, TSMC N3P). Each FCD hosts shared L2 cache, the memory controllers for 6 HBM4 stacks, and the die-to-die fabric that the 4 XCD compute chiplets stacked above it use to reach memory and each other. CDNA 5 removes the separate 256 MB Infinity Cache of prior generations and folds its role into this larger, faster L2.",
+      "specs": [
+        { "label": "Dies", "value": "2 FCDs per GPU, TSMC N3P", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" },
+        { "label": "HBM4 stacks served (per FCD)", "value": "6", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+      ],
+      "role": "fabric-cache-die"
+    },
+    {
+      "id": "fcd-right",
+      "parent": "interposer",
+      "name": "Fabric + Cache die (right)",
+      "group": "memory",
+      "color": "#c07a2e",
+      "geom": { "type": "box", "size": [8, 0.35, 8], "pos": [5.6, 0.78, 0] },
+      "explode": 1.6,
+      "desc": "Second Fabric-and-Cache Die, mirrors fcd-left, serving the other 4 XCDs and 6 HBM4 stacks.",
+      "role": "fabric-cache-die"
+    },
+    {
+      "id": "l2-left",
+      "parent": "fcd-left",
+      "name": "L2 cache (left FCD)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [7.6, 0.08, 7.6], "pos": [-5.6, 0.97, 0] },
+      "explode": 2.1,
+      "desc": "Shared L2 slice on this FCD, visible to the 4 XCDs stacked above it. Replaces the old per-XCD 4 MB L2 + chip-wide 256 MB Infinity Cache with one larger, unified cache tier.",
+      "specs": [
+        { "label": "Capacity (both FCDs combined)", "value": "192 MB", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" },
+        { "label": "Bandwidth (both FCDs combined)", "value": "54 TB/s", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-right",
+      "parent": "fcd-right",
+      "name": "L2 cache (right FCD)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [7.6, 0.08, 7.6], "pos": [5.6, 0.97, 0] },
+      "explode": 2.1,
+      "desc": "Shared L2 slice on the right FCD.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM4 base die (left group)",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.1, 0.12, 2.1], "pos": [-11.2, 0.66, -6.5] },
+      "repeat": { "count": [1, 1, 6], "step": [0, 0, 2.6] },
+      "explode": 2,
+      "desc": "Logic base die of each HBM4 stack feeding the left FCD. 6 stacks per side, 12 total.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM4 DRAM layers (left group)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.1, 0.1, 2.1], "pos": [-11.2, 0.78, -6.5] },
+      "repeat": { "count": [1, 8, 6], "step": [0, 0.11, 2.6], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked HBM4 DRAM dies (announced 432 GB total across 12 stacks; HBM4 doubles the per-stack interface to a 2,048-bit bus vs HBM3e). Layer count per stack not disclosed, drawn as 8 for symmetry with other models.",
+      "specs": [
+        { "label": "Total capacity (12 stacks)", "value": "432 GB (announced)", "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html" },
+        { "label": "Total bandwidth (12 stacks)", "value": "23.3 TB/s (announced)", "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html" },
+        { "label": "Capacity per stack", "value": "36 GB (432 GB / 12, announced)", "estimate": true },
+        { "label": "Interface", "value": "2,048-bit per stack (HBM4), 192 channels total", "estimate": true }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM4 base die (right group)",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.1, 0.12, 2.1], "pos": [11.2, 0.66, -6.5] },
+      "repeat": { "count": [1, 1, 6], "step": [0, 0, 2.6] },
+      "explode": 2,
+      "desc": "Logic base dies of the 6 HBM4 stacks feeding the right FCD.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM4 DRAM layers (right group)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.1, 0.1, 2.1], "pos": [11.2, 0.78, -6.5] },
+      "repeat": { "count": [1, 8, 6], "step": [0, 0.11, 2.6], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked HBM4 DRAM dies feeding the right FCD and its 4 XCDs.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "xcd",
+      "parent": "interposer",
+      "name": "XCD compute chiplets",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [2.6, 0.35, 3], "pos": [-8.4, 0.9, -3.5] },
+      "repeat": { "count": [4, 1, 2], "step": [5.6, 0, 7] },
+      "explode": 2.6,
+      "drill": "xcd-detail",
+      "desc": "8 Accelerator Complex Dies (XCD, TSMC N2), 4 stacked logically above each FCD (real packaging likely 3D-stacks XCDs on top of the FCD base die, as MI300-series did; this model draws them side by side for clarity). Each XCD holds 2 shader engines of CDNA 5 Compute Units plus the WGP front ends. Click **Open** to look inside.",
+      "specs": [
+        { "label": "Compute dies", "value": "8 XCDs, TSMC N2", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" },
+        { "label": "Transistors (whole package)", "value": "320 billion (announced)", "source": "https://www.tweaktown.com/news/112795/amd-instinct-mi455x-gpu-launches-with-432gb-of-hbm4-memory-and-next-gen-cdna-5-architecture/index.html" },
+        { "label": "Max clock", "value": "2.4 GHz (announced)", "source": "https://www.tweaktown.com/news/112795/amd-instinct-mi455x-gpu-launches-with-432gb-of-hbm4-memory-and-next-gen-cdna-5-architecture/index.html" }
+      ],
+      "role": "compute-die"
+    }
+  ],
+  "scenes": {
+    "xcd-detail": {
+      "anchor": "xcd",
+      "offset": [2, 3.5, 2],
+      "components": [
+        {
+          "id": "wgp-array",
+          "name": "WGPs (Work Group Processors)",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": { "type": "box", "size": [0.5, 0.15, 0.6], "pos": [-1.75, 0, -1.05] },
+          "repeat": { "count": [8, 1, 4], "step": [0.5, 0, 0.7] },
+          "desc": "Each XCD packs 2 shader engines × (16 active + 2 redundant) WGPs = 36 WGPs, of which 32 are active (256 active WGPs across the 8 XCDs on the package). Each WGP pairs 2 Wave32 Compute Units sharing one 384 KB LDS block. Grid is symbolic — exact floorplan not disclosed. Click **Open WGP** to look inside.",
+          "specs": [
+            { "label": "Active WGPs per XCD", "value": "32 (36 physical incl. 4 redundant)", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" },
+            { "label": "Active WGPs (whole GPU)", "value": "256", "source": "https://www.digitalcitizen.life/amd-instinct-mi455x-brings-432gb-of-hbm4-and-40-pflops-of-ai-compute-to-helios/" }
+          ],
+          "drill": "wgp-detail",
+          "role": "sm-array"
+        }
+      ]
+    },
+    "wgp-detail": {
+      "anchor": "xcd",
+      "offset": [2, 3.5, 2.8],
+      "components": [
+        {
+          "id": "lds",
+          "name": "LDS (Local Data Share)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [3.4, 0.2, 2.4], "pos": [0, 0, 0] },
+          "desc": "384 KB Local Data Share shared by the 2 Wave32 Compute Units of a WGP. CDNA 5 removes the separate per-CU L1 cache seen in earlier generations, leaning more on this scratchpad plus the larger shared L2 on the FCD below.",
+          "specs": [
+            { "label": "Size (per WGP, shared by 2 CUs)", "value": "384 KB", "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/" }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "matrix-core",
+          "parent": "lds",
+          "name": "Matrix Core",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [0.7, 0.35, 0.9], "pos": [-1.25, 0.35, -0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "AMD's matrix-multiply units (the CDNA equivalent of Tensor Cores). CDNA 5 widens MXFP4/MXFP6/MXFP8 throughput up to 4× generation-over-generation, which is most of the 40 PFLOPS FP4 figure. A wavefront issues the MFMA instruction; operands stream from the LDS.",
+          "specs": [
+            { "label": "Low-precision formats", "value": "OCP MXFP4, MXFP6, MXFP8, FP16/BF16", "source": "https://www.digitalcitizen.life/amd-instinct-mi455x-brings-432gb-of-hbm4-and-40-pflops-of-ai-compute-to-helios/" }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "lds",
+          "name": "Vector register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.7, 0.25, 0.9], "pos": [-1.25, 0.3, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Per-wavefront vector registers feeding the Matrix Cores and scalar ALUs. One slice per Compute Unit.",
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Wavefront scheduler + ALUs",
+          "group": "control",
+          "geom": { "type": "box", "size": [0.7, 0.15, 0.9], "pos": [-1.25, 0.6, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Issues one Wave32 wavefront (32 threads) per cycle to the Compute Unit's ALUs and Matrix Cores; runs the epilogue (bias add, activation, requantize) after the MFMA result lands.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    { "id": "hbm-to-fcd-left", "from": "hbm-dram-left", "to": "fcd-left", "group": "memory", "particles": 2 },
+    { "id": "hbm-to-fcd-right", "from": "hbm-dram-right", "to": "fcd-right", "group": "memory", "particles": 2 },
+    { "id": "fcd-to-fcd", "from": "fcd-left", "to": "fcd-right", "group": "io", "particles": 3 },
+    { "id": "fcd-left-to-xcd", "from": "fcd-left", "to": "xcd", "group": "compute", "particles": 3 },
+    { "id": "iod-scaleup", "from": "iod-left", "to": "iod-right", "group": "io", "particles": 2 }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights W and activations X sit in HBM4, 6 stacks per side.",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. The memory controller on the nearest Fabric + Cache Die (FCD) reads its 6 attached HBM4 stacks.",
+      "focus": ["fcd-left"],
+      "dot": "fcd-left",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the needed tile lives on the other FCD's memory, it crosses the inter-die fabric between the two FCDs.",
+      "focus": ["fcd-left", "fcd-right"],
+      "dot": "fcd-right",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. Data lands in the shared L2 on that FCD — CDNA 5 folds the old Infinity Cache into this larger, unified cache.",
+      "focus": ["l2-left"],
+      "dot": "l2-left",
+      "stage": "l2"
+    },
+    {
+      "text": "5. The 4 XCDs stacked above this FCD pull their tile from L2 into the LDS of the active WGP.",
+      "focus": ["xcd"],
+      "dot": "xcd",
+      "drill": "wgp-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. A and B tiles sit in the 384 KB LDS shared by the WGP's 2 Compute Units, ready for the Matrix Cores.",
+      "focus": ["lds"],
+      "dot": "lds",
+      "drill": "wgp-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "7. The wavefront scheduler issues an MFMA instruction; Matrix Cores multiply the tiles (e.g. in MXFP4).",
+      "focus": ["matrix-core"],
+      "dot": "matrix-core",
+      "drill": "wgp-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate across passes along K, held in the vector register file.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "wgp-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: the scheduler's ALUs add bias, apply activation, requantize the result.",
+      "focus": ["warp-scheduler"],
+      "dot": "warp-scheduler",
+      "drill": "wgp-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. Results flow back through L2 to HBM4; across GPUs, UALink-over-Ethernet (3.6 TB/s) carries the all-reduce for tensor/expert parallelism around the Helios rack.",
+      "focus": ["ualink-left"],
+      "dot": "ualink-left",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "320 billion (announced; whole package)",
+      "number": 320,
+      "role": "compute-die",
+      "source": "https://www.tweaktown.com/news/112795/amd-instinct-mi455x-gpu-launches-with-432gb-of-hbm4-memory-and-next-gen-cdna-5-architecture/index.html"
+    },
+    {
+      "key": "dies",
+      "value": "12 dies: 8 XCD (N2) + 2 FCD (N3P) + 2 I/O",
+      "number": 12,
+      "role": "compute-die",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC N2 (XCD compute chiplets), N3P (fabric/cache dies)",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/"
+    },
+    {
+      "key": "compute_units",
+      "value": "256 CUs (128 active WGPs x 2 CUs; 16 WGPs per XCD x 8 XCDs)",
+      "number": 256,
+      "role": "compute-die",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "CDNA 5 Matrix Cores",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "OCP MXFP4",
+      "role": "tensor-core",
+      "source": "https://www.digitalcitizen.life/amd-instinct-mi455x-brings-432gb-of-hbm4-and-40-pflops-of-ai-compute-to-helios/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "40.26 PFLOPS dense MXFP4 (announced)",
+      "number": 40.26,
+      "role": "tensor-core",
+      "source": "https://www.digitalcitizen.life/amd-instinct-mi455x-brings-432gb-of-hbm4-and-40-pflops-of-ai-compute-to-helios/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "20 PFLOPS FP8 / FP6 (announced peak), per GPU",
+      "number": 20,
+      "role": "compute-die",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "5,000 TFLOPS FP16 / BF16 matrix (5 PFLOPS announced), per GPU",
+      "number": 5000,
+      "role": "compute-die",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~192 MB L2 (2 x 96 MB on fabric/cache dies; Infinity Cache removed); excludes LDS and register files",
+      "number": 192,
+      "role": "l2-cache",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "192 MB combined (96 MB per FCD, shared by 4 XCDs each)",
+      "number": 192,
+      "role": "l2-cache",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "432 GB HBM4 (announced)",
+      "number": 432,
+      "role": "hbm-stack",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "23.3 TB/s (announced)",
+      "number": 23.3,
+      "role": "hbm-stack",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "3,600 GB/s bidirectional UALink-over-Ethernet (72 lanes), per GPU",
+      "number": 3600,
+      "role": "ualink",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "256 GB/s Infinity Fabric host link to the CPU",
+      "number": 256,
+      "role": "infinity-fabric",
+      "source": "https://xpu.pub/2026/08/05/amd-mi455x-cdna5-architecture/"
+    },
+    {
+      "key": "packaging",
+      "value": "12-die chiplet package (exact advanced-packaging process not disclosed)",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 3,
+    "basis": "No official die, stack or package dimensions disclosed by AMD; proportions are illustrative only, loosely following MI300-series precedent for relative chiplet/HBM sizing.",
+    "estimate": true
+  }
+}

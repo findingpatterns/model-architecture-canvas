@@ -1,0 +1,8 @@
+{
+  "name": "AMD Instinct MI455X",
+  "description": "CDNA 5 \"Helios\" GPU (announced, not yet shipping): 8 XCD compute chiplets + 2 fabric/cache dies + 2 I/O dies, 432 GB HBM4, UALink-over-Ethernet scale-up.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["amd", "cdna5", "gpu", "mi400", "announced"],
+  "source": "https://www.amd.com/en/products/accelerators/instinct/mi400.html"
+}

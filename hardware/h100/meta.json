@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA H100 SXM5",
+  "description": "Hopper: GH100 die (132 SMs, 50 MB L2), 5 of 6 HBM3 stack sites active for 80 GB at 3.35 TB/s, 700 W. The baseline Hopper GPU behind H200's memory upgrade.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "hopper", "gpu"],
+  "source": "https://www.nvidia.com/en-us/data-center/h100/"
+}

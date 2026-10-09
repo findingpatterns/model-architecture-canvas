@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA Rubin Ultra",
+  "description": "Roadmap GPU (H2 2027, announced at GTC 2025): 4 reticle-sized compute dies in one package, 16 HBM4E stacks (1 TB), 100 PFLOPS dense FP4 — scales to the NVL576 Kyber rack.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "rubin-ultra", "gpu", "roadmap"],
+  "source": "https://glennklockwood.com/garden/processors/r300"
+}

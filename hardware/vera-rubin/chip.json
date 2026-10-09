@@ -1,0 +1,1144 @@
+{
+  "schemaVersion": 1,
+  "id": "vera-rubin",
+  "name": "NVIDIA Vera Rubin Superchip",
+  "vendor": "NVIDIA",
+  "arch": "Rubin / Vera",
+  "disclaimer": "One Vera CPU + two Rubin GPUs on a shared board, drawn to a common illustrative scale (1 unit = 4 mm; estimates where noted). Core/mesh counts, die footprints and board layout are symbolic, not a physical teardown.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "board",
+      "name": "Superchip board",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [58, 0.6, 22],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Single host processing board carrying one Vera CPU and two Rubin GPUs, memory-coherent over NVLink-C2C. NVIDIA frames this as one integrated \"data engine\" rather than a CPU host plus discrete accelerators.",
+      "specs": [
+        {
+          "label": "GPUs per Vera CPU",
+          "value": "2 Rubin GPUs",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "cpu-memory",
+      "parent": "board",
+      "name": "LPDDR5X (SOCAMM) modules",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.6, 1],
+        "pos": [-2, 0.9, 8]
+      },
+      "repeat": {
+        "count": [4, 1, 2],
+        "step": [1.2, 0, 1.2]
+      },
+      "explode": 2,
+      "desc": "Vera's system memory: LPDDR5X on SOCAMM (Small Outline Compression Attached Memory Module) cards for serviceability, instead of soldered DRAM. NVLink-C2C keeps this pool coherent with each Rubin GPU's HBM4, so the CPU can address GPU memory directly and vice versa.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "up to 1.5 TB LPDDR5X",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Bandwidth",
+          "value": "up to 1.2 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Form factor",
+          "value": "SOCAMM module",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "cpu-memory"
+    },
+    {
+      "id": "vera-cpu-die",
+      "parent": "board",
+      "name": "Vera CPU die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [7, 0.5, 7],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Monolithic die holding 88 custom Arm \"Olympus\" cores, a unified L3 cache and the Scalable Coherency Fabric mesh. Built for agentic-AI workloads where the CPU does real orchestration work, not just launching kernels.",
+      "specs": [
+        {
+          "label": "Cores / threads",
+          "value": "88 Olympus cores, 176 threads (Spatial Multithreading)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "L3 cache",
+          "value": "164 MB unified",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "cpu-die"
+    },
+    {
+      "id": "vera-cores",
+      "parent": "vera-cpu-die",
+      "name": "Olympus cores",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.42, 0.3, 0.55],
+        "pos": [-2.75, 1.05, -2.625]
+      },
+      "repeat": {
+        "count": [11, 1, 8],
+        "step": [0.55, 0, 0.75]
+      },
+      "explode": 3.2,
+      "drill": "vera-core-detail",
+      "desc": "88 custom Arm v9.2-A Olympus cores on the Scalable Coherency Fabric mesh. Each core uses Spatial Multithreading: two hardware threads get physically separate execution units and caches instead of time-slicing one pipeline. Click **Open core** to look inside.",
+      "specs": [
+        {
+          "label": "Core count",
+          "value": "88 (176 threads)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "cpu-core"
+    },
+    {
+      "id": "vera-l3-cache",
+      "parent": "vera-cpu-die",
+      "name": "L3 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [6.6, 0.1, 0.5],
+        "pos": [0, 1.05, 3.3]
+      },
+      "explode": 3.2,
+      "desc": "Unified last-level cache shared by all 88 cores over the mesh, buffering data between LPDDR5X and the cores before it has to cross NVLink-C2C to a Rubin GPU.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "164 MB",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "l3-cache"
+    },
+    {
+      "id": "vera-memory-controller",
+      "parent": "vera-cpu-die",
+      "name": "LPDDR5X memory controller",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.1, 6],
+        "pos": [3.3, 1.05, 0]
+      },
+      "explode": 3.2,
+      "desc": "Turns core/mesh read-write requests into signals for the SOCAMM LPDDR5X modules.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "c2c-link-0",
+      "parent": "board",
+      "name": "NVLink-C2C (to Rubin GPU 0)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [10, 0.3, 1.2],
+        "pos": [-10, 0.9, 0]
+      },
+      "explode": 2,
+      "desc": "Coherent die-to-die link between Vera and Rubin GPU 0. Fast and coherent enough that LPDDR5X and HBM4 look like one address space to software.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "1.8 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "c2c-link"
+    },
+    {
+      "id": "c2c-link-1",
+      "parent": "board",
+      "name": "NVLink-C2C (to Rubin GPU 1)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [10, 0.3, 1.2],
+        "pos": [10, 0.9, 0]
+      },
+      "explode": 2,
+      "desc": "Coherent die-to-die link between Vera and Rubin GPU 1, identical to the link to GPU 0.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "1.8 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "c2c-link"
+    },
+    {
+      "id": "rubin0-interposer",
+      "parent": "board",
+      "name": "Rubin GPU 0 interposer",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.3, 12.4],
+        "pos": [-17, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "Packaging substrate for Rubin GPU 0: two reticle-limited compute dies plus 8 HBM4 sites, joined the same way Blackwell joins its two dies.",
+      "role": "interposer"
+    },
+    {
+      "id": "rubin0-die0",
+      "parent": "rubin0-interposer",
+      "name": "Rubin die 0 (GPU 0)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-20.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two reticle-limited Rubin dies. Holds GPCs/SMs, L2 cache slice, HBM4 controllers and NVLink I/O; software sees both dies as a single GPU over NV-HBI.",
+      "specs": [
+        {
+          "label": "Transistors (both dies, this GPU)",
+          "value": "336 billion",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        },
+        {
+          "label": "SMs / Tensor Cores (both dies, this GPU)",
+          "value": "224 SMs, 896 Tensor Cores",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "rubin0-die1",
+      "parent": "rubin0-interposer",
+      "name": "Rubin die 1 (GPU 0)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-13.6, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second reticle-limited die of Rubin GPU 0, identical to die 0.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "rubin0-nvhbi",
+      "parent": "rubin0-interposer",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 6],
+        "pos": [-17, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NVIDIA High-Bandwidth Interface fusing Rubin GPU 0's two dies into one logical GPU, the same role NV-HBI plays on Blackwell.",
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "rubin0-hbm-base-left",
+      "parent": "rubin0-interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-25.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack: the PHY that talks to the on-die memory controller.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin0-hbm-dram-left",
+      "parent": "rubin0-hbm-base-left",
+      "name": "HBM4 DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-25.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.09, 2.95],
+        "spread": 0.22
+      },
+      "explode": 2.3,
+      "desc": "12-Hi stacked HBM4 DRAM, double the interface width of HBM3e. 8 stacks surround the two dies of Rubin GPU 0; LLM decoding is bound by this bandwidth since every token re-reads the resident weights.",
+      "specs": [
+        {
+          "label": "Capacity (per GPU)",
+          "value": "up to 288 GB",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        },
+        {
+          "label": "Bandwidth (per GPU)",
+          "value": "up to 22 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        },
+        {
+          "label": "Stack height",
+          "value": "12-Hi",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin0-hbm-base-right",
+      "parent": "rubin0-interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-8.675, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack, feeding Rubin die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin0-hbm-dram-right",
+      "parent": "rubin0-hbm-base-right",
+      "name": "HBM4 DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-8.675, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.09, 2.95],
+        "spread": 0.22
+      },
+      "explode": 2.3,
+      "desc": "12-Hi stacked HBM4 DRAM feeding Rubin die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin0-l2-die0",
+      "parent": "rubin0-die0",
+      "name": "L2 cache (die 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-20.4, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 slice, coherent across both Rubin dies. Buffers data between HBM4 and the SMs so hot weights and KV cache don't keep re-fetching from HBM4.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "rubin0-l2-die1",
+      "parent": "rubin0-die1",
+      "name": "L2 cache (die 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-13.6, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice on die 1.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "rubin0-mc-die0",
+      "parent": "rubin0-die0",
+      "name": "Memory controllers (die 0)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-23.299, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "HBM4 memory controllers + PHY, turning read/write requests into signals for the 4 HBM4 stacks next to this die.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "rubin0-mc-die1",
+      "parent": "rubin0-die1",
+      "name": "Memory controllers (die 1)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-10.701, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "HBM4 memory controllers + PHY for die 1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "rubin0-nvlink-die0",
+      "parent": "rubin0-die0",
+      "name": "NVLink 6 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [-20.4, 1.04, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip scale-up I/O: NVLink 6 reaches other GPUs through NVSwitch inside the NVL144 rack; PCIe Gen 6 connects to the rest of the system.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth (per GPU)",
+          "value": "3,600 GB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        },
+        {
+          "label": "PCIe",
+          "value": "Gen 6 x16, up to 256 GB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "rubin0-sm-die0-a",
+      "parent": "rubin0-die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-22.596, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "rubin-sm-detail",
+      "desc": "Streaming Multiprocessors — the basic compute unit, each with Tensor Cores, Tensor Memory and L1/shared memory. The grid is symbolic (224 SMs total across both dies of this GPU are not individually modeled). Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count (this GPU, both dies)",
+          "value": "224",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "rubin0-sm-die0-b",
+      "parent": "rubin0-die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-22.596, 1.07, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "rubin-sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "rubin0-sm-die1-a",
+      "parent": "rubin0-die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-15.796, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "rubin-sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "rubin0-sm-die1-b",
+      "parent": "rubin0-die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-15.796, 1.07, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "rubin-sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "rubin1-interposer",
+      "parent": "board",
+      "name": "Rubin GPU 1 interposer",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.3, 12.4],
+        "pos": [17, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "Packaging substrate for Rubin GPU 1, identical to GPU 0. Drawn simplified here (no SM-level drill) — this chip model focuses on the Vera CPU and its link to the GPUs.",
+      "role": "interposer"
+    },
+    {
+      "id": "rubin1-die0",
+      "parent": "rubin1-interposer",
+      "name": "Rubin die 0 (GPU 1)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [13.6, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two reticle-limited dies of Rubin GPU 1.",
+      "role": "compute-die"
+    },
+    {
+      "id": "rubin1-die1",
+      "parent": "rubin1-interposer",
+      "name": "Rubin die 1 (GPU 1)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [20.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second reticle-limited die of Rubin GPU 1.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "rubin1-nvhbi",
+      "parent": "rubin1-interposer",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 6],
+        "pos": [17, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NV-HBI fusing Rubin GPU 1's two dies into one logical GPU.",
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "rubin1-hbm-base-left",
+      "parent": "rubin1-interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [8.675, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack, Rubin GPU 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin1-hbm-dram-left",
+      "parent": "rubin1-hbm-base-left",
+      "name": "HBM4 DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [8.675, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.09, 2.95],
+        "spread": 0.22
+      },
+      "explode": 2.3,
+      "desc": "12-Hi stacked HBM4 DRAM feeding die 0 of Rubin GPU 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin1-hbm-base-right",
+      "parent": "rubin1-interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [25.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack, feeding die 1 of Rubin GPU 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "rubin1-hbm-dram-right",
+      "parent": "rubin1-hbm-base-right",
+      "name": "HBM4 DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [25.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.09, 2.95],
+        "spread": 0.22
+      },
+      "explode": 2.3,
+      "desc": "12-Hi stacked HBM4 DRAM feeding die 1 of Rubin GPU 1.",
+      "role": "hbm-stack"
+    }
+  ],
+  "scenes": {
+    "vera-core-detail": {
+      "anchor": "vera-cores",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "core-pipeline",
+          "name": "Olympus core pipeline",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [3.2, 0.3, 1.6],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Fetches up to 16 instructions/cycle and decodes up to 10 fused instructions/cycle. Spatial Multithreading physically splits the execution units between the core's two hardware threads instead of time-slicing one pipeline.",
+          "specs": [
+            {
+              "label": "Fetch / decode width",
+              "value": "16-wide fetch, 10-wide decode",
+              "source": "https://videocardz.com/newz/nvidia-details-vera-cpu-with-88-olympus-cores-176-threads-and-1-2-tb-s-lpddr5x-memory"
+            }
+          ],
+          "role": "cpu-core-pipeline"
+        },
+        {
+          "id": "thread-a",
+          "parent": "core-pipeline",
+          "name": "Hardware thread 0",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [1.5, 0.2, 1.4],
+            "pos": [-0.85, 0.3, 0]
+          },
+          "desc": "First of two hardware threads. Spatial Multithreading gives it its own slice of execution units and register state rather than sharing one pipeline turn-by-turn.",
+          "role": "cpu-thread"
+        },
+        {
+          "id": "thread-b",
+          "parent": "core-pipeline",
+          "name": "Hardware thread 1",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [1.5, 0.2, 1.4],
+            "pos": [0.85, 0.3, 0]
+          },
+          "desc": "Second hardware thread, physically isolated from thread 0's execution units and caches.",
+          "role": "cpu-thread"
+        },
+        {
+          "id": "l1-dcache",
+          "parent": "core-pipeline",
+          "name": "L1 data cache",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.2, 0.2, 0.9],
+            "pos": [0, -0.3, 1.25]
+          },
+          "desc": "Per-core L1 data cache, 6-way set associative.",
+          "specs": [
+            {
+              "label": "Size",
+              "value": "96 KB, 6-way",
+              "source": "https://videocardz.com/newz/nvidia-details-vera-cpu-with-88-olympus-cores-176-threads-and-1-2-tb-s-lpddr5x-memory"
+            }
+          ],
+          "role": "cpu-l1-cache"
+        },
+        {
+          "id": "l2-cache-slice",
+          "parent": "core-pipeline",
+          "name": "L2 cache (per core)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.2, 0.2, 0.9],
+            "pos": [0, -0.3, 2.3]
+          },
+          "desc": "Private L2 cache per core, 8-way set associative, backstopping the L1 before requests go to the mesh and shared L3.",
+          "specs": [
+            {
+              "label": "Size",
+              "value": "2 MB, 8-way",
+              "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+            }
+          ],
+          "role": "cpu-l2-cache"
+        },
+        {
+          "id": "mesh-router",
+          "parent": "core-pipeline",
+          "name": "SCF mesh router",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [0.5, 0.15, 0.5],
+            "pos": [0, 0.3, -1.1]
+          },
+          "desc": "Node on the Scalable Coherency Fabric mesh (built on Arm's CMN-700 coherent mesh network). Carries coherent traffic between this core's L2, the shared L3 slices, memory controllers and the NVLink-C2C ports to the Rubin GPUs.",
+          "specs": [
+            {
+              "label": "Fabric",
+              "value": "NVIDIA Scalable Coherency Fabric (CMN-700-based mesh)",
+              "source": "https://videocardz.com/newz/nvidia-details-vera-cpu-with-88-olympus-cores-176-threads-and-1-2-tb-s-lpddr5x-memory"
+            }
+          ],
+          "role": "scf-mesh"
+        }
+      ]
+    },
+    "rubin-sm-detail": {
+      "anchor": "rubin0-sm-die0-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here.",
+          "role": "shared-memory"
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0.35, 0]
+          },
+          "desc": "Dedicated memory where Tensor Cores keep their accumulators instead of registers, carried forward from Blackwell so larger tiles fit without spending register space.",
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Tensor Core",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies whole matrix tiles per instruction under the third-generation Transformer Engine, including NVFP4 with 3-bit lookup-table weight compression. Almost all AI FLOPs happen here.",
+          "specs": [
+            {
+              "label": "Transformer Engine",
+              "value": "3rd generation; NVFP4 with 3-bit LUT weights",
+              "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage, one slice per SM sub-partition.",
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM4 and shared memory asynchronously, without spending threads.",
+          "role": "tma"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "cpu-mem-to-vera",
+      "from": "cpu-memory",
+      "to": "vera-cpu-die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "vera-to-rubin0",
+      "from": "vera-cpu-die",
+      "to": "rubin0-interposer",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "vera-to-rubin1",
+      "from": "vera-cpu-die",
+      "to": "rubin1-interposer",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "hbm0-to-die0",
+      "from": "rubin0-hbm-dram-left",
+      "to": "rubin0-die0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm0-to-die1",
+      "from": "rubin0-hbm-dram-right",
+      "to": "rubin0-die1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die0-to-die1-rubin0",
+      "from": "rubin0-die0",
+      "to": "rubin0-die1",
+      "group": "io",
+      "particles": 4
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights, activations and KV cache for the agent loop sit in Vera's LPDDR5X (SOCAMM) memory.",
+      "focus": ["cpu-memory"],
+      "dot": "cpu-memory",
+      "explode": 0.4,
+      "drill": null,
+      "stage": "cpu-memory"
+    },
+    {
+      "text": "2. Vera's memory controller and L3 stage the tensors the GPU needs next.",
+      "focus": ["vera-memory-controller", "vera-l3-cache"],
+      "dot": "vera-memory-controller",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. NVLink-C2C carries them coherently to Rubin GPU 0 at 1.8 TB/s — one address space, no explicit copy in code.",
+      "focus": ["c2c-link-0"],
+      "dot": "c2c-link-0",
+      "stage": "c2c-link"
+    },
+    {
+      "text": "4. On Rubin GPU 0, resident weights and activations already live in HBM4 (up to 22 TB/s per GPU).",
+      "focus": ["rubin0-hbm-dram-left", "rubin0-hbm-dram-right"],
+      "dot": "rubin0-hbm-dram-left",
+      "stage": "hbm"
+    },
+    {
+      "text": "5. If the tile lives in the other die's HBM4, it crosses NV-HBI — invisible to software, as on Blackwell.",
+      "focus": ["rubin0-nvhbi"],
+      "dot": "rubin0-nvhbi",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "6. Data lands in the shared L2 cache on die 0.",
+      "focus": ["rubin0-l2-die0"],
+      "dot": "rubin0-l2-die0",
+      "stage": "l2"
+    },
+    {
+      "text": "7. TMA copies A and B tiles from L2 into shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "rubin-sm-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "8. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "rubin-sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "9. The Tensor Cores run the matmul under the 3rd-gen Transformer Engine, e.g. in NVFP4.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "rubin-sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "10. Partial sums accumulate in Tensor Memory, not registers. Steps 7–10 repeat along K.",
+      "focus": ["tmem"],
+      "dot": "tmem",
+      "drill": "rubin-sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "11. Epilogue: results move TMEM → registers; CUDA cores add bias, apply activation, quantize.",
+      "focus": ["register-file", "warp-scheduler"],
+      "dot": "register-file",
+      "drill": "rubin-sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "12. Results go back to HBM4 via TMA. Over NVLink-C2C they're visible to Vera; over NVLink 6 (3.6 TB/s) they sync with other GPUs in the rack.",
+      "focus": ["rubin0-nvlink-die0", "c2c-link-0"],
+      "dot": "rubin0-nvlink-die0",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "336 billion (one Rubin GPU, two dies)",
+      "number": 336,
+      "role": "compute-die",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "dies",
+      "value": "2 per Rubin GPU, joined by NV-HBI (x2 GPUs per superchip)",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC N3 (widely reported; not confirmed on an NVIDIA page)",
+      "estimate": true
+    },
+    {
+      "key": "tdp",
+      "value": "~1,800 W per Rubin GPU (NVIDIA datasheet power assumption for Vera Rubin NVL4)",
+      "number": 1800,
+      "source": "https://dam-cdn.nvd.orangelogic.com/AssetLink/56p68o47y6f1yucpubl0ump1c0aif422.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "224 SMs (per Rubin GPU, both dies)",
+      "number": 224,
+      "role": "sm-array",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "NVFP4, with 3-bit lookup-table weight compression",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "35 PFLOPS dense NVFP4, training-grade (announced), per Rubin GPU",
+      "number": 35,
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "17.5 PFLOPS dense FP8/FP6 (training spec), per Rubin GPU",
+      "number": 17.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "4,000 TFLOPS dense FP16/BF16 (4 PFLOPS), per Rubin GPU",
+      "number": 4000,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "2,000 TFLOPS dense TF32 (2 PFLOPS), per Rubin GPU",
+      "number": 2000,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "up to 288 GB HBM4 (per Rubin GPU)",
+      "number": 288,
+      "role": "hbm-stack",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "19.2 TB/s per Rubin GPU (Vera Rubin NVL72 spec; launch blog said 'up to 22 TB/s')",
+      "number": 19.2,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "3,000 GB/s per GPU (NVLink 6; current datasheet, launch blog said 3.6 TB/s)",
+      "number": 3000,
+      "role": "nvlink",
+      "source": "https://dam-cdn.nvd.orangelogic.com/AssetLink/56p68o47y6f1yucpubl0ump1c0aif422.pdf"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "1,800 GB/s bidirectional NVLink-C2C (per superchip, Vera to both GPUs)",
+      "number": 1800,
+      "role": "c2c-link",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "cpu_cores",
+      "value": "88 Olympus Arm cores / 176 threads (per superchip)",
+      "number": 88,
+      "role": "cpu-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "cpu_memory_capacity",
+      "value": "up to 1.5 TB LPDDR5X SOCAMM (per superchip)",
+      "number": 1500,
+      "role": "cpu-memory",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "cpu_memory_bandwidth",
+      "value": "up to 1.2 TB/s LPDDR5X (per Vera CPU / superchip)",
+      "number": 1.2,
+      "role": "cpu-memory",
+      "source": "https://dam-cdn.nvd.orangelogic.com/AssetLink/56p68o47y6f1yucpubl0ump1c0aif422.pdf"
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Rubin die ≈ reticle-limited like Blackwell, ~26 × 33 mm (estimate); HBM4 stack ≈ 11 × 11 mm (estimate); Vera die footprint not published (estimate)",
+    "estimate": true
+  }
+}

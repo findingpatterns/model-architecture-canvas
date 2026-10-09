@@ -1,0 +1,8 @@
+{
+  "name": "Tenstorrent Blackhole (p150)",
+  "description": "RISC-V-native AI accelerator: a grid of Tensix cores (5 baby RISC-V + unpacker/FPU/SFPU/packer each) over a 2D NoC, GDDR6 memory, 16 big SiFive X280 RISC-V cores, and 10×400G Ethernet for scale-out.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["tenstorrent", "blackhole", "risc-v", "accelerator"],
+  "source": "https://tenstorrent.com/en/hardware/blackhole"
+}

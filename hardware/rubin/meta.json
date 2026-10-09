@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA Rubin (R100/VR200)",
+  "description": "Rubin: two near-reticle compute dies + two I/O dies on a ~4x-reticle CoWoS-L interposer, 8 HBM4 stacks, NVLink 6, NVFP4-native Tensor Cores (announced, pre-ship figures).",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "rubin", "gpu", "announced"],
+  "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+}

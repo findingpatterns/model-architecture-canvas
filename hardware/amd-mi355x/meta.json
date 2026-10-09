@@ -1,0 +1,8 @@
+{
+  "name": "AMD Instinct MI355X",
+  "description": "CDNA 4: 8 XCD compute dies (N3P) 3D-stacked on 2 IODs (N6), 256 MB Infinity Cache, 288 GB HBM3E at 8 TB/s, Matrix Cores with native MXFP4/MXFP6.",
+  "kind": "hardware",
+  "tags": ["amd", "cdna4", "gpu"],
+  "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

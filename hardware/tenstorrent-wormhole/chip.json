@@ -1,0 +1,970 @@
+{
+  "schemaVersion": 1,
+  "id": "tenstorrent-wormhole",
+  "name": "Tenstorrent Wormhole (n300)",
+  "vendor": "Tenstorrent",
+  "arch": "Wormhole",
+  "disclaimer": "Die, GDDR6 package and Ethernet-tile footprints drawn to a common illustrative scale (1 unit = 4 mm; estimates where noted). Tensix grid, NoC mesh and Ethernet-tile counts are symbolic layouts, not pin-exact floorplans.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "board",
+      "name": "n300 board substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          20,
+          0.6,
+          10
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "PCIe card (or Galaxy baseboard tile) carrying two Wormhole ASICs, their GDDR6, and the board-level QSFP-DD cages that extend the on-die Ethernet mesh off the card.",
+      "role": "substrate"
+    },
+    {
+      "id": "die0",
+      "parent": "board",
+      "name": "Wormhole ASIC 0",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          6.5,
+          0.4,
+          6.5
+        ],
+        "pos": [
+          -5,
+          0.5,
+          0
+        ]
+      },
+      "explode": 2.2,
+      "desc": "One of two Wormhole dies on the n300 card. GlobalFoundries 12nm. Each die is a self-contained mesh of Tensix cores, GDDR6 controllers and Ethernet — no separate CPU cluster or NVLink-style fabric: the same on-die Ethernet that talks to the sibling ASIC also talks to every other Wormhole chip in a rack.",
+      "specs": [
+        {
+          "label": "Process",
+          "value": "GlobalFoundries 12nm",
+          "source": "https://newsletter.semianalysis.com/p/tenstorrent-wormhole-analysis-a-scale"
+        },
+        {
+          "label": "Die size",
+          "value": "~670 mm² (not officially published by Tenstorrent)",
+          "source": "https://newsletter.semianalysis.com/p/tenstorrent-wormhole-analysis-a-scale",
+          "estimate": true
+        },
+        {
+          "label": "Tensix cores (physical / enabled on n300)",
+          "value": "80 physical, 64 enabled (two rows power-gated per ASIC)",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1",
+      "parent": "board",
+      "name": "Wormhole ASIC 1",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          6.5,
+          0.4,
+          6.5
+        ],
+        "pos": [
+          5,
+          0.5,
+          0
+        ]
+      },
+      "explode": 2.2,
+      "desc": "Second Wormhole die on the n300 card, identical to ASIC 0. Reached from ASIC 0 only through Ethernet — there is no silicon interposer or coherent cache link between the two.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "gddr6-die0",
+      "parent": "die0",
+      "name": "GDDR6 package",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.9,
+          0.3,
+          0.9
+        ],
+        "pos": [
+          -9,
+          0.5,
+          -3.25
+        ]
+      },
+      "repeat": {
+        "count": [
+          3,
+          1,
+          2
+        ],
+        "step": [
+          0.95,
+          0,
+          1.6
+        ]
+      },
+      "explode": 2,
+      "desc": "Discrete GDDR6 DRAM packages next to ASIC 0, wired through the board (no interposer, unlike HBM). Arrangement of 6 packages is illustrative.",
+      "specs": [
+        {
+          "label": "Capacity (per ASIC)",
+          "value": "12 GB",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        },
+        {
+          "label": "Bandwidth (per ASIC)",
+          "value": "288 GB/s",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        },
+        {
+          "label": "Package count",
+          "value": "6 (illustrative)",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr6-die1",
+      "parent": "die1",
+      "name": "GDDR6 package",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.9,
+          0.3,
+          0.9
+        ],
+        "pos": [
+          9,
+          0.5,
+          -3.25
+        ]
+      },
+      "repeat": {
+        "count": [
+          3,
+          1,
+          2
+        ],
+        "step": [
+          0.95,
+          0,
+          1.6
+        ]
+      },
+      "explode": 2,
+      "desc": "GDDR6 packages feeding ASIC 1.",
+      "role": "gddr-memory"
+    },
+    {
+      "id": "noc-die0",
+      "parent": "die0",
+      "name": "NoC 2D mesh (ASIC 0)",
+      "group": "control",
+      "color": "#8a93a0",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.2,
+          0.05,
+          5.2
+        ],
+        "pos": [
+          -5,
+          0.72,
+          0
+        ]
+      },
+      "explode": 2.6,
+      "desc": "On-die Network-on-Chip: a 2D mesh of routers, one per Tensix tile, that moves data between Tensix cores, the GDDR6 controllers and the Ethernet cores. Two independent NoC planes (NoC0/NoC1) run in opposite directions to avoid deadlock. This mesh is the same fabric philosophy that continues off-die over Ethernet — on-die and chip-to-chip transfers use the same addressing model.",
+      "specs": [
+        {
+          "label": "Topology",
+          "value": "2D mesh, 2 independent NoC planes",
+          "source": "https://arxiv.org/pdf/2605.07599",
+          "estimate": true
+        }
+      ],
+      "role": "noc-router"
+    },
+    {
+      "id": "noc-die1",
+      "parent": "die1",
+      "name": "NoC 2D mesh (ASIC 1)",
+      "group": "control",
+      "color": "#8a93a0",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.2,
+          0.05,
+          5.2
+        ],
+        "pos": [
+          5,
+          0.72,
+          0
+        ]
+      },
+      "explode": 2.6,
+      "desc": "On-die NoC mesh for ASIC 1.",
+      "role": "noc-router"
+    },
+    {
+      "id": "tensix-die0",
+      "parent": "noc-die0",
+      "name": "Tensix cores (ASIC 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.46,
+          0.14,
+          0.42
+        ],
+        "pos": [
+          -6.7,
+          0.78,
+          -2.1
+        ]
+      },
+      "repeat": {
+        "count": [
+          8,
+          1,
+          10
+        ],
+        "step": [
+          0.6,
+          0,
+          0.46
+        ]
+      },
+      "explode": 3.2,
+      "drill": "tensix-detail",
+      "desc": "Grid of Tensix cores — Wormhole's only compute primitive (no separate RISC-V CPU cluster on-die). Each tile holds 5 small RISC-V cores, ~1.5 MB of L1 SRAM, and unpack/FPU/SFPU/pack datapath. Grid is symbolic: 80 are physically present per die, 64 enabled on n300. Click **Open** to look inside one core.",
+      "specs": [
+        {
+          "label": "Tensix cores (grid shown)",
+          "value": "80 (symbolic 8×10 grid)",
+          "estimate": true
+        },
+        {
+          "label": "SRAM per Tensix core",
+          "value": "~1.5 MB",
+          "source": "https://arxiv.org/pdf/2605.07599"
+        }
+      ],
+      "role": "tensix-core"
+    },
+    {
+      "id": "tensix-die1",
+      "parent": "noc-die1",
+      "name": "Tensix cores (ASIC 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.46,
+          0.14,
+          0.42
+        ],
+        "pos": [
+          3.3,
+          0.78,
+          -2.1
+        ]
+      },
+      "repeat": {
+        "count": [
+          8,
+          1,
+          10
+        ],
+        "step": [
+          0.6,
+          0,
+          0.46
+        ]
+      },
+      "explode": 3.2,
+      "drill": "tensix-detail",
+      "desc": "Tensix core grid on ASIC 1 (symbolic).",
+      "role": "tensix-core"
+    },
+    {
+      "id": "ethernet-die0",
+      "parent": "die0",
+      "name": "Ethernet cores (ASIC 0)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.28,
+          0.16,
+          0.28
+        ],
+        "pos": [
+          -1.9,
+          0.78,
+          -2.625
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          16
+        ],
+        "step": [
+          0,
+          0,
+          0.35
+        ]
+      },
+      "explode": 3.2,
+      "desc": "16 on-die Ethernet cores, each a full 100 Gbps MAC/PHY talking directly to the NoC — no host CPU or PCIe switch in the path. This is Wormhole's signature: the fabric that links the two ASICs on this card (via a short Warp 100 bridge) is the exact same fabric that tiles 32 Wormhole chips into a Galaxy 2D mesh. Facing ASIC 1's Ethernet row across the gap.",
+      "specs": [
+        {
+          "label": "Ethernet cores per ASIC",
+          "value": "16",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        },
+        {
+          "label": "Per-link speed",
+          "value": "100 Gbps",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        }
+      ],
+      "role": "ethernet-port"
+    },
+    {
+      "id": "ethernet-die1",
+      "parent": "die1",
+      "name": "Ethernet cores (ASIC 1)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.28,
+          0.16,
+          0.28
+        ],
+        "pos": [
+          1.9,
+          0.78,
+          -2.625
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          16
+        ],
+        "step": [
+          0,
+          0,
+          0.35
+        ]
+      },
+      "explode": 3.2,
+      "desc": "16 on-die Ethernet cores on ASIC 1, facing ASIC 0's row.",
+      "role": "ethernet-port"
+    },
+    {
+      "id": "qsfp-die0",
+      "parent": "die0",
+      "name": "QSFP-DD 400GbE cage",
+      "group": "io",
+      "color": "#237a53",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.8,
+          0.3,
+          0.5
+        ],
+        "pos": [
+          -9.2,
+          0.5,
+          3.75
+        ]
+      },
+      "explode": 2,
+      "desc": "Board-edge connector that breaks a subset of ASIC 0's Ethernet cores out to a QSFP-DD cable, extending the same on-die mesh to other cards or to a Galaxy rack.",
+      "specs": [
+        {
+          "label": "Ports (n300 card)",
+          "value": "2× QSFP-DD 400GbE",
+          "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+        }
+      ],
+      "role": "ethernet-port"
+    },
+    {
+      "id": "qsfp-die1",
+      "parent": "die1",
+      "name": "QSFP-DD 400GbE cage",
+      "group": "io",
+      "color": "#237a53",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.8,
+          0.3,
+          0.5
+        ],
+        "pos": [
+          9.2,
+          0.5,
+          3.75
+        ]
+      },
+      "explode": 2,
+      "desc": "Second QSFP-DD cage, fed from ASIC 1's Ethernet row.",
+      "role": "ethernet-port"
+    }
+  ],
+  "scenes": {
+    "tensix-detail": {
+      "anchor": "tensix-die0",
+      "offset": [
+        1.5,
+        3.2,
+        1.5
+      ],
+      "components": [
+        {
+          "id": "l1-sram",
+          "name": "L1 SRAM",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              3.2,
+              0.2,
+              2.6
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ]
+          },
+          "desc": "Local scratchpad private to this Tensix core — there is no shared L2/L3 on Wormhole. Holds operand and result tiles; every other unit in the core reads and writes here.",
+          "specs": [
+            {
+              "label": "Size (per core)",
+              "value": "~1.5 MB",
+              "source": "https://arxiv.org/pdf/2605.07599"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "unpack-unit",
+          "parent": "l1-sram",
+          "name": "Unpacker",
+          "group": "compute",
+          "color": "#4a7fd6",
+          "geom": {
+            "type": "box",
+            "size": [
+              1.3,
+              0.2,
+              1.1
+            ],
+            "pos": [
+              -1.1,
+              0.35,
+              -0.75
+            ]
+          },
+          "desc": "Expands compressed/quantized tile formats (e.g. block-floating-point) from L1 into the row/column layout the FPU and SFPU read. First stage of the Tensix unpack→math→pack pipeline.",
+          "role": "unpacker"
+        },
+        {
+          "id": "fpu-matrix-engine",
+          "parent": "l1-sram",
+          "name": "FPU (matrix engine)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1.3,
+              0.35,
+              1.1
+            ],
+            "pos": [
+              0.3,
+              0.45,
+              -0.75
+            ]
+          },
+          "desc": "Tensix's matrix engine: multiplies 32×32 operand tiles per instruction. Marketing FP8 throughput is reached via a block-floating-point (BFP8) tile format with a shared exponent; the multiply array itself natively runs BF16/TF32.",
+          "specs": [
+            {
+              "label": "Native MAC precision",
+              "value": "BF16 / TF32",
+              "source": "https://arxiv.org/pdf/2605.07599"
+            },
+            {
+              "label": "Tile size",
+              "value": "32×32",
+              "source": "https://arxiv.org/pdf/2605.07599",
+              "estimate": true
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "sfpu-vector-engine",
+          "parent": "l1-sram",
+          "name": "SFPU (vector engine)",
+          "group": "compute",
+          "color": "#5a8bd8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1.3,
+              0.35,
+              1.1
+            ],
+            "pos": [
+              1.7,
+              0.45,
+              -0.75
+            ]
+          },
+          "desc": "SIMD vector unit running elementwise math — activations, normalization, quantization scaling — on tiles the FPU already produced, without round-tripping to L1.",
+          "role": "vector-engine"
+        },
+        {
+          "id": "pack-unit",
+          "parent": "l1-sram",
+          "name": "Packer",
+          "group": "compute",
+          "color": "#4a7fd6",
+          "geom": {
+            "type": "box",
+            "size": [
+              1.3,
+              0.2,
+              1.1
+            ],
+            "pos": [
+              1.1,
+              0.35,
+              0.75
+            ]
+          },
+          "desc": "Recompresses FPU/SFPU results back into a packed tile format and writes them to L1, ready for the NoC or the next pipeline stage.",
+          "role": "packer"
+        },
+        {
+          "id": "riscv-noc0",
+          "parent": "l1-sram",
+          "name": "RISC-V (NoC reader — brisc)",
+          "group": "control",
+          "color": "#9aa3ad",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.55,
+              0.18,
+              0.5
+            ],
+            "pos": [
+              -1.5,
+              0.35,
+              0.95
+            ]
+          },
+          "desc": "One of 5 small RISC-V cores per Tensix tile. Pulls incoming NoC traffic into L1 and kicks off the unpack→math→pack pipeline.",
+          "role": "riscv-core"
+        },
+        {
+          "id": "riscv-noc1",
+          "parent": "l1-sram",
+          "name": "RISC-V (NoC writer — ncrisc)",
+          "group": "control",
+          "color": "#9aa3ad",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.55,
+              0.18,
+              0.5
+            ],
+            "pos": [
+              -0.8,
+              0.35,
+              0.95
+            ]
+          },
+          "desc": "Second data-movement RISC-V: pushes finished tiles out over the NoC to the next Tensix core, a GDDR6 controller, or an Ethernet core.",
+          "role": "riscv-core"
+        },
+        {
+          "id": "riscv-trisc0",
+          "parent": "l1-sram",
+          "name": "RISC-V (unpack — trisc0)",
+          "group": "control",
+          "color": "#b7bec6",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.55,
+              0.18,
+              0.5
+            ],
+            "pos": [
+              -0.1,
+              0.35,
+              0.95
+            ]
+          },
+          "desc": "Compute RISC-V that sequences the Unpacker.",
+          "role": "riscv-core"
+        },
+        {
+          "id": "riscv-trisc1",
+          "parent": "l1-sram",
+          "name": "RISC-V (math — trisc1)",
+          "group": "control",
+          "color": "#b7bec6",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.55,
+              0.18,
+              0.5
+            ],
+            "pos": [
+              0.6,
+              0.35,
+              0.95
+            ]
+          },
+          "desc": "Compute RISC-V that sequences the FPU and SFPU.",
+          "role": "riscv-core"
+        },
+        {
+          "id": "riscv-trisc2",
+          "parent": "l1-sram",
+          "name": "RISC-V (pack — trisc2)",
+          "group": "control",
+          "color": "#b7bec6",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.55,
+              0.18,
+              0.5
+            ],
+            "pos": [
+              1.3,
+              0.35,
+              0.95
+            ]
+          },
+          "desc": "Compute RISC-V that sequences the Packer.",
+          "role": "riscv-core"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr6-to-die0",
+      "from": "gddr6-die0",
+      "to": "die0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr6-to-die1",
+      "from": "gddr6-die1",
+      "to": "die1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die0-noc",
+      "from": "die0",
+      "to": "tensix-die0",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "die1-noc",
+      "from": "die1",
+      "to": "tensix-die1",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "ethernet-bridge",
+      "from": "ethernet-die0",
+      "to": "ethernet-die1",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "qsfp-out-0",
+      "from": "ethernet-die0",
+      "to": "qsfp-die0",
+      "group": "io",
+      "particles": 2
+    },
+    {
+      "id": "qsfp-out-1",
+      "from": "ethernet-die1",
+      "to": "qsfp-die1",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and activations sit in GDDR6 packages next to each ASIC — Wormhole has no on-package HBM.",
+      "focus": [
+        "gddr6-die0",
+        "gddr6-die1"
+      ],
+      "dot": "gddr6-die0",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. A GDDR6 controller on the die reads the tile and hands it to the on-die NoC mesh.",
+      "focus": [
+        "die0",
+        "noc-die0"
+      ],
+      "dot": "noc-die0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the tile lives on the other ASIC's GDDR6, it crosses the Warp 100 bridge over two of the 16 on-die Ethernet cores — the same fabric used for chip-to-chip scale-out, not a dedicated interconnect.",
+      "focus": [
+        "ethernet-die0",
+        "ethernet-die1"
+      ],
+      "dot": "ethernet-die0",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. The NoC routes the tile to a specific Tensix core and its 1.5 MB L1 SRAM.",
+      "focus": [
+        "tensix-die0"
+      ],
+      "dot": "tensix-die0",
+      "drill": "tensix-detail",
+      "stage": "l1"
+    },
+    {
+      "text": "5. Two of the core's 5 RISC-Vs (brisc/ncrisc) move the tile between the NoC and L1; a third (trisc0) kicks off the Unpacker to expand it into working layout.",
+      "focus": [
+        "riscv-noc0",
+        "riscv-noc1",
+        "riscv-trisc0",
+        "unpack-unit"
+      ],
+      "dot": "unpack-unit",
+      "drill": "tensix-detail",
+      "stage": "unpack"
+    },
+    {
+      "text": "6. trisc1 drives the FPU: the matrix engine multiplies 32×32 tiles (BF16/TF32, or BFP8 block-floating-point for FP8-class throughput).",
+      "focus": [
+        "riscv-trisc1",
+        "fpu-matrix-engine"
+      ],
+      "dot": "fpu-matrix-engine",
+      "drill": "tensix-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. The SFPU vector engine applies elementwise ops — bias, activation, requantization — on the FPU's output.",
+      "focus": [
+        "sfpu-vector-engine"
+      ],
+      "dot": "sfpu-vector-engine",
+      "drill": "tensix-detail",
+      "stage": "sfpu"
+    },
+    {
+      "text": "8. trisc2 drives the Packer, recompressing the result back into L1.",
+      "focus": [
+        "riscv-trisc2",
+        "pack-unit"
+      ],
+      "dot": "pack-unit",
+      "drill": "tensix-detail",
+      "stage": "pack"
+    },
+    {
+      "text": "9. ncrisc pushes the result back onto the NoC — to a neighboring Tensix core for the next layer, or out toward GDDR6/Ethernet.",
+      "focus": [
+        "riscv-noc1"
+      ],
+      "dot": "riscv-noc1",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "10. Leaving the die, results travel over the same 16 Ethernet cores at 100 Gbps each, straight to the NoC of the next chip — no PCIe switch, no host round-trip.",
+      "focus": [
+        "ethernet-die0",
+        "qsfp-die0"
+      ],
+      "dot": "qsfp-die0",
+      "stage": "ethernet-out"
+    },
+    {
+      "text": "11. In a Galaxy system, 32 Wormhole chips tile this exact Ethernet mesh into a 2D array: the same programming model runs whether the mesh is 1 chip or the whole rack.",
+      "focus": [
+        "qsfp-die0",
+        "qsfp-die1"
+      ],
+      "dot": "qsfp-die1",
+      "stage": "galaxy-mesh"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "2 Wormhole ASICs per n300, linked only by Ethernet (no die-to-die interconnect)",
+      "number": 2,
+      "role": "compute-die",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "die_area",
+      "value": "~670 mm² per die (not officially published)",
+      "number": 670,
+      "role": "compute-die",
+      "source": "https://newsletter.semianalysis.com/p/tenstorrent-wormhole-analysis-a-scale",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~1,340 mm² (2 dies)",
+      "number": 1340,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "GlobalFoundries 12nm",
+      "source": "https://newsletter.semianalysis.com/p/tenstorrent-wormhole-analysis-a-scale"
+    },
+    {
+      "key": "tdp",
+      "value": "300 W TBP (n300 board, 2 ASICs)",
+      "number": 300,
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "compute_units",
+      "value": "128 Tensix cores (64 per ASIC, n300)",
+      "number": 128,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8-class via BFP8 block-floating-point tiles (FPU multiply array is native BF16/TF32)",
+      "role": "tensor-core",
+      "source": "https://arxiv.org/pdf/2605.07599"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "0.466 PFLOPS vendor 'FP8' figure (n300 card, 2 ASICs)",
+      "number": 0.466,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "131 TFLOPS FP16 (n300 card, 2 ASICs)",
+      "number": 131,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "192 MB SRAM (96 MB per ASIC, n300)",
+      "number": 192,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "24 GB GDDR6 (12 GB per ASIC, n300)",
+      "number": 24,
+      "role": "gddr-memory",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "576 GB/s GDDR6 (n300 card)",
+      "number": 0.576,
+      "role": "gddr-memory",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "Ethernet: 2× QSFP-DD 400GbE = 800 Gb/s ≈ 100 GB/s per direction (n300 external ports; Warp 100 bridges not counted)",
+      "number": 100,
+      "role": "ethernet-port",
+      "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+    },
+    {
+      "key": "packaging",
+      "value": "Organic board substrate, discrete GDDR6 packages (no interposer, no CoWoS)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die ≈ 26 × 26 mm (670 mm², estimate, not officially published)",
+    "source": "https://newsletter.semianalysis.com/p/tenstorrent-wormhole-analysis-a-scale",
+    "estimate": true
+  }
+}

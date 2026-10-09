@@ -1,0 +1,11 @@
+{
+  "name": "Tenstorrent Grayskull (e150)",
+  "description": "Tenstorrent's first commercial Tensix chip (2021): 120-core 10x12 NoC torus, LPDDR4, PCIe 4.0 x16, no on-die Ethernet. The oldest point in the Grayskull -> Wormhole -> Blackhole lineage.",
+  "kind": "hardware",
+  "tags": ["tenstorrent", "grayskull", "tensix", "risc-v", "ai-accelerator"],
+  "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  }
+}

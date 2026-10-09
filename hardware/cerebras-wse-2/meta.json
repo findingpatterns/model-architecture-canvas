@@ -1,0 +1,8 @@
+{
+  "name": "Cerebras WSE-2",
+  "description": "Second-generation Cerebras Wafer-Scale Engine: 850,000 cores, 2.6 trillion transistors, 40 GB on-chip SRAM on TSMC 7 nm — the full wafer is the chip.",
+  "kind": "hardware",
+  "tags": ["cerebras", "wafer-scale", "ai-accelerator", "sram"],
+  "source": "https://www.cerebras.ai/chip",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

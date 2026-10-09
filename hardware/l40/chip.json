@@ -1,0 +1,674 @@
+{
+  "schemaVersion": 1,
+  "id": "l40",
+  "name": "NVIDIA L40",
+  "vendor": "NVIDIA",
+  "arch": "Ada Lovelace (AD102)",
+  "disclaimer": "Illustrative geometry. Die drawn near AD102's reported 608 mm² footprint at this scene's scale; SM/RT-core grid, GDDR6 package count and L2/memory-controller strip shapes are symbolic, not a floorplan.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "media": "#9a4fbf"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "PCIe card substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.6, 14],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Dual-slot, passively-cooled PCIe card. A standard flip-chip organic substrate — no interposer, no HBM — carries the single AD102 die and the GDDR6 chips that surround it.",
+      "specs": [
+        {
+          "label": "Form factor",
+          "value": "4.4\" (H) x 10.5\" (L), dual slot, passive cooling",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        },
+        {
+          "label": "Max power consumption",
+          "value": "300W (graphics/virtual-workstation tuned)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "AD102 die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [5.9, 0.4, 6.4],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 2.2,
+      "desc": "One monolithic Ada Lovelace AD102 die — the same die used in the GeForce RTX 4090. The L40 enables 142 of the die's 144 Streaming Multiprocessors (18,176 of 18,432 CUDA cores), pairing 4th-gen Tensor Cores with 3rd-gen RT Cores for mixed graphics/AI data-center workloads.",
+      "specs": [
+        {
+          "label": "Process",
+          "value": "TSMC 4N (custom 5 nm-class)",
+          "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+        },
+        {
+          "label": "Transistors",
+          "value": "76.3 billion",
+          "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+        },
+        {
+          "label": "Die size",
+          "value": "608 mm²",
+          "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+        },
+        {
+          "label": "SMs enabled / CUDA cores",
+          "value": "142 SMs / 18,176 CUDA cores (of 144 SMs / 18,432 on the full AD102 die)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        },
+        {
+          "label": "Tensor Cores / RT Cores",
+          "value": "568 4th-gen Tensor Cores / 142 3rd-gen RT Cores",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.2, 0.08, 0.8],
+        "pos": [0, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "96 MB of on-die L2 — unusually large for a GPU, inherited from AD102's design for high-resolution rendering working sets. It also happens to absorb a lot of AI inference reuse (weights, KV cache) before falling back to GDDR6.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "96 MB",
+          "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc",
+      "parent": "die",
+      "name": "GDDR6 memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.45, 0.08, 6.1],
+        "pos": [-2.6, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "384-bit GDDR6 PHY and controllers, wire-bonded straight to the substrate — no interposer or TSVs needed, unlike NVIDIA's HBM-equipped data-center parts.",
+      "specs": [
+        {
+          "label": "Bus width",
+          "value": "384-bit",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "memory-controller"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe Gen4 x16",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.2, 0.08, 0.2],
+        "pos": [0, 0.74, -3.3]
+      },
+      "explode": 3.2,
+      "desc": "Only host connectivity: PCIe Gen4 x16. The L40 has no NVLink and no multi-instance GPU (MIG) partitioning — each card is used whole, talking to the host or to peer GPUs purely over PCIe.",
+      "specs": [
+        {
+          "label": "Interconnect",
+          "value": "PCIe Gen4 x16, 64 GB/s bi-directional; no NVLink",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "video-engine",
+      "parent": "die",
+      "name": "Video encode/decode engines",
+      "group": "media",
+      "geom": {
+        "type": "box",
+        "size": [0.8, 0.08, 0.8],
+        "pos": [2.6, 0.74, -2.6]
+      },
+      "explode": 3.2,
+      "desc": "3x NVENC + 3x NVDEC, including AV1 encode and decode — useful for video-heavy graphics/streaming workloads the L40 targets alongside AI training.",
+      "specs": [
+        {
+          "label": "Engines",
+          "value": "3x NVENC / 3x NVDEC (AV1 encode & decode)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "display-engine",
+      "parent": "die",
+      "name": "Display engine (4x DisplayPort)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.8, 0.08, 0.6],
+        "pos": [2.6, 0.74, -1.5]
+      },
+      "explode": 3.2,
+      "desc": "Drives 4x DisplayPort 1.4a outputs straight off the card — the L40 is built for virtual workstation (RTX vWS) and rendering workloads where real display output matters, unlike the compute-only L40S.",
+      "specs": [
+        {
+          "label": "Outputs",
+          "value": "4x DisplayPort 1.4a",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "display-engine"
+    },
+    {
+      "id": "rt-core-row",
+      "parent": "die",
+      "name": "RT Cores (3rd gen)",
+      "group": "compute",
+      "color": "#7a3fb0",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.1, 0.3],
+        "pos": [-2.1, 0.78, -2.6]
+      },
+      "repeat": {
+        "count": [10, 1, 4],
+        "step": [0.46, 0, 0.46]
+      },
+      "explode": 3.3,
+      "drill": "sm-detail",
+      "desc": "One 3rd-gen RT Core per SM (142 total): fixed-function BVH traversal and ray/triangle or ray/box intersection, with hardware-accelerated motion blur for animation rendering. The grid here is symbolic.",
+      "specs": [
+        {
+          "label": "RT Core count",
+          "value": "142 (one per enabled SM)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        },
+        {
+          "label": "RT Core performance",
+          "value": "209 TFLOPS",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "rt-core"
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs (bank A)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.14, 0.52],
+        "pos": [-2.1, 0.77, 0.3]
+      },
+      "repeat": {
+        "count": [9, 1, 4],
+        "step": [0.5, 0, 0.68]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors. Each SM holds 4 fourth-gen Tensor Cores, 1 third-gen RT Core, and its own L1/shared memory. 142 are enabled on this part; the grid here is symbolic, not an exact floorplan. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "142 enabled (symbolic grid)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs (bank B)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.14, 0.52],
+        "pos": [0.3, 0.77, 0.3]
+      },
+      "repeat": {
+        "count": [9, 1, 4],
+        "step": [0.5, 0, 0.68]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors, second bank (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "gddr-left",
+      "parent": "package",
+      "name": "GDDR6 chips (left bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.3, 0.8],
+        "pos": [-6.2, 0.65, -3.9]
+      },
+      "repeat": {
+        "count": [2, 1, 3],
+        "step": [1.1, 0, 2.6]
+      },
+      "explode": 2.3,
+      "desc": "Discrete GDDR6 DRAM packages, surface-mounted on the substrate around the die — no TSV stack, no interposer. 48 GB with ECC across the whole card; the 384-bit bus is typically realized as 12 x32 chips, split here left/right.",
+      "specs": [
+        {
+          "label": "Capacity (whole GPU)",
+          "value": "48 GB GDDR6 with ECC",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        },
+        {
+          "label": "Bandwidth (whole GPU)",
+          "value": "864 GB/s",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+        },
+        {
+          "label": "Chip count / arrangement",
+          "value": "Drawn as 12 packages (6 left, 6 right) for a 384-bit bus; exact package layout not published",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr-right",
+      "parent": "package",
+      "name": "GDDR6 chips (right bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.3, 0.8],
+        "pos": [6.2, 0.65, -3.9]
+      },
+      "repeat": {
+        "count": [2, 1, 3],
+        "step": [1.1, 0, 2.6]
+      },
+      "explode": 2.3,
+      "desc": "Second bank of GDDR6 packages, mirroring the left bank on the other side of the die.",
+      "role": "gddr-memory"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "128 KB of configurable L1/shared memory per SM, split between cache and a programmable scratchpad. Feeds operand tiles to both the Tensor Cores and the RT Core's BVH traversal logic.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "128 KB (configurable L1/shared split)",
+              "estimate": true
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (4th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.3, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "4 Tensor Cores per SM (568 total). Adds FP8 support and hardware structural sparsity versus 3rd-gen (Ampere) Tensor Cores, so an FP8 matmul with a 2:4 sparse weight pattern runs at double the dense FP8 rate.",
+          "specs": [
+            {
+              "label": "FP8 Tensor (dense / sparse)",
+              "value": "362 / 724 TFLOPS",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+            },
+            {
+              "label": "New precision vs. Ampere",
+              "value": "FP8",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "rt-core",
+          "parent": "smem",
+          "name": "RT Core (3rd gen)",
+          "group": "compute",
+          "color": "#7a3fb0",
+          "geom": {
+            "type": "box",
+            "size": [0.9, 0.3, 0.7],
+            "pos": [1.3, 0.3, -0.3]
+          },
+          "desc": "1 RT Core per SM, run in parallel with the Tensor Cores. Walks the bounding-volume hierarchy (BVH) and tests ray/triangle or ray/box intersections in fixed-function hardware, with opacity micromap and displaced micro-mesh support new in Ada.",
+          "specs": [
+            {
+              "label": "RT Core performance (whole GPU)",
+              "value": "209 TFLOPS",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+            }
+          ],
+          "role": "rt-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.25, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage, one slice per SM sub-partition. Tensor Core accumulators land here (Ada has no separate tensor-memory, unlike Blackwell).",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 x 64 KB)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 0.55, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA (FP32/INT32) cores run the epilogue: bias, activation, quantization, and shading/compute work that isn't a matmul or a ray test.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-left-to-die",
+      "from": "gddr-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr-right-to-die",
+      "from": "gddr-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-pcie",
+      "from": "die",
+      "to": "pcie",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and activations sit in GDDR6, 48 GB with ECC across the card.",
+      "focus": ["gddr-left", "gddr-right"],
+      "dot": "gddr-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "gddr"
+    },
+    {
+      "text": "2. The 384-bit memory controller reads GDDR6 at up to 864 GB/s.",
+      "focus": ["mc"],
+      "dot": "mc",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the 96 MB L2 cache — large enough to hold hot weights or a render's working set without going back to GDDR6.",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. Tiles move into each SM's 128 KB L1/shared memory.",
+      "focus": ["sm-a"],
+      "dot": "sm-a",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "5. One of 568 fourth-gen Tensor Cores multiplies the tile, e.g. in FP8 — doubled throughput if the weights are 2:4 structurally sparse.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. In parallel, one of 142 third-gen RT Cores can walk the BVH and test ray intersections for rendering workloads sharing the same SM.",
+      "focus": ["rt-core"],
+      "dot": "rt-core",
+      "drill": "sm-detail",
+      "stage": "rt-core"
+    },
+    {
+      "text": "7. Partial sums accumulate in the register file.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. Epilogue: the warp scheduler and CUDA cores apply bias, activation or shading, then quantize back down if needed.",
+      "focus": ["warp-scheduler"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results write back through L2 to GDDR6, or straight out: to the display engine's DisplayPort outputs for rendering, or to NVENC for streaming.",
+      "focus": ["l2", "display-engine", "video-engine"],
+      "dot": "l2",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "10. With no NVLink, any multi-GPU traffic — or the host round-trip — goes out over PCIe Gen4 x16.",
+      "focus": ["pcie"],
+      "dot": "pcie",
+      "drill": null,
+      "stage": "pcie"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "76.3 billion",
+      "number": 76.3,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "dies",
+      "value": "1 (monolithic)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "die_area",
+      "value": "608 mm²",
+      "number": 608,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "608 mm² (1 die)",
+      "number": 608,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4N",
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "tdp",
+      "value": "300 W max power (per card)",
+      "number": 300,
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "142 SMs enabled (of 144 on AD102)",
+      "number": 142,
+      "role": "sm-array",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "4th generation",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "0.362 PFLOPS dense (362 TFLOPS; 724 with sparsity)",
+      "number": 0.362,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "0.724 PFLOPS (724 TFLOPS with sparsity)",
+      "number": 0.724,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "int8_dense",
+      "value": "362 TOPS dense (724 with sparsity)",
+      "number": 362,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "181.05 TFLOPS dense BF16 (FP16 same; 362.1 with sparsity)",
+      "number": 181.05,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "90.5 TFLOPS dense (181 with sparsity)",
+      "number": 90.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "rt_cores",
+      "value": "142 (3rd gen)",
+      "number": 142,
+      "role": "rt-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "l2_cache",
+      "value": "96 MB",
+      "number": 96,
+      "role": "l2-cache",
+      "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "48 GB GDDR6 with ECC (per card)",
+      "number": 48,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "0.864 TB/s (864 GB/s, per card)",
+      "number": 0.864,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Flip-chip, no interposer (GDDR6 wire-bonded to substrate)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "AD102 die ≈ 608 mm² (≈23.7 × 25.6 mm), drawn at [5.9, 6.4] units",
+    "source": "https://videocardz.com/newz/nvidia-details-ad102-gpu-up-to-18432-cuda-cores-76-3b-transistors-and-608-mm%C2%B2"
+  }
+}

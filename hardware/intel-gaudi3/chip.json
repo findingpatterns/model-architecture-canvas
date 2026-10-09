@@ -1,0 +1,664 @@
+{
+  "schemaVersion": 1,
+  "id": "intel-gaudi3",
+  "name": "Intel Gaudi 3",
+  "vendor": "Intel",
+  "arch": "Gaudi 3",
+  "disclaimer": "Die, DCORE, MME and HBM footprints are illustrative and drawn to a common scale (1 unit = 4 mm); exact die dimensions are not publicly disclosed. DCORE/MME/TPC floorplans follow the white paper's block diagrams but are not literal layouts.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "OAM package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [28, 0.6, 18], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "Open Compute Project OAM 2.0 mezzanine card. Carries power and signals from the two compute dies to the host system; rated up to 900W TDP.",
+      "specs": [
+        { "label": "Form factor", "value": "OCP OAM 2.0 mezzanine (also offered as a PCIe Gen5 x16 add-in card, 600W)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "TDP", "value": "Up to 900W (passive or liquid cooled)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer bridge",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [24, 0.3, 15], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "Package-level interposer joining the two compute dies and the surrounding HBM2e stacks. The die-to-die link it carries is transparent to software: both dies present as one logical accelerator.",
+      "specs": [
+        { "label": "Packaging", "value": "Two dies + 8 HBM2e stacks on a shared substrate (specific interposer technology not named in the white paper)", "estimate": true }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die0",
+      "parent": "interposer",
+      "name": "Compute die 0",
+      "group": "compute",
+      "geom": { "type": "box", "size": [8, 0.4, 10], "pos": [-4.2, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "One of two identical compute dies. Each die holds 2 DCOREs (4 MMEs, 32 TPCs), half the on-die SRAM, HBM PHYs, and a share of the media and network engines.",
+      "specs": [
+        { "label": "Process", "value": "TSMC 5nm (up from Gaudi 2's TSMC 7nm)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Die-to-die interconnect", "value": "High-bandwidth, low-latency link over the interposer; behaves as one unified die to software", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Die size", "value": "Not publicly disclosed", "estimate": true }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1",
+      "parent": "interposer",
+      "name": "Compute die 1",
+      "group": "compute",
+      "geom": { "type": "box", "size": [8, 0.4, 10], "pos": [4.2, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Second compute die, identical to die 0.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "die-bridge",
+      "parent": "interposer",
+      "name": "Die-to-die bridge",
+      "group": "io",
+      "geom": { "type": "box", "size": [0.5, 0.35, 8], "pos": [0, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "The interposer link between die 0 and die 1. Intel describes it only as high-bandwidth and low-latency, with no public bandwidth figure; it makes the two dies behave as one accelerator at the software level.",
+      "specs": [
+        { "label": "Latency/bandwidth", "value": "Not publicly disclosed (described as high-bandwidth, low-latency)", "estimate": true }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM2e base die (die 0 side)",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.6, 0.12, 2.6], "pos": [-8.4, 0.66, -4.2] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.8] },
+      "explode": 2,
+      "desc": "Logic/PHY base die at the bottom of each HBM2e stack feeding die 0.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM2e DRAM layers (die 0 side)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.6, 0.1, 2.6], "pos": [-8.4, 0.78, -4.2] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.8], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "4 of the 8 HBM2e stacks, stacked DRAM over TSVs, running at 3.6 GHz. Weights and KV cache live here; decoding is HBM-bandwidth bound.",
+      "specs": [
+        { "label": "Capacity (chip total)", "value": "128 GB across 8 HBM2e stacks (16 GB each)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Bandwidth (chip total)", "value": "3.7 TB/s peak aggregate", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Frequency", "value": "3.6 GHz", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM2e base die (die 1 side)",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.6, 0.12, 2.6], "pos": [8.4, 0.66, -4.2] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.8] },
+      "explode": 2,
+      "desc": "Logic/PHY base die at the bottom of each HBM2e stack feeding die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "interposer",
+      "name": "HBM2e DRAM layers (die 1 side)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.6, 0.1, 2.6], "pos": [8.4, 0.78, -4.2] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.8], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "The other 4 of the 8 HBM2e stacks, feeding die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "mc-die0",
+      "parent": "die0",
+      "name": "HBM PHY / memory controller (die 0)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.08, 9], "pos": [-7.2, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controller and HBM2e PHY turning L3/L2 misses into reads/writes against die 0's 4 HBM2e stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-die1",
+      "parent": "die1",
+      "name": "HBM PHY / memory controller (die 1)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.4, 0.08, 9], "pos": [7.2, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controller and HBM2e PHY for die 1's 4 HBM2e stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "dcore0-l2",
+      "parent": "die0",
+      "name": "DCORE 0 L2 cache (24 MB)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [6.5, 0.08, 0.6], "pos": [-4.2, 1.04, -1.9] },
+      "explode": 3.2,
+      "desc": "One of four 24 MB L2 slices carved from the chip's 96 MB on-die SRAM. The SRAM can instead be used as a single flat, uniformly-accessible L3 cache; the Gaudi software stack chooses per-tensor.",
+      "role": "on-chip-sram"
+    },
+    {
+      "id": "dcore0-mme-a",
+      "parent": "dcore0-l2",
+      "name": "MME (DCORE 0, engine 0)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [-7.2, 1.15, -2.9] },
+      "explode": 3.4,
+      "drill": "compute-cluster-detail",
+      "desc": "One of the chip's 8 Matrix Multiplication Engines. Each MME is a large 256x256, 64K-MAC systolic array dedicated to GEMMs: fully-connected layers, convolutions, batched matmuls. Click Open to see inside.",
+      "specs": [
+        { "label": "MMEs per chip", "value": "8 total, 2 per DCORE", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Peak compute (all 8 MMEs, FP8/BF16)", "value": "1,678 TFLOPS dense", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore0-mme-b",
+      "parent": "dcore0-l2",
+      "name": "MME (DCORE 0, engine 1)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [-1.2, 1.15, -2.9] },
+      "explode": 3.4,
+      "drill": "compute-cluster-detail",
+      "desc": "Second MME of DCORE 0.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore0-tpc",
+      "parent": "dcore0-l2",
+      "name": "TPCs (DCORE 0, x16)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.2, 0.5], "pos": [-5.45, 1.08, -2.9] },
+      "repeat": { "count": [8, 1, 2], "step": [0.5, 0, 0.6] },
+      "explode": 3.4,
+      "drill": "compute-cluster-detail",
+      "desc": "16 Tensor Processor Cores of DCORE 0 — VLIW SIMD engines handling every non-GEMM op (elementwise, activations, normalization, softmax) between MME passes.",
+      "specs": [
+        { "label": "TPCs per chip", "value": "64 total, 16 per DCORE", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "vector-engine"
+    },
+    {
+      "id": "dcore1-l2",
+      "parent": "die0",
+      "name": "DCORE 1 L2 cache (24 MB)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [6.5, 0.08, 0.6], "pos": [-4.2, 1.04, 1.9] },
+      "explode": 3.2,
+      "desc": "Second 24 MB L2 slice on die 0, local to DCORE 1.",
+      "role": "on-chip-sram"
+    },
+    {
+      "id": "dcore1-mme-a",
+      "parent": "dcore1-l2",
+      "name": "MME (DCORE 1, engine 0)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [-7.2, 1.15, 2.9] },
+      "explode": 3.4,
+      "desc": "First MME of DCORE 1.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore1-mme-b",
+      "parent": "dcore1-l2",
+      "name": "MME (DCORE 1, engine 1)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [-1.2, 1.15, 2.9] },
+      "explode": 3.4,
+      "desc": "Second MME of DCORE 1.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore1-tpc",
+      "parent": "dcore1-l2",
+      "name": "TPCs (DCORE 1, x16)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.2, 0.5], "pos": [-5.45, 1.08, 2.9] },
+      "repeat": { "count": [8, 1, 2], "step": [0.5, 0, 0.6] },
+      "explode": 3.4,
+      "desc": "16 Tensor Processor Cores of DCORE 1.",
+      "role": "vector-engine"
+    },
+    {
+      "id": "dcore2-l2",
+      "parent": "die1",
+      "name": "DCORE 2 L2 cache (24 MB)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [6.5, 0.08, 0.6], "pos": [4.2, 1.04, -1.9] },
+      "explode": 3.2,
+      "desc": "Third 24 MB L2 slice, local to DCORE 2 on die 1.",
+      "role": "on-chip-sram"
+    },
+    {
+      "id": "dcore2-mme-a",
+      "parent": "dcore2-l2",
+      "name": "MME (DCORE 2, engine 0)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [1.2, 1.15, -2.9] },
+      "explode": 3.4,
+      "desc": "First MME of DCORE 2.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore2-mme-b",
+      "parent": "dcore2-l2",
+      "name": "MME (DCORE 2, engine 1)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [7.2, 1.15, -2.9] },
+      "explode": 3.4,
+      "desc": "Second MME of DCORE 2.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore2-tpc",
+      "parent": "dcore2-l2",
+      "name": "TPCs (DCORE 2, x16)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.2, 0.5], "pos": [2.95, 1.08, -2.9] },
+      "repeat": { "count": [8, 1, 2], "step": [0.5, 0, 0.6] },
+      "explode": 3.4,
+      "desc": "16 Tensor Processor Cores of DCORE 2.",
+      "role": "vector-engine"
+    },
+    {
+      "id": "dcore3-l2",
+      "parent": "die1",
+      "name": "DCORE 3 L2 cache (24 MB)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [6.5, 0.08, 0.6], "pos": [4.2, 1.04, 1.9] },
+      "explode": 3.2,
+      "desc": "Fourth 24 MB L2 slice, local to DCORE 3 on die 1. Together the 4 slices make up the chip's 96 MB on-die SRAM.",
+      "role": "on-chip-sram"
+    },
+    {
+      "id": "dcore3-mme-a",
+      "parent": "dcore3-l2",
+      "name": "MME (DCORE 3, engine 0)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [1.2, 1.15, 2.9] },
+      "explode": 3.4,
+      "desc": "First MME of DCORE 3.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore3-mme-b",
+      "parent": "dcore3-l2",
+      "name": "MME (DCORE 3, engine 1)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": { "type": "box", "size": [1.1, 0.3, 1.8], "pos": [7.2, 1.15, 2.9] },
+      "explode": 3.4,
+      "desc": "Second MME of DCORE 3.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "dcore3-tpc",
+      "parent": "dcore3-l2",
+      "name": "TPCs (DCORE 3, x16)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.2, 0.5], "pos": [2.95, 1.08, 2.9] },
+      "repeat": { "count": [8, 1, 2], "step": [0.5, 0, 0.6] },
+      "explode": 3.4,
+      "desc": "16 Tensor Processor Cores of DCORE 3.",
+      "role": "vector-engine"
+    },
+    {
+      "id": "media-engine",
+      "parent": "die1",
+      "name": "Media engine (14 DEC + 4 ROT)",
+      "group": "control",
+      "geom": { "type": "box", "size": [1.4, 0.2, 2.4], "pos": [8.6, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Fixed-function media subsystem shared by both dies: 14 video/image decoder engines (HEVC, H.264, VP9, JPEG up to 8192x8192) and 4 rotator engines (2D/3D rotation, projection, mesh distort, re-sample).",
+      "specs": [
+        { "label": "Decoder engines", "value": "14", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Rotator engines", "value": "4", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "HEVC throughput", "value": "250 x 1080p30 streams", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "pcie",
+      "parent": "die0",
+      "name": "PCIe Gen5 x16 host link",
+      "group": "io",
+      "geom": { "type": "box", "size": [1.4, 0.2, 2.4], "pos": [-8.6, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Host interface: PCIe Gen5 x16, carrying the Graph Compiler's binaries and host-managed I/O.",
+      "specs": [
+        { "label": "Bandwidth", "value": "128 GB/s bidirectional (64 GB/s per direction)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "net-ports",
+      "parent": "interposer",
+      "name": "24x 200 GbE RoCE ports",
+      "group": "io",
+      "color": "#1f8f56",
+      "geom": { "type": "box", "size": [0.5, 0.3, 0.5], "pos": [-5.5, 1.3, -6.3] },
+      "repeat": { "count": [12, 1, 2], "step": [0.9, 0, 0.9] },
+      "explode": 3.6,
+      "desc": "24 integrated 200 Gbps RoCE (RDMA over Converged Ethernet) NIC ports plus 4 RDMA aggregation engines, all on-die. Unlike designs that pair NVLink for scale-up with separate host NICs for scale-out, Gaudi 3 uses the same Ethernet ports and RDMA engines for both: card-to-card inside a node and switch-to-switch across racks.",
+      "specs": [
+        { "label": "Ports", "value": "24 x 200 Gbps (48 x 112G PAM4 SerDes lanes)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "Aggregate bandwidth", "value": "1,200 GB/s bidirectional, RoCE Ethernet (not NVLink) — same fabric for scale-up and scale-out", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+        { "label": "RDMA aggregation engines", "value": "4, perform collective (e.g. all-reduce) summation on behalf of the communication library", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+      ],
+      "role": "ethernet-port"
+    }
+  ],
+  "scenes": {
+    "compute-cluster-detail": {
+      "anchor": "dcore0-mme-a",
+      "offset": [2, 3.5, -2],
+      "components": [
+        {
+          "id": "mme-array",
+          "name": "MME systolic array (256x256)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [3.2, 0.4, 3.2], "pos": [-1.8, 0, 0] },
+          "desc": "The MME's 256x256 grid of Multiply-Accumulate units (64K MACs total). Weight-stationary matmul: operands stream in from cache/HBM, each PE multiplies and forwards partial sums across the array. One large MME instead of many small cores needs far less input bandwidth per MAC — roughly 16x less than an equivalent grid of small cores.",
+          "specs": [
+            { "label": "MACs", "value": "64K (256 x 256 PE grid)", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+            { "label": "Supported input datatypes", "value": "FP8 (E4M3, E5M2), BF16, FP16, TF32, FP32", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+            { "label": "On-the-fly FP8 scaling", "value": "Yes — reduces TPC load when converting to/from FP8", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "mme-accumulator",
+          "parent": "mme-array",
+          "name": "FP32 accumulator",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": { "type": "box", "size": [3.2, 0.2, 3.2], "pos": [-1.8, 0.35, 0] },
+          "desc": "All MME datatypes accumulate into FP32, no matter the input precision. Partial sums build up here across the K dimension before the result tile is written back.",
+          "specs": [
+            { "label": "Accumulator precision", "value": "FP32", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tpc-vector-unit",
+          "name": "TPC vector processing unit",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": { "type": "box", "size": [1.8, 0.3, 1.2], "pos": [1.6, 0, -0.8] },
+          "desc": "256-byte-wide VLIW SIMD vector unit — the heart of the Tensor Processor Core. Runs every non-GEMM op: elementwise math, activations, normalization, softmax, reductions, with built-in deep-learning instructions.",
+          "specs": [
+            { "label": "Width", "value": "256 B SIMD, VLIW", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" },
+            { "label": "Supported datatypes", "value": "FP32, BF16, FP16, FP8 (E4M3/E5M2), INT32/16/8, UINT32/16/8", "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf" }
+          ],
+          "role": "vector-engine"
+        },
+        {
+          "id": "tpc-scalar-unit",
+          "parent": "tpc-vector-unit",
+          "name": "TPC scalar unit",
+          "group": "control",
+          "geom": { "type": "box", "size": [1.8, 0.15, 0.5], "pos": [1.6, 0.25, -0.3] },
+          "desc": "Handles control flow and address generation alongside the vector unit.",
+          "role": "control"
+        },
+        {
+          "id": "tpc-tensor-regfile",
+          "parent": "tpc-vector-unit",
+          "name": "Tensor register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [1.8, 0.15, 0.5], "pos": [1.6, -0.25, -0.3] },
+          "desc": "Register file feeding the vector processing unit.",
+          "role": "register-file"
+        },
+        {
+          "id": "tpc-l1-cache",
+          "name": "TPC L1 cache",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [1.8, 0.2, 1], "pos": [1.6, 0, 0.9] },
+          "desc": "Local cache backing the TPC's DMA-free programming model: unlike a typical DSP, the TPC reads and writes operands straight from cache or HBM without software managing a DMA engine.",
+          "role": "shared-memory"
+        },
+        {
+          "id": "tpc-load-store",
+          "parent": "tpc-l1-cache",
+          "name": "Load/store unit",
+          "group": "io",
+          "geom": { "type": "box", "size": [1.8, 0.15, 0.4], "pos": [1.6, -0.3, 0.9] },
+          "desc": "Issues loads/stores directly against cache or HBM; lets kernels run back-to-back with no idle time between them, even for very small, microsecond-scale kernels.",
+          "role": "load-store-unit"
+        }
+      ]
+    }
+  },
+  "flows": [
+    { "id": "hbm-to-die0", "from": "hbm-dram-left", "to": "die0", "group": "memory", "particles": 2 },
+    { "id": "hbm-to-die1", "from": "hbm-dram-right", "to": "die1", "group": "memory", "particles": 2 },
+    { "id": "die-to-die", "from": "die0", "to": "die1", "group": "io", "particles": 4 },
+    { "id": "die-to-net", "from": "die1", "to": "net-ports", "group": "io", "particles": 3 }
+  ],
+  "steps": [
+    {
+      "text": "1. Two Gaudi 3 compute dies (TSMC 5nm) sit on a shared substrate, joined by an interposer bridge — software sees one accelerator.",
+      "focus": ["die0", "die1", "interposer"],
+      "dot": "interposer",
+      "explode": 0.3,
+      "drill": null,
+      "stage": "overview"
+    },
+    {
+      "text": "2. Weights and activations live across 8 HBM2e stacks — 128 GB total at 3.7 TB/s aggregate bandwidth.",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "stage": "hbm"
+    },
+    {
+      "text": "3. A memory controller (HBM2e PHY) on each die reads the 4 HBM2e stacks attached to it.",
+      "focus": ["mc-die0"],
+      "dot": "mc-die0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "4. If the data lives in the other die's HBM, it crosses the interposer bridge — invisible to software.",
+      "focus": ["die-bridge"],
+      "dot": "die-bridge",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "5. Data lands in the 96 MB on-die SRAM — used here as a 24 MB L2 slice per DCORE, or as one flat L3 cache.",
+      "focus": ["dcore0-l2"],
+      "dot": "dcore0-l2",
+      "stage": "l2"
+    },
+    {
+      "text": "6. Each DCORE's 2 MMEs pull A/B tiles into their 256x256, 64K-MAC systolic arrays and multiply.",
+      "focus": ["dcore0-mme-a", "dcore0-mme-b"],
+      "dot": "dcore0-mme-a",
+      "drill": "compute-cluster-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. Partial sums accumulate in FP32 inside the MME, regardless of input precision (FP8/BF16/FP16/TF32/FP32).",
+      "focus": ["mme-accumulator"],
+      "dot": "mme-accumulator",
+      "drill": "compute-cluster-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. In parallel, the DCORE's 16 TPCs — 256B-wide VLIW SIMD cores — run non-GEMM ops (activation, normalization) straight from cache, with no DMA to manage.",
+      "focus": ["dcore0-tpc", "tpc-vector-unit"],
+      "dot": "dcore0-tpc",
+      "drill": "compute-cluster-detail",
+      "stage": "vector-engine"
+    },
+    {
+      "text": "9. Results write back through the on-die SRAM to HBM2e.",
+      "focus": ["dcore0-l2"],
+      "dot": "dcore0-l2",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "10. For multi-card training, the 24x200 GbE RoCE ports and RDMA aggregation engines run collective all-reduce directly over Ethernet — card-to-card inside the node (scale-up).",
+      "focus": ["net-ports"],
+      "dot": "net-ports",
+      "drill": null,
+      "stage": "scale-up"
+    },
+    {
+      "text": "11. The same 24 ports also carry traffic across racks (scale-out) — one fabric for both, unlike designs that split a proprietary scale-up link from a separate scale-out NIC.",
+      "focus": ["net-ports"],
+      "dot": "net-ports",
+      "drill": null,
+      "stage": "scale-out"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "2 identical dies, bridged via an on-package interposer (software-transparent)",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 5nm",
+      "role": "compute-die",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "900 W TDP (HL-325L OAM; PCIe card HL-338 is 600 W)",
+      "number": 900,
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "64 TPCs (vector cores) + 8 MMEs (matrix engines)",
+      "number": 64,
+      "role": "vector-engine",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th-generation MME (Matrix Multiplication Engine)",
+      "role": "tensor-core",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8 (E4M3 and E5M2)",
+      "role": "tensor-core",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "1.678 PFLOPS FP8 MME (dense), per accelerator",
+      "number": 1.678,
+      "role": "tensor-core",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "1,678 TFLOPS BF16 MME (dense), per accelerator",
+      "number": 1678,
+      "role": "tensor-core",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "96 MB on-die SRAM (4 x 24 MB, configurable as L2 or a unified L3)",
+      "number": 96,
+      "role": "on-chip-sram",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "on_chip_sram_bandwidth",
+      "value": "12.8 TB/s read / 6.4 TB/s write",
+      "number": 12.8,
+      "role": "on-chip-sram",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "128 GB (8 x 16 GB HBM2e)",
+      "number": 128,
+      "role": "hbm-stack",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "3.7 TB/s peak aggregate",
+      "number": 3.7,
+      "role": "hbm-stack",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "1,200 GB/s bidirectional — 24x200 GbE RoCE Ethernet, not NVLink; the same ports serve scale-up and scale-out",
+      "number": 1200,
+      "role": "ethernet-port",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "128 GB/s PCIe Gen5 x16 host link (64 GB/s per direction)",
+      "number": 128,
+      "role": "pcie",
+      "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Two compute dies + 8 HBM2e stacks on a shared OAM substrate (interposer bridge; specific packaging tech not named)",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Illustrative only — Intel has not published Gaudi 3 die dimensions. Package modeled on the OAM mezzanine form factor shown in the white paper.",
+    "estimate": true
+  }
+}

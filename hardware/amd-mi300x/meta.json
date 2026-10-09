@@ -1,0 +1,8 @@
+{
+  "name": "AMD Instinct MI300X",
+  "description": "CDNA 3: 8 XCDs 3D-stacked on 4 IODs, 256 MB Infinity Cache, 192 GB HBM3 at 5.3 TB/s, 4 Matrix Cores per CU.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["amd", "cdna3", "gpu"],
+  "source": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html"
+}

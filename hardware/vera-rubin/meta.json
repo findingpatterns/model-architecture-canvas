@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA Vera Rubin Superchip",
+  "description": "One Vera CPU (88 Olympus cores) and two Rubin GPUs on a shared board, coherent over NVLink-C2C — the building block of the Vera Rubin NVL144 rack.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "rubin", "vera", "superchip", "gpu", "cpu"],
+  "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+}

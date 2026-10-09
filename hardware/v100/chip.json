@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "id": "v100",
+  "name": "NVIDIA V100",
+  "vendor": "NVIDIA",
+  "arch": "Volta",
+  "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [14, 0.6, 11],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate (SXM2/SXM3 module). Routes power and signals from the GV100 die and HBM2 stacks to the board through solder balls.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Silicon interposer",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [10.6, 0.3, 8.2],
+        "pos": [0, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "A passive silicon interposer carries the fine-pitch wiring between the GV100 die and the four HBM2 stacks (the CoWoS branding NVIDIA later used for A100+ was not applied to V100, though the 2.5D construction is the same idea).",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "Silicon interposer (2.5D)",
+          "estimate": true
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die",
+      "parent": "interposer",
+      "name": "GV100 die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 7.85],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "TSMC 12nm FFN. The first GPU with Tensor Cores: 6 GPCs × 14 SMs = 84 SMs total, 80 enabled on the V100 (binned for yield).",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "21.1 billion",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        },
+        {
+          "label": "Die size",
+          "value": "815 mm²",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 12 nm FFN",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        },
+        {
+          "label": "SMs enabled",
+          "value": "80 of 84",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM2 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.12, 2.6],
+        "pos": [-3.9, 0.66, -1.65]
+      },
+      "repeat": {
+        "count": [1, 1, 2],
+        "step": [0, 0, 3.3]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM2 stack.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM2 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.1, 2.6],
+        "pos": [-3.9, 0.78, -1.65]
+      },
+      "repeat": {
+        "count": [1, 4, 2],
+        "step": [0, 0.11, 3.3],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked HBM2 DRAM dies joined by TSVs. 4-Hi (16 GB total) or 8-Hi (32 GB total) stacks; 2 stack sites on this side of the die.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "16 GB or 32 GB (4 stacks total)",
+          "source": "https://images.nvidia.com/content/technologies/volta/pdf/volta-v100-datasheet-update-us-1165301-r5.pdf"
+        },
+        {
+          "label": "Bandwidth",
+          "value": "900 GB/s (SXM2/SXM3)",
+          "source": "https://images.nvidia.com/content/technologies/volta/pdf/volta-v100-datasheet-update-us-1165301-r5.pdf"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM2 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.12, 2.6],
+        "pos": [3.9, 0.66, -1.65]
+      },
+      "repeat": {
+        "count": [1, 1, 2],
+        "step": [0, 0, 3.3]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM2 stack.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM2 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.1, 2.6],
+        "pos": [3.9, 0.78, -1.65]
+      },
+      "repeat": {
+        "count": [1, 4, 2],
+        "step": [0, 0.11, 3.3],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked HBM2 DRAM dies joined by TSVs. 2 stack sites on this side of the die.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.935, 0.08, 0.675],
+        "pos": [0, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache, the staging point between HBM2 and each SM's shared memory.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "6 MB",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-left",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.353, 0.08, 7.29],
+        "pos": [-3.038, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM2 PHY for the stacks on this side.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-right",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.353, 0.08, 7.29],
+        "pos": [3.038, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM2 PHY for the stacks on this side.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink",
+      "parent": "die",
+      "name": "NVLink 2",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.261, 0.08, 0.189],
+        "pos": [0, 1.04, -3.783]
+      },
+      "explode": 3.2,
+      "desc": "NVLink 2.0: up to 6 links connect to peer GPUs (or NVLink-attached POWER9 CPUs); PCIe Gen3 connects the host on PCIe-card SKUs.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth",
+          "value": "300 GB/s (6 links, SXM2/SXM3)",
+          "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "gigathread",
+      "parent": "die",
+      "name": "GigaThread engine",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [2.261, 0.08, 0.189],
+        "pos": [0, 1.04, 3.753]
+      },
+      "explode": 3.2,
+      "desc": "Distributes thread blocks (CTAs) from launched kernels to idle SMs across the 6 GPCs."
+    },
+    {
+      "id": "sm-array",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.367, 0.14, 0.594],
+        "pos": [-2.1285, 1.07, -2.6005]
+      },
+      "repeat": {
+        "count": [10, 1, 8],
+        "step": [0.473, 0, 0.743]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "80 of 84 Streaming Multiprocessors enabled (symbolic grid). Click **Open SM** to look inside — this is the first SM design with Tensor Cores.",
+      "role": "sm-array"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-array",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "Combined L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Volta unifies L1 data cache and shared memory into one 128 KB block per SM, configurable (e.g. up to 96 KB shared / 32 KB L1). CUDA cores explicitly load A/B tiles here with LDG/STS — there is no TMA or async-copy engine yet (both arrive with Ampere's `cp.async`, then Hopper's TMA).",
+          "specs": [
+            {
+              "label": "L1 + shared (per SM)",
+              "value": "128 KB, configurable (up to 96 KB shared)",
+              "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (1st gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.38, 0.35, 0.9],
+            "pos": [-1.4525, 0.5, -0.55]
+          },
+          "repeat": {
+            "count": [8, 1, 1],
+            "step": [0.415, 0, 0]
+          },
+          "desc": "The first Tensor Core. Each clock, a warp issues `mma.sync` (HMMA): a 4×4×4 FP16 multiply with FP32 accumulate per core — one 4×4 warp-level matrix multiply-add per Tensor Core, 2 per processing block (8 per SM). Operands come straight from registers loaded out of shared memory; there is no FP8/FP4 support and no separate accumulator memory (Blackwell's TMEM is 3 generations away).",
+          "specs": [
+            {
+              "label": "MMA shape / precision",
+              "value": "4×4×4 FP16 multiply, FP32 accumulate",
+              "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+            },
+            {
+              "label": "Tensor Cores per SM",
+              "value": "8 (2 per processing block × 4)",
+              "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.45, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers, one 64 KB bank per processing block (256 KB total per SM). mma.sync reads operands from and accumulates results into these registers — there is no dedicated Tensor Memory.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 × 64 KB)",
+              "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 0.75, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each of the 4 processing blocks has its own warp scheduler + dispatch unit, 16 FP32 cores, 16 INT32 cores and 8 FP64 cores (64/64/32 per SM). These run the epilogue — bias add, activation — in FP32/INT32, and handle double-precision (HPC) work.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-left",
+      "from": "hbm-dram-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-right",
+      "from": "hbm-dram-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and activations sit in HBM2 (16/32 GB, 900 GB/s on SXM2/SXM3).",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. Memory controllers read the HBM2 stacks.",
+      "focus": ["mc-left"],
+      "dot": "mc-left",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the 6 MB L2 cache.",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. CUDA cores issue explicit LDG/STS loads to copy A/B tiles into shared memory — no TMA or async-copy engine exists yet (Ampere adds `cp.async`; Hopper adds TMA).",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "5. Threads issue LDS loads, moving operand tiles from shared memory into registers.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "load-operands"
+    },
+    {
+      "text": "6. A warp issues `mma.sync` (HMMA): each of the 8 Tensor Cores per SM multiplies a 4×4×4 FP16 tile.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. Partial products accumulate in FP32 registers — 1st-gen Tensor Cores have no separate accumulator memory (Blackwell's TMEM is 3 generations away).",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. Epilogue: the processing block's FP32/INT32 cores add bias and apply activation.",
+      "focus": ["warp-scheduler", "register-file"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results write back to HBM2; NVLink 2 (300 GB/s) exchanges tiles with peer GPUs for multi-GPU training.",
+      "focus": ["nvlink"],
+      "dot": "nvlink",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "21.1 billion (GV100)",
+      "number": 21.1,
+      "role": "compute-die",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "dies",
+      "value": "1",
+      "number": 1,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "die_area",
+      "value": "815 mm²",
+      "number": 815,
+      "role": "compute-die",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "815 mm² (1 die)",
+      "number": 815,
+      "role": "compute-die",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 12 nm FFN",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "300 W (SXM2; 250 W PCIe)",
+      "number": 300,
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "80 SMs (of 84 on full GV100)",
+      "number": 80,
+      "role": "sm-array",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "1st generation",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP16 (FP32 accumulate)",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "not supported (no FP8/FP4; FP16 is the lowest Tensor precision)",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "not supported (no FP8; FP16 is the lowest Tensor precision)",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "125 TFLOPS dense FP16 Tensor (SXM2; no BF16 support; 112 PCIe, 130 V100S)",
+      "number": 125,
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/content/technologies/volta/pdf/volta-v100-datasheet-update-us-1165301-r5.pdf"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~36 MB total (derived: 20 MB register file + 80 x 128 KB L1/shared = 10 MB + 6 MB L2, per Volta whitepaper)",
+      "number": 36,
+      "role": "l2-cache",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "6 MB",
+      "number": 6,
+      "role": "l2-cache",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "32 GB (8-Hi stacks; 16 GB on 4-Hi stacks also shipped)",
+      "number": 32,
+      "role": "hbm-stack",
+      "source": "https://images.nvidia.com/content/technologies/volta/pdf/volta-v100-datasheet-update-us-1165301-r5.pdf"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "0.9 TB/s (900 GB/s, SXM2/SXM3)",
+      "number": 0.9,
+      "role": "hbm-stack",
+      "source": "https://images.nvidia.com/content/technologies/volta/pdf/volta-v100-datasheet-update-us-1165301-r5.pdf"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "300 GB/s (NVLink 2, 6 links, SXM2/SXM3)",
+      "number": 300,
+      "role": "nvlink",
+      "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Silicon interposer (2.5D, no CoWoS branding)",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "GV100 die 815 mm² drawn as ≈ 26 × 31.4 mm (aspect estimated); HBM2 stack ≈ 10.4 × 10.4 mm (estimate)",
+    "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf",
+    "estimate": true
+  }
+}

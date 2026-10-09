@@ -1,0 +1,1304 @@
+{
+  "schemaVersion": 1,
+  "id": "gb300",
+  "name": "NVIDIA GB300 Grace Blackwell Ultra Superchip",
+  "vendor": "NVIDIA",
+  "arch": "Grace Blackwell Ultra",
+  "disclaimer": "Board-level layout, die footprints and the Grace core grid are illustrative (estimates where noted). The two B300 GPU packages reuse the B200 die/HBM structure (same Blackwell SM design); the Grace CPU is modeled as a single monolithic die with LPDDR5X side packages.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "cpu-substrate",
+      "name": "Grace CPU substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [12, 0.6, 12],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Module substrate carrying the single monolithic Grace die and its LPDDR5X side packages. Sits between the two B300 GPU packages on the superchip board.",
+      "role": "substrate"
+    },
+    {
+      "id": "cpu-die",
+      "parent": "cpu-substrate",
+      "name": "Grace CPU die",
+      "group": "compute",
+      "color": "#4a7a4a",
+      "geom": {
+        "type": "box",
+        "size": [6, 0.4, 6],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "drill": "grace-detail",
+      "desc": "Single monolithic die: 72 Arm Neoverse V2 cores, SCF mesh, 114 MB L3 and the LPDDR5X + NVLink-C2C controllers all on one piece of silicon (unlike the dual-die B300 GPUs next to it). Click **Open** to look inside.",
+      "specs": [
+        {
+          "label": "Cores",
+          "value": "72 Arm Neoverse V2 (4× 128b SVE2 each)",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        },
+        {
+          "label": "L3 cache",
+          "value": "114 MB",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        }
+      ],
+      "role": "cpu-die"
+    },
+    {
+      "id": "cpu-l3",
+      "parent": "cpu-die",
+      "name": "L3 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5, 0.1, 5],
+        "pos": [0, 1.05, 0]
+      },
+      "explode": 3,
+      "desc": "114 MB unified L3, shared by all 72 cores through the SCF mesh. Keeps hot pages on-die before they need to go out over NVLink-C2C.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "114 MB",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        }
+      ],
+      "role": "l3-cache"
+    },
+    {
+      "id": "scf-mesh",
+      "parent": "cpu-die",
+      "name": "Scalable Coherency Fabric",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [5.5, 0.08, 0.3],
+        "pos": [0, 1, 2.6]
+      },
+      "explode": 3,
+      "desc": "NVIDIA Scalable Coherency Fabric: the mesh that keeps all 72 cores, the L3 slices and the memory/NVLink-C2C controllers coherent with each other and with the GPUs across NVLink-C2C.",
+      "role": "scf-mesh"
+    },
+    {
+      "id": "lpddr5x-left",
+      "parent": "cpu-substrate",
+      "name": "LPDDR5X package",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [1.2, 0.3, 2],
+        "pos": [-5, 0.45, -3]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2]
+      },
+      "explode": 2,
+      "desc": "Server-class LPDDR5X next to the Grace die (not stacked like HBM). Up to 480 GB total, at roughly one fifth the power of equivalent DDR5. This is the CPU-side memory that the GPUs can reach coherently over NVLink-C2C.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "480 GB",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        },
+        {
+          "label": "Bandwidth",
+          "value": "Up to 384 GB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        }
+      ],
+      "role": "cpu-memory"
+    },
+    {
+      "id": "lpddr5x-right",
+      "parent": "cpu-substrate",
+      "name": "LPDDR5X package",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [1.2, 0.3, 2],
+        "pos": [5, 0.45, -3]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2]
+      },
+      "explode": 2,
+      "desc": "Second bank of LPDDR5X packages, mirrored on the other side of the Grace die.",
+      "role": "cpu-memory"
+    },
+    {
+      "id": "c2c-link-gpu0",
+      "name": "NVLink-C2C (to B300 #0)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [6, 0.15, 1],
+        "pos": [-12, 0.5, 0]
+      },
+      "explode": 1.5,
+      "desc": "Chip-to-chip link between the Grace die and B300 GPU #0. Cache-coherent at 900 GB/s — about 6x PCIe Gen5 x16 — which is what lets the GPU treat Grace's LPDDR5X as an extension of its own memory.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "900 GB/s, coherent",
+          "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+        }
+      ],
+      "role": "c2c-link"
+    },
+    {
+      "id": "c2c-link-gpu1",
+      "name": "NVLink-C2C (to B300 #1)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [6, 0.15, 1],
+        "pos": [12, 0.5, 0]
+      },
+      "explode": 1.5,
+      "desc": "Second NVLink-C2C link, from the Grace die to B300 GPU #1.",
+      "role": "c2c-link"
+    },
+    {
+      "id": "substrate-gpu0",
+      "name": "B300 #0 package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [24, 0.6, 16],
+        "pos": [-30, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Package substrate for Blackwell Ultra GPU #0 (same multi-layer organic substrate style as B200).",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer-gpu0",
+      "parent": "substrate-gpu0",
+      "name": "Interposer (CoWoS-L)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.3, 12.4],
+        "pos": [-30, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "TSMC CoWoS-L interposer carrying the two reticle-limited dies and 8 HBM3e stacks of B300 #0.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-L",
+          "estimate": true
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die0-gpu0",
+      "parent": "interposer-gpu0",
+      "name": "Die 0 (B300 #0)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-33.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two Blackwell Ultra dies in GPU #0 (TSMC 4NP). Software sees both dies plus the extra HBM3e capacity as a single 288 GB GPU.",
+      "specs": [
+        {
+          "label": "Transistors (both dies, per GPU)",
+          "value": "208 billion",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4NP",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1-gpu0",
+      "parent": "interposer-gpu0",
+      "name": "Die 1 (B300 #0)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-26.6, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second Blackwell Ultra die of GPU #0, identical to die 0.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "nv-hbi-gpu0",
+      "parent": "interposer-gpu0",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 6],
+        "pos": [-30, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NV-High Bandwidth Interface between the two dies of GPU #0, same as on B200.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "10 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "hbm-base-left-gpu0",
+      "parent": "interposer-gpu0",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-38.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each 12-Hi HBM3e stack feeding die 0 of GPU #0.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left-gpu0",
+      "parent": "hbm-base-left-gpu0",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-38.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "12-Hi HBM3e stacks (50% more capacity than B200's 8-Hi stacks): 288 GB total per GPU at 8 TB/s.",
+      "specs": [
+        {
+          "label": "Capacity (per GPU)",
+          "value": "288 GB",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+        },
+        {
+          "label": "Bandwidth (per GPU)",
+          "value": "8 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right-gpu0",
+      "parent": "interposer-gpu0",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-21.675, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die for the stacks feeding die 1 of GPU #0.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right-gpu0",
+      "parent": "hbm-base-right-gpu0",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-21.675, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "HBM3e DRAM layers feeding die 1 of GPU #0.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "l2-die0-gpu0",
+      "parent": "die0-gpu0",
+      "name": "L2 cache (die 0, GPU #0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-33.4, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice, coherent across both dies of GPU #0.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-die1-gpu0",
+      "parent": "die1-gpu0",
+      "name": "L2 cache (die 1, GPU #0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-26.6, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "L2 cache slice on die 1 of GPU #0.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-die0-gpu0",
+      "parent": "die0-gpu0",
+      "name": "Memory controllers (die 0, GPU #0)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-36.299, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 0's 4 HBM3e stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-die1-gpu0",
+      "parent": "die1-gpu0",
+      "name": "Memory controllers (die 1, GPU #0)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-23.701, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 1's stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink-die0-gpu0",
+      "parent": "die0-gpu0",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [-33.4, 1.04, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O on die 0 of GPU #0: NVLink 5 to the other GPU / NVSwitch fabric, PCIe Gen6 to the host.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth (per GPU)",
+          "value": "1,800 GB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "nvlink-die1-gpu0",
+      "parent": "die1-gpu0",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [-26.6, 1.04, 3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O ports on die 1 of GPU #0.",
+      "role": "nvlink"
+    },
+    {
+      "id": "sm-gpu0-die0",
+      "parent": "die0-gpu0",
+      "name": "SMs (die 0, GPU #0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-35.596, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 8],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors on die 0, same 5th-gen SM design as B200. The grid is symbolic (not an exact SM count). Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "not modeled (symbolic grid)",
+          "estimate": true
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-gpu0-die1",
+      "parent": "die1-gpu0",
+      "name": "SMs (die 1, GPU #0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-28.796, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 8],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors on die 1 (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "substrate-gpu1",
+      "name": "B300 #1 package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [24, 0.6, 16],
+        "pos": [30, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Package substrate for Blackwell Ultra GPU #1.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer-gpu1",
+      "parent": "substrate-gpu1",
+      "name": "Interposer (CoWoS-L)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.3, 12.4],
+        "pos": [30, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "CoWoS-L interposer for GPU #1.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-L",
+          "estimate": true
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die0-gpu1",
+      "parent": "interposer-gpu1",
+      "name": "Die 0 (B300 #1)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [26.6, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two Blackwell Ultra dies in GPU #1.",
+      "role": "compute-die"
+    },
+    {
+      "id": "die1-gpu1",
+      "parent": "interposer-gpu1",
+      "name": "Die 1 (B300 #1)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [33.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second Blackwell Ultra die of GPU #1.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "nv-hbi-gpu1",
+      "parent": "interposer-gpu1",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 6],
+        "pos": [30, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NV-HBI between the two dies of GPU #1.",
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "hbm-base-left-gpu1",
+      "parent": "interposer-gpu1",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [21.675, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die for the stacks feeding die 0 of GPU #1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left-gpu1",
+      "parent": "hbm-base-left-gpu1",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [21.675, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "HBM3e DRAM layers feeding die 0 of GPU #1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right-gpu1",
+      "parent": "interposer-gpu1",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [38.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die for the stacks feeding die 1 of GPU #1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right-gpu1",
+      "parent": "hbm-base-right-gpu1",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [38.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 8, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "HBM3e DRAM layers feeding die 1 of GPU #1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "l2-die0-gpu1",
+      "parent": "die0-gpu1",
+      "name": "L2 cache (die 0, GPU #1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [26.6, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice on die 0 of GPU #1.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-die1-gpu1",
+      "parent": "die1-gpu1",
+      "name": "L2 cache (die 1, GPU #1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [33.4, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "L2 cache slice on die 1 of GPU #1.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-die0-gpu1",
+      "parent": "die0-gpu1",
+      "name": "Memory controllers (die 0, GPU #1)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [23.701, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 0 of GPU #1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-die1-gpu1",
+      "parent": "die1-gpu1",
+      "name": "Memory controllers (die 1, GPU #1)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [36.299, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 1 of GPU #1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink-die0-gpu1",
+      "parent": "die0-gpu1",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [26.6, 1.04, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O on die 0 of GPU #1.",
+      "role": "nvlink"
+    },
+    {
+      "id": "nvlink-die1-gpu1",
+      "parent": "die1-gpu1",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [33.4, 1.04, 3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O on die 1 of GPU #1 — this is the port used for the NVLink 5 hop back to GPU #0 / the NVL72 rack fabric.",
+      "role": "nvlink"
+    },
+    {
+      "id": "sm-gpu1-die0",
+      "parent": "die0-gpu1",
+      "name": "SMs (die 0, GPU #1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [24.404, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 8],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors on die 0 of GPU #1 (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-gpu1-die1",
+      "parent": "die1-gpu1",
+      "name": "SMs (die 1, GPU #1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [31.204, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 8],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors on die 1 of GPU #1 (symbolic grid).",
+      "role": "sm-array"
+    }
+  ],
+  "scenes": {
+    "grace-detail": {
+      "anchor": "cpu-die",
+      "offset": [0, 3, 2.5],
+      "components": [
+        {
+          "id": "core-grid",
+          "name": "Neoverse V2 cores (72)",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": {
+            "type": "box",
+            "size": [0.3, 0.15, 0.3],
+            "pos": [0, 0, 0]
+          },
+          "repeat": {
+            "count": [9, 1, 8],
+            "step": [0.4, 0, 0.4]
+          },
+          "desc": "72 Arm Neoverse V2 cores (9×8 grid = 72, exact count), each with 4× 128-bit SVE2 vector units. Issue the loads that pull pages across NVLink-C2C and run any CPU-side pre/post-processing.",
+          "specs": [
+            {
+              "label": "Core count",
+              "value": "72",
+              "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+            }
+          ],
+          "role": "cpu-core"
+        },
+        {
+          "id": "scf-fabric",
+          "parent": "core-grid",
+          "name": "SCF mesh",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [3.6, 0.05, 3.2],
+            "pos": [0, -0.1, 0]
+          },
+          "desc": "Scalable Coherency Fabric mesh: routes every core, the L3 slices and the memory/NVLink-C2C controllers to each other, keeping the whole die (and, over NVLink-C2C, the GPUs) coherent.",
+          "role": "scf-mesh"
+        },
+        {
+          "id": "l3-slice",
+          "parent": "scf-fabric",
+          "name": "L3 cache (114 MB)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.6, 0.1, 3.2],
+            "pos": [0, 0.3, 0]
+          },
+          "desc": "Unified 114 MB L3, banked across the mesh. Absorbs repeat accesses before they need to hit LPDDR5X.",
+          "specs": [
+            {
+              "label": "Size",
+              "value": "114 MB",
+              "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+            }
+          ],
+          "role": "l3-cache"
+        },
+        {
+          "id": "mem-ctrl-lpddr",
+          "parent": "l3-slice",
+          "name": "LPDDR5X memory controllers",
+          "group": "memory",
+          "geom": {
+            "type": "box",
+            "size": [0.3, 0.1, 3],
+            "pos": [-2, 0.2, 0]
+          },
+          "desc": "Controllers + PHY driving the LPDDR5X packages on the substrate.",
+          "role": "memory-controller"
+        },
+        {
+          "id": "c2c-phy",
+          "parent": "l3-slice",
+          "name": "NVLink-C2C PHY",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [0.3, 0.1, 3],
+            "pos": [2, 0.2, 0]
+          },
+          "desc": "On-die PHY for the two NVLink-C2C links out to B300 #0 and #1, at up to 900 GB/s each, fully coherent.",
+          "specs": [
+            {
+              "label": "Bandwidth",
+              "value": "900 GB/s per link, coherent",
+              "source": "https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/"
+            }
+          ],
+          "role": "c2c-link"
+        }
+      ]
+    },
+    "sm-detail": {
+      "anchor": "sm-gpu0-die0",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here.",
+          "specs": [
+            {
+              "label": "Size (L1 + shared, per SM)",
+              "value": "~256 KB",
+              "estimate": true
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0.35, 0]
+          },
+          "desc": "Dedicated memory where Tensor Cores keep their accumulators instead of registers, same design as B200. Frees registers for other work and allows larger tiles.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (128 lanes × 512 columns × 32-bit)",
+              "estimate": true
+            }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Tensor Core (5th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies whole matrix tiles in one `tcgen05.mma` instruction, with FP4/FP6/FP8/BF16 inputs and micro-tensor scaling (NVFP4 included). Almost all AI FLOPs happen here.",
+          "specs": [
+            {
+              "label": "Lowest precision",
+              "value": "NVFP4",
+              "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage. One slice per SM sub-partition.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 × 64 KB)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads.",
+          "role": "tma"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "lpddr5x-to-cpu",
+      "from": "lpddr5x-left",
+      "to": "cpu-die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "cpu-c2c-gpu0",
+      "from": "cpu-die",
+      "to": "c2c-link-gpu0",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "c2c-gpu0-to-die",
+      "from": "c2c-link-gpu0",
+      "to": "die0-gpu0",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "cpu-c2c-gpu1",
+      "from": "cpu-die",
+      "to": "c2c-link-gpu1",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "c2c-gpu1-to-die",
+      "from": "c2c-link-gpu1",
+      "to": "die0-gpu1",
+      "group": "io",
+      "particles": 3
+    },
+    {
+      "id": "hbm-to-die0-gpu0",
+      "from": "hbm-dram-left-gpu0",
+      "to": "die0-gpu0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-die0-gpu1",
+      "from": "hbm-dram-left-gpu1",
+      "to": "die0-gpu1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "nvlink-gpu0-gpu1",
+      "from": "die1-gpu0",
+      "to": "die1-gpu1",
+      "group": "io",
+      "particles": 4
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. A page of weights/KV cache that doesn't fit in GPU HBM lives in Grace's LPDDR5X. Because NVLink-C2C is cache-coherent, this CPU memory acts as an extension of GPU memory — just slower (384 GB/s vs 8 TB/s).",
+      "focus": ["lpddr5x-left", "lpddr5x-right"],
+      "dot": "lpddr5x-left",
+      "explode": 0.6,
+      "drill": "grace-detail",
+      "stage": "cpu-memory"
+    },
+    {
+      "text": "2. Inside the Grace die, the 72 Neoverse V2 cores and the SCF mesh resolve the request; the 114 MB L3 may already hold the page from a previous access.",
+      "focus": ["core-grid", "scf-fabric", "l3-slice"],
+      "dot": "scf-fabric",
+      "drill": "grace-detail",
+      "stage": "scf-mesh"
+    },
+    {
+      "text": "3. NVLink-C2C carries the page to the GPU at up to 900 GB/s with full hardware cache coherency — no explicit memcpy in the application code.",
+      "focus": ["c2c-link-gpu0"],
+      "dot": "c2c-link-gpu0",
+      "drill": null,
+      "stage": "c2c"
+    },
+    {
+      "text": "4. The migrated data lands in an HBM3e stack on B300 #0 (288 GB per GPU at 8 TB/s, in 12-Hi stacks).",
+      "focus": ["hbm-dram-left-gpu0", "hbm-base-left-gpu0"],
+      "dot": "hbm-dram-left-gpu0",
+      "stage": "hbm"
+    },
+    {
+      "text": "5. The memory controller attached to die 0 reads the HBM3e stack next to it.",
+      "focus": ["mc-die0-gpu0"],
+      "dot": "mc-die0-gpu0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "6. If the tile actually lives behind die 1, it crosses NV-HBI between the two Blackwell Ultra dies at 10 TB/s — invisible to software, same mechanism as on B200.",
+      "focus": ["nv-hbi-gpu0"],
+      "dot": "nv-hbi-gpu0",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "7. Data settles in the shared L2 cache of die 0.",
+      "focus": ["l2-die0-gpu0"],
+      "dot": "l2-die0-gpu0",
+      "stage": "l2"
+    },
+    {
+      "text": "8. TMA copies A and B tiles from L2 into an SM's shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "9. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "10. One thread issues tcgen05.mma: the 4 fifth-gen Tensor Cores multiply the tiles, e.g. in NVFP4.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "11. Partial sums accumulate in TMEM (not registers) across K; once done, CUDA cores run the epilogue — bias, activation, quantize.",
+      "focus": ["tmem", "register-file"],
+      "dot": "tmem",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "12. Results go back to HBM; tensor-parallel results all-reduce over NVLink 5 (1.8 TB/s) to GPU #1 / the NVL72 rack, or back over NVLink-C2C to Grace for CPU-side post-processing.",
+      "focus": ["nvlink-die0-gpu0", "c2c-link-gpu0"],
+      "dot": "nvlink-die0-gpu0",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "208 billion per B300 GPU (2 dies); Grace CPU transistor count not publicly disclosed",
+      "number": 208,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "dies",
+      "value": "4 GPU compute dies total (2 Blackwell Ultra dies × 2 GPUs), plus 1 monolithic Grace CPU die",
+      "number": 4,
+      "role": "compute-die",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4NP (B300 GPU dies)",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "tdp",
+      "value": "Up to 1,400 W TGP per GPU",
+      "number": 1400,
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "compute_units",
+      "value": "160 SMs per GPU (20,480 CUDA cores ÷ 128 per SM)",
+      "number": 160,
+      "role": "sm-array",
+      "source": "https://videocardz.com/newz/nvidia-blackwell-ultra-gb30-features-20480-cuda-cores-288gb-hb3e-memory-and-pcie-gen6"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation (Blackwell Ultra)",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "NVFP4",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "15 PFLOPS dense NVFP4 per GPU (30 PFLOPS dense per superchip ÷ 2 GPUs)",
+      "number": 15,
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "5 PFLOPS dense per GPU (10 sparse)",
+      "number": 5,
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "int8_dense",
+      "value": "~167 TOPS dense per GPU (24 POPS sparse per NVL72 ÷ 72 ÷ 2)",
+      "number": 167,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "estimate": true
+    },
+    {
+      "key": "bf16_dense",
+      "value": "2,500 TFLOPS dense BF16/FP16 per GPU (360 PFLOPS sparse per NVL72 ÷ 72 ÷ 2)",
+      "number": 2500,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "estimate": true
+    },
+    {
+      "key": "tf32_dense",
+      "value": "1,250 TFLOPS dense per GPU (180 PFLOPS sparse per NVL72 ÷ 72 ÷ 2)",
+      "number": 1250,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "estimate": true
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "288 GB HBM3e per GPU (12-Hi stacks)",
+      "number": 288,
+      "role": "hbm-stack",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "8 TB/s per GPU",
+      "number": 8,
+      "role": "hbm-stack",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "1,800 GB/s (NVLink 5, per GPU)",
+      "number": 1800,
+      "role": "nvlink",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "900 GB/s NVLink-C2C per superchip (Grace ↔ 2 GPUs, bidirectional)",
+      "number": 900,
+      "role": "c2c-link",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era/"
+    },
+    {
+      "key": "mig_instances",
+      "value": "Up to 7 MIGs per GPU (as HGX B300)",
+      "number": 7,
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server",
+      "estimate": true
+    },
+    {
+      "key": "cpu_cores",
+      "value": "72 Arm Neoverse V2 cores per superchip (2,592 per NVL72 ÷ 36 Grace)",
+      "number": 72,
+      "role": "cpu-die",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/"
+    },
+    {
+      "key": "cpu_memory_capacity",
+      "value": "~472 GB LPDDR5X per superchip (17 TB per NVL72 ÷ 36)",
+      "number": 472,
+      "role": "cpu-memory",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "estimate": true
+    },
+    {
+      "key": "cpu_memory_bandwidth",
+      "value": "~0.39 TB/s LPDDR5X per superchip (14 TB/s per NVL72 ÷ 36)",
+      "number": 0.389,
+      "role": "cpu-memory",
+      "source": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/",
+      "estimate": true
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS-L (B300 GPU dies; estimate, same as B200)",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "B300 die ≈ 26 × 33 mm, same reticle-limited estimate as B200; HBM stack ≈ 11 × 11 mm (estimate); Grace monolithic die size not publicly specified (illustrative)",
+    "estimate": true
+  }
+}

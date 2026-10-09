@@ -1,0 +1,806 @@
+{
+  "schemaVersion": 1,
+  "id": "b300",
+  "name": "NVIDIA B300 (Blackwell Ultra)",
+  "vendor": "NVIDIA",
+  "arch": "Blackwell Ultra",
+  "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [24, 0.6, 16],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls. Blackwell Ultra raises the per-GPU power ceiling to push the extra NVFP4 throughput and taller HBM stacks.",
+      "specs": [
+        {
+          "label": "GPU power (TDP)",
+          "value": "Up to 1,400 W (vs ~1,000 W on B200)",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer (CoWoS-L)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.3, 12.4],
+        "pos": [0, 0.45, 0]
+      },
+      "explode": 1,
+      "desc": "TSMC CoWoS-L: local silicon bridges embedded in an organic interposer. Carries the ultra-fine wiring between the dies and the HBM stacks, and lets the package exceed one reticle. Unchanged from B200.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-L",
+          "estimate": true
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die0",
+      "parent": "interposer",
+      "name": "Die 0",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [-3.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two reticle-limited Blackwell Ultra dies (TSMC 4NP) — the same compute dies as B200. Holds GPCs/SMs, L2 cache, memory controllers and I/O; software sees both dies as a single GPU. Blackwell Ultra's gains come from the 2nd-gen Transformer Engine, taller HBM stacks and a higher power budget, not a new die.",
+      "specs": [
+        {
+          "label": "Transistors (both dies)",
+          "value": "208 billion",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4NP",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        },
+        {
+          "label": "Die size",
+          "value": "~26 × 33 mm (reticle-limited; exact size not published; same dies as B200)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1",
+      "parent": "interposer",
+      "name": "Die 1",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6.5, 0.4, 8.25],
+        "pos": [3.4, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second Blackwell Ultra die, identical to die 0.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "nv-hbi",
+      "parent": "interposer",
+      "name": "NV-HBI die-to-die link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 6],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "NV-High Bandwidth Interface between the two dies. Fast and coherent enough that CUDA code sees one GPU — no code changes needed. Unchanged from B200.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "10 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [-8.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack: the PHY that talks to the memory controller through the interposer.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM3e DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [-8.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by through-silicon vias (TSVs). Blackwell Ultra moves from 8-high to 12-high stacks — 50% more layers per stack, same 8 stacks and same footprint as B200 — to reach 288 GB. LLM decoding is usually bound by this bandwidth: every token re-reads the weights.",
+      "specs": [
+        {
+          "label": "Capacity (per GPU)",
+          "value": "288 GB (2,304 GB per 8-GPU DGX B300)",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        },
+        {
+          "label": "Bandwidth (per GPU)",
+          "value": "8 TB/s — unchanged from B200; the extra capacity comes from taller stacks, not a faster PHY",
+          "source": "https://www.civo.com/blog/nvidia-b300-blackwell-ultra-gpu"
+        },
+        {
+          "label": "Stacks",
+          "value": "8, each 12-Hi (vs 8-Hi on B200)",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [8.325, 0.66, -4.425]
+      },
+      "repeat": {
+        "count": [1, 1, 4],
+        "step": [0, 0, 2.95]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM stack.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM3e DRAM layers (12-Hi)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.1, 2.75],
+        "pos": [8.325, 0.78, -4.425]
+      },
+      "repeat": {
+        "count": [1, 12, 4],
+        "step": [0, 0.11, 2.95],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs, feeding die 1. 12-Hi, same as the left-side stacks.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "l2-die0",
+      "parent": "die0",
+      "name": "L2 cache (die 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [-3.4, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache, coherent across both dies. Buffers data between HBM and all SMs; hot weights and KV cache stay here instead of going back to HBM.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-die1",
+      "parent": "die1",
+      "name": "L2 cache (die 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.797, 0.08, 0.737],
+        "pos": [3.4, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice on die 1.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-die0",
+      "parent": "die0",
+      "name": "Memory controllers (die 0)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [-6.299, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY: turn read/write requests into signals for the 4 HBM stacks next to this die. Same 8,192-bit total interface width as B200; now driving 12-Hi stacks.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-die1",
+      "parent": "die1",
+      "name": "Memory controllers (die 1)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.439, 0.08, 7.661],
+        "pos": [6.299, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM PHY for die 1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink-die0",
+      "parent": "die0",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [-3.4, 1.04, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O. NVLink 5 connects GPUs through NVSwitch (HGX 8-GPU or GB300 NVL72); PCIe Gen6 connects the host CPU. Same NVLink 5 generation and per-GPU bandwidth as B200.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth (per GPU)",
+          "value": "1.8 TB/s",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "nvlink-die1",
+      "parent": "die1",
+      "name": "NVLink 5 / PCIe",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [3.4, 1.04, 3.978]
+      },
+      "explode": 3.2,
+      "desc": "Off-chip I/O ports on die 1.",
+      "role": "nvlink"
+    },
+    {
+      "id": "sm-die0-a",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-5.596, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors — the basic compute unit. Each SM has 4 fifth-generation Tensor Cores (2nd-gen Transformer Engine), Tensor Memory and L1/shared memory. The grid is symbolic: this model does not claim exact SM placement. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "160 across both dies (not individually modeled; symbolic grid)",
+          "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die0-b",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-5.596, 1.07, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die1-a",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [1.204, 1.07, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die1-b",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [1.204, 1.07, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-die0-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here.",
+          "specs": [
+            {
+              "label": "Size (L1 + shared, per SM)",
+              "value": "~256 KB",
+              "estimate": true
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0.35, 0]
+          },
+          "desc": "Dedicated memory where Tensor Cores keep their accumulators instead of registers. Frees registers for other work and allows larger tiles. Same design as B200.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (128 lanes × 512 columns × 32-bit)",
+              "estimate": true
+            }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Tensor Core (5th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Multiplies whole matrix tiles in one `tcgen05.mma` instruction, with FP4/FP6/FP8/BF16 inputs and micro-tensor scaling. The 2nd-gen Transformer Engine's NVFP4 path pushes dense throughput to 15 PFLOPS per GPU, about 1.5x B200's FP4 dense rate. Almost all AI FLOPs happen here.",
+          "specs": [
+            {
+              "label": "NVFP4 dense (per GPU)",
+              "value": "15 PFLOPS (vs 9 PFLOPS FP4 dense on B200)",
+              "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+            },
+            {
+              "label": "New low-precision formats",
+              "value": "FP4 (NVFP4), FP6",
+              "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers — the fastest storage. One slice per SM sub-partition.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 × 64 KB)",
+              "estimate": true
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "sfu-exp",
+          "parent": "warp-scheduler",
+          "name": "SFU (exp / softmax, 2nd-gen Transformer Engine)",
+          "group": "control",
+          "color": "#c45ba0",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.12, 0.3],
+            "pos": [-1.25, 1.15, 1]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "New emphasis in Blackwell Ultra: the Special Function Units that compute `exp()` for softmax get 2x the throughput of B200, directly speeding the attention layer — most valuable for long-context reasoning models where softmax over large score matrices is a bottleneck.",
+          "specs": [
+            {
+              "label": "Attention-layer speedup",
+              "value": "Up to 2x faster attention-layer compute vs B200, via doubled SFU throughput for exp/softmax",
+              "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+            },
+            {
+              "label": "SFU exp throughput",
+              "value": "~10.7 Tera-exp/s (vs ~5 Tera-exp/s on B200)",
+              "source": "https://vercel.hyper.ai/en/stories/4375c8a113f1ea5c979e5723bec1f5eb"
+            }
+          ],
+          "role": "sfu-exp-unit"
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.4]
+          },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads.",
+          "role": "tma"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-to-die0",
+      "from": "hbm-dram-left",
+      "to": "die0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-die1",
+      "from": "hbm-dram-right",
+      "to": "die1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-die",
+      "from": "die0",
+      "to": "die1",
+      "group": "io",
+      "particles": 4
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights W and activations X sit in HBM3e — now 12-high stacks giving 288 GB per GPU.",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. A memory controller reads the HBM stack attached to its die.",
+      "focus": ["mc-die0"],
+      "dot": "mc-die0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the data lives in the other die's HBM, it crosses NV-HBI at 10 TB/s — invisible to software.",
+      "focus": ["nv-hbi"],
+      "dot": "nv-hbi",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. Data lands in the shared L2 cache.",
+      "focus": ["l2-die0"],
+      "dot": "l2-die0",
+      "stage": "l2"
+    },
+    {
+      "text": "5. TMA copies A and B tiles from L2 into shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "6. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "7. One thread issues tcgen05.mma: the 4 Tensor Cores multiply the tiles, e.g. in NVFP4 at 15 PFLOPS dense per GPU.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate in TMEM, not in registers. Steps 5–8 repeat along K.",
+      "focus": ["tmem"],
+      "dot": "tmem",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: results move TMEM → registers; CUDA cores add bias, apply activation, quantize.",
+      "focus": ["register-file", "warp-scheduler"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. For attention layers, the softmax over QK^T scores runs through SFUs that now compute exp() at 2x B200's rate — the 2nd-gen Transformer Engine's attention acceleration.",
+      "focus": ["sfu-exp"],
+      "dot": "sfu-exp",
+      "drill": "sm-detail",
+      "stage": "attention-sfu"
+    },
+    {
+      "text": "11. Results go back to HBM via TMA; with tensor parallelism, NVLink all-reduces with other GPUs.",
+      "focus": ["nvlink-die0"],
+      "dot": "nvlink-die0",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "208 billion (two dies, unchanged from B200)",
+      "number": 208,
+      "role": "compute-die",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "dies",
+      "value": "2, joined by a 10 TB/s link",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "die_area",
+      "value": "~858 mm² per die (reticle limit; same dies as B200)",
+      "number": 858,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~1,716 mm² (2 dies, unchanged from B200)",
+      "number": 1716,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4NP",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "tdp",
+      "value": "1,100 W (HGX B300 air-cooled board, per GPU; Blackwell Ultra up to 1,400 W in GB300)",
+      "number": 1100,
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server"
+    },
+    {
+      "key": "compute_units",
+      "value": "160 SMs (across both dies)",
+      "number": 160,
+      "role": "sm-array",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation, 2nd-gen Transformer Engine (2x attention-layer / SFU exp throughput vs B200)",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP4 (NVFP4)",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "13.5 PFLOPS dense (108 PFLOPS dense per 8-GPU DGX B300 / 8; same basis as B200)",
+      "number": 13.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b300/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "4.5 PFLOPS dense (9,000 TFLOPS sparse ÷ 2)",
+      "number": 4.5,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "9 PFLOPS (72 PFLOPS sparse per 8-GPU DGX B300 / 8)",
+      "number": 9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b300/"
+    },
+    {
+      "key": "int8_dense",
+      "value": "~188 TOPS dense (375 TOPS sparse ÷ 2; INT8 cut sharply vs B200)",
+      "number": 187.5,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server",
+      "estimate": true
+    },
+    {
+      "key": "bf16_dense",
+      "value": "2,250 TFLOPS dense BF16/FP16 (4,500 sparse ÷ 2)",
+      "number": 2250,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "~1,125 TFLOPS dense (2,250 TFLOPS listed, assumed sparse like HGX B200 basis; ÷ 2)",
+      "number": 1125,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server",
+      "estimate": true
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "288 GB HBM3e, 12-Hi stacks (2,304 GB per 8-GPU DGX B300)",
+      "number": 288,
+      "role": "hbm-stack",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "8 TB/s (64 TB/s per 8-GPU) — unchanged from B200",
+      "number": 8,
+      "role": "hbm-stack",
+      "source": "https://www.civo.com/blog/nvidia-b300-blackwell-ultra-gpu"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "1,800 GB/s (NVLink 5; 1.8 TB/s, same generation as B200)",
+      "number": 1800,
+      "role": "nvlink",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+    },
+    {
+      "key": "mig_instances",
+      "value": "Up to 7 MIGs @ 34 GB",
+      "number": 7,
+      "source": "https://lenovopress.lenovo.com/lp2264-thinksystem-sr680a-v4-server"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS-L",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die ≈ 26 × 33 mm (reticle limit, estimate; same dies as B200); HBM stack footprint ≈ 11 × 11 mm (estimate), now 12-Hi instead of 8-Hi",
+    "estimate": true
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA T4",
+  "description": "Turing TU104: 70 W inference card, 40 SMs with 2nd-gen Tensor Cores (FP16/INT8/INT4), 16 GB GDDR6, no HBM, no NVLink.",
+  "kind": "hardware",
+  "tags": ["nvidia", "turing", "gpu", "inference", "gddr6"],
+  "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/tesla-t4/t4-tensor-core-datasheet-951643.pdf",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

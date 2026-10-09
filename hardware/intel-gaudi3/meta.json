@@ -1,0 +1,8 @@
+{
+  "name": "Intel Gaudi 3",
+  "description": "Two bridged TSMC 5nm dies, 8 MMEs + 64 TPCs, 96 MB on-die SRAM, 8 HBM2e stacks (128 GB, 3.7 TB/s), 24x 200 GbE RoCE ports for both scale-up and scale-out.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["intel", "gaudi", "gaudi3", "ai-accelerator"],
+  "source": "https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf"
+}

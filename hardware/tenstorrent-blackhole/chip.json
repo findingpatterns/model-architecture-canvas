@@ -1,0 +1,767 @@
+{
+  "schemaVersion": 1,
+  "id": "tenstorrent-blackhole",
+  "name": "Tenstorrent Blackhole (p150)",
+  "vendor": "Tenstorrent",
+  "arch": "Blackhole",
+  "disclaimer": "Single monolithic die, drawn to an illustrative common scale (die size is not officially disclosed; ~600 mm² is a secondary-source estimate). Tensix grid, GDDR6/Ethernet/PCIe tile placement on the die edges, NoC fabric and the Tensix internals are symbolic, not a literal floorplan.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          16,
+          0.4,
+          12
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "Organic substrate carrying the single Blackhole die, no interposer or chiplets — unlike B200's two-die package, Blackhole is one monolithic ASIC.",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "Blackhole die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          14.6,
+          0.3,
+          10.3
+        ],
+        "pos": [
+          0,
+          0.35,
+          0
+        ]
+      },
+      "explode": 1.2,
+      "desc": "One monolithic die holding the Tensix grid, 16 \"big\" RISC-V CPU cores, GDDR6 controllers, 10×400G Ethernet, PCIe 5.0 x16 and an ARC management microcontroller.",
+      "specs": [
+        {
+          "label": "Process node",
+          "value": "~6 nm-class (exact foundry/node not officially disclosed by Tenstorrent)",
+          "estimate": true
+        },
+        {
+          "label": "Die area",
+          "value": "~600 mm² (secondary-source estimate; not officially published)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "noc-fabric",
+      "parent": "die",
+      "name": "2D Network-on-Chip (NoC0 / NoC1)",
+      "group": "io",
+      "color": "#1c6b4a",
+      "geom": {
+        "type": "box",
+        "size": [
+          12.5,
+          0.04,
+          8.3
+        ],
+        "pos": [
+          0,
+          0.5,
+          0.4
+        ]
+      },
+      "explode": 1.6,
+      "desc": "Two independent unidirectional 2D mesh networks overlay the Tensix grid. **NoC0** starts top-left and only moves down/right; **NoC1** starts bottom-right and only moves up/left — together they give every core a short path in both directions, torus-like at the edges.",
+      "specs": [
+        {
+          "label": "NoC count / direction",
+          "value": "2 unidirectional mesh NoCs (NoC0 down+right, NoC1 up+left); unicast and multicast",
+          "source": "https://anuraagw.me/blog/blackhole-architecture"
+        }
+      ],
+      "role": "noc-router"
+    },
+    {
+      "id": "tensix-core",
+      "parent": "die",
+      "name": "Tensix core",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.85,
+          0.08,
+          0.6
+        ],
+        "pos": [
+          -5.5,
+          0.54,
+          -3
+        ]
+      },
+      "repeat": {
+        "count": [
+          12,
+          1,
+          10
+        ],
+        "step": [
+          1,
+          0,
+          0.78
+        ]
+      },
+      "explode": 1.8,
+      "drill": "tensix-detail",
+      "desc": "Compute tile: 5 baby RISC-V cores + a packet manager (unpacker/packer) feeding a matrix engine (FPU) and a vector engine (SFPU), with 1.5 MB local L1 SRAM and 2 NoC router ports. Click **Open** to look inside.",
+      "specs": [
+        {
+          "label": "Tensix cores enabled",
+          "value": "120 (down from 140 at launch; reduced to 120 via a Feb 2026 firmware update, Tenstorrent cites yield/binning)",
+          "source": "https://www.tomshardware.com/tech-industry/semiconductors/jim-kellers-tenstorrent-is-downgrading-blackhole-p150-cards-from-140-to-120-tensor-cores-via-firmware-update-will-ship-cards-with-120-tensor-cores-going-forward-company-claims-existing-users-should-expect-1-2-percent-performance-drop"
+        },
+        {
+          "label": "L1 SRAM per core",
+          "value": "1.5 MB (~1.3 MB usable after kernel/scratchpad overhead); 180 MB total on-die",
+          "source": "https://anuraagw.me/blog/blackhole-architecture"
+        }
+      ],
+      "role": "tensix-core"
+    },
+    {
+      "id": "gddr6",
+      "parent": "die",
+      "name": "GDDR6 controller + PHY",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [
+          1,
+          0.1,
+          1
+        ],
+        "pos": [
+          -6.3,
+          0.54,
+          -4.2
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          8
+        ],
+        "step": [
+          0,
+          0,
+          1.2
+        ]
+      },
+      "explode": 1.8,
+      "desc": "GDDR6 memory controllers along one die edge. Blackhole uses GDDR6, not HBM — lower cost/complexity (no interposer, no TSV stacks) at the expense of per-pin bandwidth.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "32 GB GDDR6 total (bank/controller count is an estimate by analogy with the binned p100a's 7×4 GB)",
+          "estimate": true
+        },
+        {
+          "label": "Bandwidth",
+          "value": "512 GB/s",
+          "source": "https://tenstorrent.com/en/hardware/blackhole"
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "ethernet-port",
+      "parent": "die",
+      "name": "400G Ethernet MAC/SerDes",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.6,
+          0.1,
+          0.6
+        ],
+        "pos": [
+          -4.5,
+          0.54,
+          4.6
+        ]
+      },
+      "repeat": {
+        "count": [
+          10,
+          1,
+          1
+        ],
+        "step": [
+          1,
+          0,
+          0
+        ]
+      },
+      "explode": 1.8,
+      "desc": "10 on-die 400 Gbps Ethernet ports for chip-to-chip scale-out (e.g. Blackhole Galaxy, 32 chips in a 4×8 mesh). The p150 card physically exposes 4×QSFP-DD 800G passive connectors, bonding pairs of on-die 400G lanes.",
+      "specs": [
+        {
+          "label": "On-die Ethernet ports",
+          "value": "10 × 400 Gbps",
+          "source": "https://www.servethehome.com/tenstorrent-blackhole-and-metalium-for-standalone-ai-processing/"
+        },
+        {
+          "label": "Card-level connectors (p150a)",
+          "value": "4 × QSFP-DD 800G, passive",
+          "source": "https://tenstorrent.com/en/hardware/blackhole"
+        }
+      ],
+      "role": "ethernet-port"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe 5.0 x16",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          1.2,
+          0.1,
+          1
+        ],
+        "pos": [
+          -5,
+          0.54,
+          -4.7
+        ]
+      },
+      "explode": 1.8,
+      "desc": "Host interconnect: PCI Express 5.0 x16, used to load kernels and stream tensors from the host CPU.",
+      "specs": [
+        {
+          "label": "Interface",
+          "value": "PCIe 5.0 x16",
+          "source": "https://tenstorrent.com/en/hardware/blackhole"
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "arc",
+      "parent": "die",
+      "name": "ARC management microcontroller",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.8,
+          0.1,
+          0.8
+        ],
+        "pos": [
+          -3.8,
+          0.54,
+          -4.7
+        ]
+      },
+      "explode": 1.8,
+      "desc": "Small on-die microcontroller handling boot, power/thermal management and board telemetry, separate from the compute RISC-V cores.",
+      "role": "management-controller"
+    },
+    {
+      "id": "big-riscv",
+      "parent": "die",
+      "name": "Big RISC-V core (SiFive X280)",
+      "group": "control",
+      "color": "#7a8691",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.6,
+          0.12,
+          0.6
+        ],
+        "pos": [
+          1,
+          0.54,
+          -4.6
+        ]
+      },
+      "repeat": {
+        "count": [
+          4,
+          1,
+          4
+        ],
+        "step": [
+          0.9,
+          0,
+          0.9
+        ]
+      },
+      "explode": 1.8,
+      "desc": "16 \"big\" SiFive X280 RISC-V cores, organized in 4 clusters of 4, capable of running Linux — separate from the small per-Tensix \"baby\" RISC-V cores.",
+      "specs": [
+        {
+          "label": "Core count",
+          "value": "16, in 4 clusters of 4",
+          "source": "https://www.servethehome.com/tenstorrent-blackhole-and-metalium-for-standalone-ai-processing/"
+        }
+      ],
+      "role": "riscv-core"
+    }
+  ],
+  "scenes": {
+    "tensix-detail": {
+      "anchor": "tensix-core",
+      "offset": [
+        1,
+        3,
+        1
+      ],
+      "components": [
+        {
+          "id": "l1-sram",
+          "name": "L1 SRAM (local scratchpad)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              3,
+              0.3,
+              2.2
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ]
+          },
+          "desc": "1.5 MB of local SRAM per Tensix core, organized into circular buffers (CBs). Holds unpacked input tiles, packed output tiles, and kernel binaries/scratch.",
+          "specs": [
+            {
+              "label": "Size",
+              "value": "1.5 MB (~1.3 MB usable)",
+              "source": "https://anuraagw.me/blog/blackhole-architecture"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "unpacker",
+          "parent": "l1-sram",
+          "name": "Unpacker",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.2,
+              0.8
+            ],
+            "pos": [
+              -1.3,
+              0.3,
+              -0.7
+            ]
+          },
+          "desc": "Reads mini-tensor packets arriving from the NoC into L1 circular buffers and converts/decompresses data types into the tile layout the FPU/SFPU expect.",
+          "role": "unpacker"
+        },
+        {
+          "id": "fpu",
+          "parent": "l1-sram",
+          "name": "FPU (tile matrix engine)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.3,
+              1
+            ],
+            "pos": [
+              0,
+              0.35,
+              -0.7
+            ]
+          },
+          "desc": "Matrix engine operating on 32×32 tiles, up to BF16 inputs — the main source of matmul FLOPs on Blackhole, analogous to a Tensor Core.",
+          "specs": [
+            {
+              "label": "Throughput",
+              "value": "~4.096 TFLOPS per core at 1 GHz (matrix tile ops)",
+              "estimate": true
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "sfpu",
+          "parent": "l1-sram",
+          "name": "SFPU (vector engine)",
+          "group": "compute",
+          "color": "#4a7fd8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.3,
+              1
+            ],
+            "pos": [
+              1.3,
+              0.35,
+              -0.7
+            ]
+          },
+          "desc": "Wide SIMD vector engine, up to FP32, for elementwise/transcendental ops (exp, GELU, softmax, reductions) that don't fit the matrix engine.",
+          "specs": [
+            {
+              "label": "Relative throughput",
+              "value": "~64× slower than the FPU for transcendentals",
+              "source": "https://anuraagw.me/blog/blackhole-architecture"
+            }
+          ],
+          "role": "vector-engine"
+        },
+        {
+          "id": "packer",
+          "parent": "l1-sram",
+          "name": "Packer",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.2,
+              0.8
+            ],
+            "pos": [
+              1.3,
+              0.3,
+              0.7
+            ]
+          },
+          "desc": "Takes FPU/SFPU results out of L1, repacketizes them into the NoC packet format, and hands them to a NoC router toward the next destination core.",
+          "role": "packer"
+        },
+        {
+          "id": "baby-riscv",
+          "parent": "l1-sram",
+          "name": "Baby RISC-V core",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.3,
+              0.15,
+              0.3
+            ],
+            "pos": [
+              -0.7,
+              0.45,
+              0.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              5,
+              1,
+              1
+            ],
+            "step": [
+              0.35,
+              0,
+              0
+            ]
+          },
+          "desc": "5 small programmable RISC-V cores per Tensix, driving compute, data movement (unpack/pack, NoC transfers) and local storage management. A compute kernel typically compiles to 3 of these RISC-V threads.",
+          "specs": [
+            {
+              "label": "Count per Tensix",
+              "value": "5",
+              "source": "https://www.servethehome.com/tenstorrent-blackhole-and-metalium-for-standalone-ai-processing/"
+            }
+          ],
+          "role": "riscv-core"
+        },
+        {
+          "id": "tensix-router",
+          "parent": "l1-sram",
+          "name": "NoC router",
+          "group": "io",
+          "color": "#1c6b4a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.4,
+              0.15,
+              0.4
+            ],
+            "pos": [
+              -1.3,
+              0.45,
+              -0.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              2,
+              1,
+              1
+            ],
+            "step": [
+              0.5,
+              0,
+              0
+            ]
+          },
+          "desc": "2 router ports per Tensix core, one into each of the two unidirectional NoCs (NoC0, NoC1), moving packets to/from neighboring cores.",
+          "specs": [
+            {
+              "label": "Routers per Tensix",
+              "value": "2",
+              "source": "https://www.servethehome.com/tenstorrent-blackhole-and-metalium-for-standalone-ai-processing/"
+            }
+          ],
+          "role": "noc-router"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-to-tensix",
+      "from": "gddr6",
+      "to": "tensix-core",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "riscv-to-tensix",
+      "from": "big-riscv",
+      "to": "tensix-core",
+      "group": "control",
+      "particles": 2
+    },
+    {
+      "id": "tensix-to-ethernet",
+      "from": "tensix-core",
+      "to": "ethernet-port",
+      "group": "io",
+      "particles": 2
+    },
+    {
+      "id": "tensix-to-pcie",
+      "from": "tensix-core",
+      "to": "pcie",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. A weight/activation tile sits in GDDR6 (32 GB, 512 GB/s).",
+      "focus": [
+        "gddr6"
+      ],
+      "dot": "gddr6",
+      "explode": 0.4,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. The 2D NoC (NoC0 moving down/right, NoC1 moving up/left) routes the tile's packet across the mesh toward the target Tensix core.",
+      "focus": [
+        "noc-fabric"
+      ],
+      "dot": "noc-fabric",
+      "explode": 0.5,
+      "stage": "noc"
+    },
+    {
+      "text": "3. The packet reaches a Tensix core and is handed to its local 1.5 MB L1 SRAM.",
+      "focus": [
+        "tensix-core"
+      ],
+      "dot": "tensix-core",
+      "drill": "tensix-detail",
+      "explode": 0.6,
+      "stage": "l1"
+    },
+    {
+      "text": "4. The unpacker reads the packet into L1 circular buffers and converts it into tile layout.",
+      "focus": [
+        "unpacker"
+      ],
+      "dot": "unpacker",
+      "drill": "tensix-detail",
+      "stage": "unpack"
+    },
+    {
+      "text": "5. The FPU (tile matrix engine) multiplies 32×32 tiles — ~4 TFLOPS/core at 1 GHz, the Tensix's matmul engine.",
+      "focus": [
+        "fpu"
+      ],
+      "dot": "fpu",
+      "drill": "tensix-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. The SFPU (wide SIMD vector engine) applies elementwise/transcendental ops — GELU, exp, softmax — on the FPU's output.",
+      "focus": [
+        "sfpu"
+      ],
+      "dot": "sfpu",
+      "drill": "tensix-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "7. The packer repackitizes the results from L1 back into NoC packet format.",
+      "focus": [
+        "packer"
+      ],
+      "dot": "packer",
+      "drill": "tensix-detail",
+      "stage": "pack"
+    },
+    {
+      "text": "8. The packet leaves through one of the Tensix's 2 NoC routers toward the next core in the dataflow graph, or back to GDDR6.",
+      "focus": [
+        "tensix-router"
+      ],
+      "dot": "tensix-router",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "9. For multi-chip scale-out, packets can also exit over one of the 10×400G Ethernet ports to another Blackhole die (e.g. in a Galaxy system).",
+      "focus": [
+        "ethernet-port"
+      ],
+      "dot": "ethernet-port",
+      "stage": "ethernet"
+    },
+    {
+      "text": "10. The host CPU talks to the card over PCIe 5.0 x16 to launch kernels and stream tensors; the ARC microcontroller manages boot and power.",
+      "focus": [
+        "pcie",
+        "arc"
+      ],
+      "dot": "pcie",
+      "stage": "host"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "1 (monolithic, no chiplets/interposer)",
+      "number": 1,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "die_area",
+      "value": "~600 mm² (secondary-source estimate; not officially published)",
+      "number": 600,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~600 mm² (single die)",
+      "number": 600,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "~6 nm-class (exact foundry/node not officially disclosed)",
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "tdp",
+      "value": "300 W TBP (p150a/p150b board)",
+      "number": 300,
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "compute_units",
+      "value": "120 Tensix cores enabled (of 140 on die; p150 spec cut from 140 to 120 in Feb 2026 firmware)",
+      "number": 120,
+      "role": "tensix-core",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "Block FP8 (664 TFLOPS peak, p150)",
+      "role": "tensor-core",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "180 MB SRAM (Tensix L1, per p150 card / single die)",
+      "number": 180,
+      "role": "tensix-core",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "32 GB GDDR6 (p150a/p150b)",
+      "number": 32,
+      "role": "gddr-memory",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "512 GB/s GDDR6 (p150a/p150b)",
+      "number": 0.512,
+      "role": "gddr-memory",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "Ethernet: 4× QSFP-DD 800G = 3.2 Tb/s ≈ 400 GB/s per direction (p150a/p150b)",
+      "number": 400,
+      "role": "ethernet-port",
+      "source": "https://tenstorrent.com/en/hardware/blackhole"
+    },
+    {
+      "key": "packaging",
+      "value": "Monolithic die, flip-chip on organic substrate (no interposer/chiplets)",
+      "role": "compute-die",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 2,
+    "basis": "Die ~600 mm² estimated at a ~1.42:1 aspect (17:12 Tensix tile grid ratio); exact die dimensions not officially disclosed",
+    "estimate": true
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Tenstorrent Wormhole (n300)",
+  "description": "12nm dual-ASIC card: Tensix cores (5 RISC-Vs + FPU/SFPU/pack per tile), GDDR6, and a 16× 100G on-die Ethernet mesh that scales from one chip to a 32-chip Galaxy.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["tenstorrent", "wormhole", "risc-v", "ethernet-mesh"],
+  "source": "https://docs.tenstorrent.com/docs-test/core/latest/aibs/wormhole/specifications.html"
+}
