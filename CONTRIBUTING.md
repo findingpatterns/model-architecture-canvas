@@ -23,6 +23,7 @@ Request with a single new folder — you never touch any web or JavaScript code.
 | `source` | optional | string | `http(s)` URL to the paper, repo, or model card. Shown as a `↗ source` link. |
 | `logo` | optional | string | A logo image filename in this folder (e.g. `logo.svg`), an `http(s)` image URL, or a short glyph/emoji. Falls back to the model's initial. |
 | `levels` | optional | object[] | Detail-level **tabs** — `[{ "label": "Overview", "file": "overview.canvas" }, …]`. Any number, in display order. Each `file` is a `.canvas` in this folder. Omit `levels` for a single diagram (use one `.canvas`, no tabs). |
+| `summary` | optional | object[] | Spec rows for the side-by-side compare view (`?compare=a,b`): `[{ "key": "params_active", "value": "16.1B", "number": 16.13, "source": "https://…", "note"?: "how it was counted" }, …]`. `key` must be one of `MODEL_SUMMARY_KEYS` in [`web/model-summary.js`](./web/model-summary.js); `number` (in that key's unit) enables the bar and the A ÷ B ratio. Each row needs an `http(s)` `source` or `"estimate": true`. |
 
 Example:
 

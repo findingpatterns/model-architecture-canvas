@@ -54,7 +54,10 @@
         <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
       </div>
     </header>
-    <h2 id="models-heading" class="gallery-section-title mono" hidden>Models</h2>
+    <div class="gallery-section-head">
+      <h2 id="models-heading" class="gallery-section-title mono" hidden>Models</h2>
+      <a id="model-compare-link" class="compare-link mono" hidden></a>
+    </div>
     <nav id="gallery-grid" class="gallery-grid" aria-label="Models"></nav>
     <section id="hardware-section" class="gallery-section" aria-labelledby="hardware-heading" hidden>
       <div class="gallery-section-head">
@@ -80,10 +83,39 @@
       <a id="source" class="source-link mono" target="_blank" rel="noopener noreferrer" hidden>↗ source</a>
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
       <a id="open-3d" class="edit-btn mono" hidden>◆ Open 3D</a>
+      <a id="open-graph" class="edit-btn mono" hidden>◇ Graph view</a>
+      <a id="open-compare" class="edit-btn mono" hidden>⇄ Compare</a>
       <a id="edit" class="edit-btn mono" hidden>✎ Edit</a>
       <a id="download" class="download-btn" download hidden>⬇ Download <span class="mono">.canvas</span></a>
     </div>
     <div id="viewer" class="viewer"></div>
+  </main>
+
+  <!-- Compare view: two models' specs + canvases side by side. Shown when ?compare=a,b is set. -->
+  <main id="compare-view" class="compare-view" hidden>
+    <div class="compare-bar">
+      <a class="back-link mono" href="./">← Gallery</a>
+      <h1 id="compare-title" class="compare-title mono"></h1>
+      <label class="compare-pick mono">A <select id="compare-pick-a" aria-label="Left model"></select></label>
+      <button id="compare-swap" class="theme-toggle" type="button" title="Swap left and right" aria-label="Swap left and right">⇄</button>
+      <label class="compare-pick mono">B <select id="compare-pick-b" aria-label="Right model"></select></label>
+      <button id="theme-toggle-compare" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+    </div>
+    <details class="compare-specs-wrap" open>
+      <summary class="mono">Specs · aligned by key · ratio = left ÷ right · hover a spec name for how it was counted</summary>
+      <div id="compare-specs" class="compare-specs"></div>
+    </details>
+    <div class="compare-panes">
+      <div class="compare-level-row"><div id="compare-level-tabs" class="level-tabs" role="tablist" hidden></div></div>
+      <section class="compare-pane">
+        <header class="compare-pane-head mono"><a id="compare-open-0"></a><span id="compare-level-0" class="muted"></span></header>
+        <div class="compare-pane-body"><div id="compare-viewer-0" class="viewer"></div></div>
+      </section>
+      <section class="compare-pane">
+        <header class="compare-pane-head mono"><a id="compare-open-1"></a><span id="compare-level-1" class="muted"></span></header>
+        <div class="compare-pane-body"><div id="compare-viewer-1" class="viewer"></div></div>
+      </section>
+    </div>
   </main>
 
   <script type="module" src="./app.js"></script>

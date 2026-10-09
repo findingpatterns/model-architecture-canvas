@@ -23,6 +23,7 @@
   "include": [
     "editor-src",
     "hardware-src",
+    "graph-src",
     "scripts/chip-schema.d.mts"
   ]
 }

@@ -73,6 +73,13 @@ export function renderGallery(catalog, els) {
     els.galleryGrid.appendChild(el("p", "gallery-empty", "No models yet — open a PR adding a folder under models/ to contribute one."));
   }
   for (const m of models) els.galleryGrid.appendChild(card(m));
+  // One-click architecture comparison (the compare view has pickers for any pair).
+  const comparable = models.filter((m) => Array.isArray(m.summary));
+  els.modelCompareLink.hidden = comparable.length < 2;
+  if (comparable.length >= 2) {
+    els.modelCompareLink.href = `?compare=${encodeURIComponent(comparable[0].id)},${encodeURIComponent(comparable[1].id)}`;
+    els.modelCompareLink.textContent = `Compare ${comparable[0].name} vs ${comparable[1].name} →`;
+  }
 
   els.hardwareGrid.replaceChildren();
   els.hardwareSection.hidden = chips.length === 0;

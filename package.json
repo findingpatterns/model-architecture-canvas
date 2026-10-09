@@ -5,10 +5,10 @@
   "type": "module",
   "description": "Community catalog of model-architecture diagrams — preview in-browser, download the .canvas for your note editor.",
   "scripts": {
-    "build": "node scripts/build-catalog.mjs && vite build && vite build --config vite.hardware.config.ts && node scripts/assert-web-intact.mjs",
+    "build": "node scripts/build-catalog.mjs && vite build && vite build --config vite.hardware.config.ts && vite build --config vite.graph.config.ts && node scripts/assert-web-intact.mjs",
     "validate": "node scripts/build-catalog.mjs --check",
     "dev:editor": "vite",
-    "test": "node --test editor-src/*.test.ts scripts/*.test.mjs hardware-src/*.test.ts hardware-src/compare/*.test.ts",
+    "test": "node --test editor-src/*.test.ts scripts/*.test.mjs hardware-src/*.test.ts hardware-src/compare/*.test.ts graph-src/*.test.ts",
     "serve": "npm run build && (cd web && python3 -m http.server 8000)"
   },
   "dependencies": {
