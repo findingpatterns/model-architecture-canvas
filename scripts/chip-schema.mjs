@@ -11,22 +11,46 @@ export const GEOM_TYPES = ["box", "cylinder"];
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 // Standard chip-level spec keys, so `summary` rows line up when comparing chips.
+// Keys are vendor-neutral: the row's `value` text names the vendor term (SM / CU /
+// Tensix, NVLink / Infinity Fabric / ICI…). Object order = table row order.
 // unit: shown after `number`; higherIsBetter drives the ratio highlight (null = not comparable).
 export const SUMMARY_KEYS = {
+  // silicon
   transistors: { label: "Transistors", unit: "B", higherIsBetter: null },
   dies: { label: "Compute dies", unit: "", higherIsBetter: null },
   die_area: { label: "Die area (per die)", unit: "mm²", higherIsBetter: null },
   compute_silicon: { label: "Compute silicon (all dies)", unit: "mm²", higherIsBetter: null },
   process: { label: "Process", unit: null, higherIsBetter: null },
-  hbm_capacity: { label: "HBM capacity (per GPU)", unit: "GB", higherIsBetter: true },
-  hbm_bandwidth: { label: "HBM bandwidth (per GPU)", unit: "TB/s", higherIsBetter: true },
-  nvlink_bandwidth: { label: "NVLink bandwidth (per GPU)", unit: "GB/s", higherIsBetter: true },
-  fp8_sparse: { label: "FP8 Tensor, with sparsity (per GPU)", unit: "PFLOPS", higherIsBetter: true },
-  fp4_dense: { label: "FP4 Tensor, dense (per GPU)", unit: "PFLOPS", higherIsBetter: true },
-  sm_count: { label: "SMs enabled", unit: "", higherIsBetter: true },
+  tdp: { label: "Power (TDP / TBP, per chip)", unit: "W", higherIsBetter: null },
+  // compute
+  compute_units: { label: "Compute units enabled (SM / CU / core)", unit: "", higherIsBetter: null },
+  tensor_core_gen: { label: "Matrix engine generation", unit: null, higherIsBetter: null },
+  lowest_precision: { label: "Lowest matrix precision", unit: null, higherIsBetter: null },
+  fp4_dense: { label: "FP4 matrix, dense", unit: "PFLOPS", higherIsBetter: true },
+  fp8_dense: { label: "FP8 matrix, dense", unit: "PFLOPS", higherIsBetter: true },
+  fp8_sparse: { label: "FP8 matrix, with sparsity", unit: "PFLOPS", higherIsBetter: true },
+  int8_dense: { label: "INT8 matrix, dense", unit: "TOPS", higherIsBetter: true },
+  bf16_dense: { label: "BF16 / FP16 matrix, dense", unit: "TFLOPS", higherIsBetter: true },
+  tf32_dense: { label: "TF32 matrix, dense", unit: "TFLOPS", higherIsBetter: true },
+  rt_cores: { label: "RT cores", unit: "", higherIsBetter: null },
+  // on-chip memory
+  on_chip_sram: { label: "On-chip SRAM (total)", unit: "MB", higherIsBetter: true },
+  on_chip_sram_bandwidth: { label: "On-chip SRAM bandwidth", unit: "TB/s", higherIsBetter: true },
   l2_cache: { label: "L2 cache", unit: "MB", higherIsBetter: true },
-  tensor_core_gen: { label: "Tensor Core generation", unit: null, higherIsBetter: null },
-  lowest_precision: { label: "Lowest Tensor precision", unit: null, higherIsBetter: null },
+  // off-chip memory
+  hbm_capacity: { label: "HBM capacity (per chip)", unit: "GB", higherIsBetter: true },
+  hbm_bandwidth: { label: "HBM bandwidth (per chip)", unit: "TB/s", higherIsBetter: true },
+  gddr_capacity: { label: "GDDR capacity (per card)", unit: "GB", higherIsBetter: true },
+  gddr_bandwidth: { label: "GDDR bandwidth (per card)", unit: "TB/s", higherIsBetter: true },
+  // interconnect
+  scale_up_bandwidth: { label: "Scale-up link bandwidth (NVLink / IF / ICI…)", unit: "GB/s", higherIsBetter: true },
+  c2c_bandwidth: { label: "CPU↔accelerator link bandwidth", unit: "GB/s", higherIsBetter: true },
+  mig_instances: { label: "Max hardware partitions (MIG…)", unit: "", higherIsBetter: null },
+  // host CPU (superchips)
+  cpu_cores: { label: "CPU cores", unit: "", higherIsBetter: null },
+  cpu_memory_capacity: { label: "CPU-attached memory (LPDDR / DDR)", unit: "GB", higherIsBetter: true },
+  cpu_memory_bandwidth: { label: "CPU-attached memory bandwidth", unit: "TB/s", higherIsBetter: true },
+  // package
   packaging: { label: "Packaging", unit: null, higherIsBetter: null },
 };
 const colorPattern = /^#[0-9a-fA-F]{6}$/;

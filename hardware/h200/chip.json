@@ -499,12 +499,6 @@
       "estimate": true
     },
     {
-      "key": "process",
-      "value": "TSMC 4N (GH100 die, same as H100)",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
-    },
-    {
       "key": "die_area",
       "value": "814 mm²",
       "number": 814,
@@ -517,6 +511,95 @@
       "number": 814,
       "role": "compute-die",
       "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4N (GH100 die, same as H100)",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "tdp",
+      "value": "Up to 700 W (SXM, configurable)",
+      "number": 700,
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "compute_units",
+      "value": "132 SMs (of 144; same GH100 config as H100 SXM5)",
+      "number": 132,
+      "role": "sm-array",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "4th generation",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "not supported (FP8 is the lowest)",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "1.979 PFLOPS dense (3,958 TFLOPS sparse ÷ 2)",
+      "number": 1.979,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "3.958 PFLOPS (3,958 TFLOPS)",
+      "number": 3.958,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "int8_dense",
+      "value": "1,979 TOPS dense (3,958 TOPS sparse ÷ 2)",
+      "number": 1979,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "989 TFLOPS dense BF16/FP16 (1,979 sparse ÷ 2)",
+      "number": 989,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "494.5 TFLOPS dense (989 sparse ÷ 2)",
+      "number": 494.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~116 MB derived (same GH100 config as H100): 50 MB L2 + 132 SMs × (256 KB L1/shared + 256 KB register file)",
+      "number": 116,
+      "role": "l2-cache",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "50 MB (as stated for H100 SXM5)",
+      "number": 50,
+      "role": "l2-cache",
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+      "estimate": true
     },
     {
       "key": "hbm_capacity",
@@ -533,52 +616,17 @@
       "source": "https://www.nvidia.com/en-us/data-center/h200/"
     },
     {
-      "key": "nvlink_bandwidth",
+      "key": "scale_up_bandwidth",
       "value": "900 GB/s (NVLink 4)",
       "number": 900,
       "role": "nvlink",
       "source": "https://www.nvidia.com/en-us/data-center/h200/"
     },
     {
-      "key": "fp8_sparse",
-      "value": "3.958 PFLOPS (3,958 TFLOPS)",
-      "number": 3.958,
-      "role": "tensor-core",
+      "key": "mig_instances",
+      "value": "Up to 7 MIGs @ 18 GB",
+      "number": 7,
       "source": "https://www.nvidia.com/en-us/data-center/h200/"
-    },
-    {
-      "key": "fp4_dense",
-      "value": "not supported (FP8 is the lowest)",
-      "role": "tensor-core",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
-    },
-    {
-      "key": "sm_count",
-      "value": "132 (same GH100 config as H100 SXM5)",
-      "number": 132,
-      "role": "sm-array",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
-    },
-    {
-      "key": "l2_cache",
-      "value": "50 MB (as stated for H100 SXM5)",
-      "number": 50,
-      "role": "l2-cache",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
-    },
-    {
-      "key": "tensor_core_gen",
-      "value": "4th generation",
-      "role": "tensor-core",
-      "estimate": true
-    },
-    {
-      "key": "lowest_precision",
-      "value": "FP8",
-      "role": "tensor-core",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
     },
     {
       "key": "packaging",

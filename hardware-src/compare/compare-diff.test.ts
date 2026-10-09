@@ -14,7 +14,7 @@ test("summary rows align by key with ratio and better side", () => {
   assert.ok(Math.abs(bw.ratio! - 4.8 / 8) < 1e-9, "ratio is left ÷ right");
   assert.equal(bw.better, "b");
   assert.equal(joinSummary(b200, h200).find((r) => r.key === "hbm_bandwidth")!.better, "a", "better side follows the order");
-  const sm = rows.find((r) => r.key === "sm_count")!;
+  const sm = rows.find((r) => r.key === "compute_units")!;
   assert.ok(sm.a && !sm.b, "keys reported by only one chip are kept");
   assert.equal(sm.ratio, null);
   const proc = rows.find((r) => r.key === "process")!;

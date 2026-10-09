@@ -628,11 +628,6 @@
       "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
     },
     {
-      "key": "process",
-      "value": "TSMC 4NP",
-      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
-    },
-    {
       "key": "die_area",
       "value": "~858 mm² per die (reticle limit; NVIDIA says only “reticle-limited”)",
       "number": 858,
@@ -645,6 +640,71 @@
       "number": 1716,
       "role": "compute-die",
       "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4NP",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "tdp",
+      "value": "1,000 W TGP (HGX B200, per GPU)",
+      "number": 1000,
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP4",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "9 PFLOPS (72 PFLOPS dense / 8)",
+      "number": 9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "4.5 PFLOPS dense (9 sparse)",
+      "number": 4.5,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "9 PFLOPS (72 PFLOPS sparse per 8-GPU DGX B200 / 8)",
+      "number": 9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
+    },
+    {
+      "key": "int8_dense",
+      "value": "4,500 TOPS dense (4.5 POPS; 9 sparse)",
+      "number": 4500,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "2,250 TFLOPS dense BF16/FP16 (4.5 PFLOPS sparse)",
+      "number": 2250,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "1,100 TFLOPS dense (2.2 PFLOPS sparse)",
+      "number": 1100,
+      "role": "tensor-core",
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
     },
     {
       "key": "hbm_capacity",
@@ -661,37 +721,17 @@
       "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
     },
     {
-      "key": "nvlink_bandwidth",
+      "key": "scale_up_bandwidth",
       "value": "1,800 GB/s (NVLink 5; 1.8 TB/s)",
       "number": 1800,
       "role": "nvlink",
       "source": "https://www.nvidia.com/en-us/data-center/hgx/"
     },
     {
-      "key": "fp8_sparse",
-      "value": "9 PFLOPS (72 PFLOPS sparse per 8-GPU DGX B200 / 8)",
-      "number": 9,
-      "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
-    },
-    {
-      "key": "fp4_dense",
-      "value": "9 PFLOPS (72 PFLOPS dense / 8)",
-      "number": 9,
-      "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/dgx-b200/"
-    },
-    {
-      "key": "tensor_core_gen",
-      "value": "5th generation",
-      "role": "tensor-core",
-      "estimate": true
-    },
-    {
-      "key": "lowest_precision",
-      "value": "FP4",
-      "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+      "key": "mig_instances",
+      "value": "Up to 7 MIGs @ 23 GB",
+      "number": 7,
+      "source": "https://lenovopress.lenovo.com/lp2226-thinksystem-nvidia-b200-180gb-1000w-gpu"
     },
     {
       "key": "packaging",
