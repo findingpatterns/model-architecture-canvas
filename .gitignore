@@ -5,6 +5,10 @@
 /web/canvases/
 /web/logos/
 /web/editor/
+/web/hardware/
+/web/hardware-data/
+/web/graph/
+/web/graph-data/
 
 # dependencies
 /node_modules

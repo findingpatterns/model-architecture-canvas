@@ -1,0 +1,100 @@
+{
+  "name": "DeepSeek-V4-Pro-0813",
+  "description": "DeepSeek's 1.65T-parameter MoE (~48.9B active per token, 1M context): 61 layers of 128-head attention over one shared 512-dim KV head, a 128-token sliding window plus compressed KV (÷4 with a top-1024 indexer, or ÷128), mHC ×4 residual lanes, 6 of 384 FP4 routed experts + 1 shared, and a 3-stage DSpark block drafter. Traced from the repo's inference/model.py and checked against checkpoint tensor names.",
+  "logo": "V4",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "deepseek",
+    "moe",
+    "sparse-attention",
+    "mhc",
+    "dspark"
+  ],
+  "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "1650B",
+      "number": 1650.5,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "48.9B",
+      "number": 48.85,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "61",
+      "number": 61,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "7,168",
+      "number": 7168,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Window 128 + compressed KV (÷4 top-1024 indexer / ÷128), 128 heads, 1 KV head",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "384 (+1 shared)",
+      "number": 384,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-6",
+      "number": 6,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "129,280",
+      "number": 129280,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/config.json",
+      "note": "original_max_position_embeddings 65,536 × YaRN factor 16"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "FP4 experts + FP8",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
+    },
+    {
+      "key": "drafting",
+      "value": "DSpark ×3 (block drafter)",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "name": "LLaDA2.2-mini",
+  "description": "16B MoE masked-diffusion LM (≈1.1B active per token): blocks of 32 masked positions are filled over several bidirectional forward passes, with token rewriting and DELETE/INSERT edits, and MoE experts chosen per 32-token block. Traced from the repo's modeling_llada2_moe.py and checked against checkpoint tensor shapes.",
+  "logo": "L",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "llada",
+    "inclusionai",
+    "moe",
+    "diffusion"
+  ],
+  "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "16.3B",
+      "number": 16.26,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "1.11B",
+      "number": 1.11,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "20",
+      "number": 20,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,048",
+      "number": 2048,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Bidirectional GQA (16 q / 4 kv), masked diffusion",
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "256 (+1 shared)",
+      "number": 256,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "157,184",
+      "number": 157184,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "128K",
+      "number": 131072,
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini"
+    },
+    {
+      "key": "drafting",
+      "value": "none (diffusion decoding)",
+      "source": "https://huggingface.co/inclusionAI/LLaDA2.2-mini"
+    }
+  ]
+}

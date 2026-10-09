@@ -218,6 +218,28 @@ html, body {
 .card-author { color: var(--mute-paper); }
 .card-open { color: var(--green); margin-left: auto; }
 
+.gallery-section { margin-top: 40px; }
+.gallery-section-title {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mute-paper);
+  margin: 0 0 14px;
+}
+.gallery-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.compare-link { font-size: 11px; color: var(--green); text-decoration: none; margin-bottom: 14px; }
+.compare-link:hover { color: var(--orange-light); }
+.card-3d {
+  margin-left: auto;
+  align-self: flex-start;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--orange);
+  border: 1px solid color-mix(in srgb, var(--orange) 50%, transparent);
+}
+
 .gallery-empty { color: var(--mute-paper); font-size: 14px; line-height: 1.5; grid-column: 1 / -1; }
 
 .gallery-foot { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--hair-paper); }
@@ -364,6 +386,62 @@ html, body {
 
 /* Push the viewer's own zoom/fullscreen panel below the floating topbar. */
 .viewer .JCV-controls { top: 64px !important; }
+
+/* Annotation nodes: a canvas node whose id starts with "note-" is explanatory text, not part of the
+   architecture, so it renders as plain dim italic text with no card behind it. */
+.viewer .JCV-overlay-container[id^="note-"] { background: transparent !important; box-shadow: none !important; }
+.viewer .JCV-overlay-container[id^="note-"] .JCV-overlay-border { display: none; }
+.viewer .JCV-overlay-container[id^="note-"] .JCV-content { color: var(--mute-paper, #9aa0a6); font-style: italic; opacity: 0.75; }
+.viewer .JCV-overlay-container[id^="note-"] code { background: transparent; color: inherit; }
+/* Caption nodes ("cap-…"): headings and legends — frameless like notes, but full-strength text. */
+.viewer .JCV-overlay-container[id^="cap-"] { background: transparent !important; box-shadow: none !important; }
+.viewer .JCV-overlay-container[id^="cap-"] .JCV-overlay-border { display: none; }
+
+/* ============================ Compare view ============================ */
+/* Fixed-height column: bar, collapsible spec table (scrolls on its own), then two canvas panes. */
+.compare-view { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.compare-bar { display: flex; align-items: center; gap: 12px; padding: 12px 22px; flex-wrap: wrap; border-bottom: 1px solid var(--hair-paper); }
+.compare-title { flex: 1 1 200px; margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.compare-pick { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mute-paper); }
+.compare-pick select {
+  font: 12px "JetBrains Mono", ui-monospace, monospace; color: var(--paper); background: var(--ink-raise);
+  border: 1px solid var(--line-accent); border-radius: 6px; padding: 7px 8px; max-width: 240px;
+}
+.compare-pick select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+.compare-specs-wrap { flex: 0 0 auto; border-bottom: 1px solid var(--hair-paper); }
+.compare-specs-wrap > summary { cursor: pointer; padding: 8px 22px; font-size: 11px; color: var(--mute-paper); }
+.compare-specs-wrap > summary:hover { color: var(--paper); }
+.compare-specs { max-height: 40vh; overflow: auto; padding: 0 22px 12px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.compare-table th, .compare-table td { text-align: left; vertical-align: top; padding: 6px 12px; border-bottom: 1px solid var(--hair-paper); }
+.compare-table thead th { position: sticky; top: 0; background: var(--ink-deep); font-weight: 500; font-size: 12px; z-index: 1; }
+.compare-table tbody th { font-weight: 400; color: var(--mute-paper); white-space: nowrap; width: 1%; }
+.compare-table tbody th.has-note { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+.compare-table td { width: 40%; }
+.compare-table .cmp-ratio { width: 1%; white-space: nowrap; color: var(--green-light); }
+.compare-table .muted, .compare-view .muted { color: var(--mute-paper); font-style: italic; }
+.cmp-bar { height: 5px; margin-top: 5px; background: var(--hair-paper); border-radius: 3px; overflow: hidden; max-width: 420px; }
+.cmp-bar > span { display: block; height: 100%; background: var(--green); border-radius: 3px; }
+.cmp-line { display: flex; align-items: baseline; gap: 12px; max-width: 420px; }
+.cmp-meta { display: flex; gap: 10px; margin-left: auto; font-size: 10px; white-space: nowrap; }
+.cmp-src { color: var(--mute-paper); text-decoration: none; }
+.cmp-src:hover { color: var(--green-light); }
+.cmp-estimate { color: var(--orange-light); }
+
+.compare-panes { flex: 1 1 0; min-height: 260px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; }
+.compare-level-row { grid-column: 1 / -1; display: flex; justify-content: center; padding: 8px; }
+.compare-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-top: 1px solid var(--hair-paper); }
+.compare-pane + .compare-pane { border-left: 1px solid var(--line-accent); }
+.compare-pane-head { display: flex; gap: 12px; align-items: baseline; padding: 6px 14px; font-size: 11px; }
+.compare-pane-head a { color: var(--paper); text-decoration: none; }
+.compare-pane-head a:hover { color: var(--green-light); }
+.compare-pane-body { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; }
+.compare-pane .viewer .JCV-controls { top: 8px !important; }
+@media (max-width: 760px) {
+  .compare-panes { grid-template-columns: 1fr; grid-template-rows: auto 1fr 1fr; }
+  .compare-pane + .compare-pane { border-left: none; }
+}
 
 /* ============================ Light theme ============================ */
 html[data-theme="light"] {

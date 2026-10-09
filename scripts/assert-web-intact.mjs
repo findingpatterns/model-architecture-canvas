@@ -11,8 +11,13 @@ const required = [
   "web/index.html",
   "web/app.js",
   "web/styles.css",
+  "web/compare-view.js",
+  "web/model-summary.js",
   "web/canvases",
   "web/editor/index.html",
+  "web/hardware/index.html",
+  "web/graph/index.html",
+  "web/hardware-data",
 ];
 
 const missing = required.filter((p) => !existsSync(join(ROOT, p)));

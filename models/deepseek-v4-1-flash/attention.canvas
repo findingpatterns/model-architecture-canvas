@@ -1,0 +1,664 @@
+{
+ "nodes": [
+  {
+   "id": "n1",
+   "type": "text",
+   "x": -1900,
+   "y": -560,
+   "width": 1000,
+   "height": 170,
+   "text": "# CSA2 attention (L2, Full mode) — true-scale matrices\nQ is an hourglass (wq_a flat → wq_b tall); KV is one thin 512-wide head. Compressor + indexer exist only in some layers: **Full** = own compressor + indexer (2, 8, 14, 20), **Reindex** = own indexer, shared KV (24, 28, 32, 36), **Reuse** = neither."
+  },
+  {
+   "id": "n2",
+   "type": "text",
+   "x": -800,
+   "y": -560,
+   "width": 520,
+   "height": 230,
+   "text": "# How to read\n- **Rectangle = weight matrix W[out×in]**: width = in, height = out, **0.04 px per channel** in this tab → **area = parameters**.\n- **Stacked offset copies** = the same matrix repeated (heads, experts, layers).\n- **Thin grey bar** = one token's activation; width = channels.\n- Zoom out to compare; nothing is resized for readability."
+  },
+  {
+   "id": "n3",
+   "type": "text",
+   "x": -102,
+   "y": -300,
+   "width": 205,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n4",
+   "type": "text",
+   "x": -130,
+   "y": -346,
+   "width": 260,
+   "height": 34,
+   "text": "`5120` x after attn_norm"
+  },
+  {
+   "id": "n5",
+   "type": "text",
+   "x": -102,
+   "y": -250,
+   "width": 205,
+   "height": 51,
+   "text": "**wq_a**",
+   "color": "5"
+  },
+  {
+   "id": "n6",
+   "type": "text",
+   "x": 116,
+   "y": -250,
+   "width": 360,
+   "height": 64,
+   "text": "**wq_a** `1280×5120`\nQ down-projection (FP8)"
+  },
+  {
+   "id": "n7",
+   "type": "text",
+   "x": -26,
+   "y": -146,
+   "width": 51,
+   "height": 2,
+   "text": "",
+   "color": "3"
+  },
+  {
+   "id": "n8",
+   "type": "text",
+   "x": 40,
+   "y": -146,
+   "width": 360,
+   "height": 64,
+   "text": "**q_norm** `1×1280`\nRMSNorm"
+  },
+  {
+   "id": "n9",
+   "type": "text",
+   "x": -26,
+   "y": -42,
+   "width": 51,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n10",
+   "type": "text",
+   "x": -300,
+   "y": -54,
+   "width": 260,
+   "height": 34,
+   "text": "`1280` qr (also feeds the indexer)"
+  },
+  {
+   "id": "n11",
+   "type": "text",
+   "x": -26,
+   "y": 8,
+   "width": 51,
+   "height": 1311,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n12",
+   "type": "text",
+   "x": 40,
+   "y": 8,
+   "width": 360,
+   "height": 64,
+   "text": "**wq_b** `32768×1280`\n→ 64 heads × 512, RoPE on last 64 dims"
+  },
+  {
+   "id": "n13",
+   "type": "text",
+   "x": -655,
+   "y": 1359,
+   "width": 1311,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n14",
+   "type": "text",
+   "x": 669,
+   "y": 1347,
+   "width": 260,
+   "height": 34,
+   "text": "`32768` q"
+  },
+  {
+   "id": "n15",
+   "type": "text",
+   "x": -1402,
+   "y": -100,
+   "width": 205,
+   "height": 20,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n16",
+   "type": "text",
+   "x": -1184,
+   "y": -100,
+   "width": 360,
+   "height": 64,
+   "text": "**wkv** `512×5120`\nsingle KV head (FP8)"
+  },
+  {
+   "id": "n17",
+   "type": "text",
+   "x": -1310,
+   "y": 4,
+   "width": 20,
+   "height": 2,
+   "text": "",
+   "color": "3"
+  },
+  {
+   "id": "n18",
+   "type": "text",
+   "x": -1276,
+   "y": 4,
+   "width": 360,
+   "height": 64,
+   "text": "**kv_norm** `1×512`\nRMSNorm + RoPE → FP8 window cache (128 tokens)"
+  },
+  {
+   "id": "n19",
+   "type": "text",
+   "x": -1310,
+   "y": 108,
+   "width": 20,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n20",
+   "type": "text",
+   "x": -1276,
+   "y": 96,
+   "width": 260,
+   "height": 34,
+   "text": "`512` window KV"
+  },
+  {
+   "id": "n21",
+   "type": "text",
+   "x": 1398,
+   "y": -100,
+   "width": 205,
+   "height": 20,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "n22",
+   "type": "text",
+   "x": 1616,
+   "y": -100,
+   "width": 360,
+   "height": 64,
+   "text": "**compressor.wkv** `512×5120`\nKV latent per pooled group (BF16)"
+  },
+  {
+   "id": "n23",
+   "type": "text",
+   "x": 1398,
+   "y": 4,
+   "width": 205,
+   "height": 20,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "n24",
+   "type": "text",
+   "x": 1616,
+   "y": 4,
+   "width": 360,
+   "height": 64,
+   "text": "**compressor.wgate** `512×5120`\nsoftmax pooling gate (ratio-2 layers only)"
+  },
+  {
+   "id": "n25",
+   "type": "text",
+   "x": 1490,
+   "y": 108,
+   "width": 20,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n26",
+   "type": "text",
+   "x": 1524,
+   "y": 96,
+   "width": 260,
+   "height": 34,
+   "text": "`512` compressed KV → FP4 cache, shared with later layers"
+  },
+  {
+   "id": "n27",
+   "type": "text",
+   "x": 1474,
+   "y": 198,
+   "width": 51,
+   "height": 164,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "n28",
+   "type": "text",
+   "x": 1540,
+   "y": 198,
+   "width": 360,
+   "height": 64,
+   "text": "**indexer.wq_b** `4096×1280`\nindexer queries 32 heads × 128 (FP8)"
+  },
+  {
+   "id": "n29",
+   "type": "text",
+   "x": 1490,
+   "y": 402,
+   "width": 20,
+   "height": 5,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "n30",
+   "type": "text",
+   "x": 1524,
+   "y": 402,
+   "width": 360,
+   "height": 64,
+   "text": "**indexer.wk** `128×512`\nindex keys from the compressed latent"
+  },
+  {
+   "id": "n31",
+   "type": "text",
+   "x": 1398,
+   "y": 506,
+   "width": 205,
+   "height": 2,
+   "text": "",
+   "color": "4"
+  },
+  {
+   "id": "n32",
+   "type": "text",
+   "x": 1616,
+   "y": 506,
+   "width": 360,
+   "height": 64,
+   "text": "**indexer.weights_proj** `32×5120`\nper-head weights from x"
+  },
+  {
+   "id": "n33",
+   "type": "text",
+   "x": 1490,
+   "y": 610,
+   "width": 20,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n34",
+   "type": "text",
+   "x": 1524,
+   "y": 598,
+   "width": 260,
+   "height": 34,
+   "text": "`512` top-512 compressed positions"
+  },
+  {
+   "id": "n35",
+   "type": "text",
+   "x": -90,
+   "y": 2009,
+   "width": 180,
+   "height": 44,
+   "text": "**sparse_attn**\nwindow 128 + top-512",
+   "color": "5"
+  },
+  {
+   "id": "n36",
+   "type": "text",
+   "x": -655,
+   "y": 2099,
+   "width": 1311,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n37",
+   "type": "text",
+   "x": 669,
+   "y": 2087,
+   "width": 260,
+   "height": 34,
+   "text": "`32768` 64 heads × 512"
+  },
+  {
+   "id": "n38",
+   "type": "text",
+   "x": -40,
+   "y": 2191,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n39",
+   "type": "text",
+   "x": -46,
+   "y": 2185,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n40",
+   "type": "text",
+   "x": -52,
+   "y": 2179,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n41",
+   "type": "text",
+   "x": -58,
+   "y": 2173,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n42",
+   "type": "text",
+   "x": -64,
+   "y": 2167,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n43",
+   "type": "text",
+   "x": -70,
+   "y": 2161,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n44",
+   "type": "text",
+   "x": -76,
+   "y": 2155,
+   "width": 164,
+   "height": 41,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "n45",
+   "type": "text",
+   "x": -82,
+   "y": 2149,
+   "width": 164,
+   "height": 41,
+   "text": "**wo_a**",
+   "color": "5"
+  },
+  {
+   "id": "n46",
+   "type": "text",
+   "x": 138,
+   "y": 2149,
+   "width": 360,
+   "height": 64,
+   "text": "**wo_a** `1024×4096` · ×8\nblock-diagonal: 8 groups × (4096 → 1024)"
+  },
+  {
+   "id": "n47",
+   "type": "text",
+   "x": -164,
+   "y": 2272,
+   "width": 328,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n48",
+   "type": "text",
+   "x": 178,
+   "y": 2260,
+   "width": 260,
+   "height": 34,
+   "text": "`8192`"
+  },
+  {
+   "id": "n49",
+   "type": "text",
+   "x": -164,
+   "y": 2322,
+   "width": 328,
+   "height": 205,
+   "text": "**wo_b**",
+   "color": "5"
+  },
+  {
+   "id": "n50",
+   "type": "text",
+   "x": 178,
+   "y": 2322,
+   "width": 360,
+   "height": 64,
+   "text": "**wo_b** `5120×8192`\nback to 5120 → hc_post"
+  },
+  {
+   "id": "n51",
+   "type": "text",
+   "x": -102,
+   "y": 2566,
+   "width": 205,
+   "height": 10,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "n52",
+   "type": "text",
+   "x": 116,
+   "y": 2554,
+   "width": 260,
+   "height": 34,
+   "text": "`5120`"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "n3",
+   "toNode": "n5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "n5",
+   "toNode": "n7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "n7",
+   "toNode": "n9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "n9",
+   "toNode": "n11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "n11",
+   "toNode": "n13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "n3",
+   "toNode": "n15",
+   "fromSide": "left",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "n15",
+   "toNode": "n17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "n17",
+   "toNode": "n19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "n3",
+   "toNode": "n21",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "n21",
+   "toNode": "n23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "n23",
+   "toNode": "n25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "n9",
+   "toNode": "n27",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "n27",
+   "toNode": "n29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "n29",
+   "toNode": "n31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "n31",
+   "toNode": "n33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "n13",
+   "toNode": "n35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "n19",
+   "toNode": "n35",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e17",
+   "fromNode": "n33",
+   "toNode": "n35",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e18",
+   "fromNode": "n35",
+   "toNode": "n36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "n36",
+   "toNode": "n45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "n38",
+   "toNode": "n47",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "n47",
+   "toNode": "n49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "n49",
+   "toNode": "n51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA H200",
+  "description": "Hopper: the H100 die with 141 GB of HBM3e at 4.8 TB/s — same compute, far more memory bandwidth.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "hopper", "gpu"],
+  "source": "https://www.nvidia.com/en-us/data-center/h200/"
+}

@@ -1,0 +1,1610 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1250,
+   "width": 1250,
+   "height": 200,
+   "text": "# Atria Dawn Preview — model  \nShanghai AI Lab, built on the **GLM-5.2** architecture (`GlmMoeDsaForCausalLM`, model_type `glm_moe_dsa`). One continuous decoder-only stack L0–77, read top → bottom; layers that repeat are drawn once with **×N**. **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel). **Boxes = operations**, all one size. T = sequence length. *Layer* tab = one decoder layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1250,
+   "width": 1250,
+   "height": 200,
+   "text": "Layer rows — **blue**: dense SwiGLU FFN (12288) · **cyan**: MoE + its own DSA indexer · **plain**: MoE, reuses the indexer's top-2048 picks of the layer above (`indexer_types` = shared). Orange = whose top-k picks a layer uses. The barcode on the right lists every layer in order.    \nAll numbers from `config.json` + safetensors headers (59585 tensors, 753.33B params). Model card: \"744B MoE\", 256K context; `max_position_embeddings` = 1048576."
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"The cat sat…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -864,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (vocab 154880)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -768,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -780,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -719,
+   "width": 300,
+   "height": 56,
+   "text": "**embed_tokens** — look up row *id*  \n951.6M · 154880 × 6144",
+   "color": "6"
+  },
+  {
+   "id": "x6",
+   "type": "text",
+   "x": -96,
+   "y": -623,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 416,
+   "y": -635,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]`"
+  },
+  {
+   "id": "seg0",
+   "type": "text",
+   "x": -80,
+   "y": -544,
+   "width": 460,
+   "height": 56,
+   "text": "**L0–2** ×3  \ndense FFN · own DSA indexer",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "seg3",
+   "type": "text",
+   "x": -80,
+   "y": -462,
+   "width": 460,
+   "height": 56,
+   "text": "**L3–5** ×3  \nMoE 8/256 · reuse top-k"
+  },
+  {
+   "id": "idx3",
+   "type": "text",
+   "x": 410,
+   "y": -462,
+   "width": 200,
+   "height": 56,
+   "text": "top-k of **L2**",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -80,
+   "y": -290,
+   "width": 460,
+   "height": 56,
+   "text": "MoE 8/256 · own DSA indexer  \nL6, 10, …, 74",
+   "color": "5"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -80,
+   "y": -208,
+   "width": 460,
+   "height": 56,
+   "text": "MoE 8/256 · reuse top-k  \nL7, 11, …, 75"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -80,
+   "y": -126,
+   "width": 460,
+   "height": 56,
+   "text": "MoE 8/256 · reuse top-k  \nL8, 12, …, 76"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -80,
+   "y": -44,
+   "width": 460,
+   "height": 56,
+   "text": "MoE 8/256 · reuse top-k  \nL9, 13, …, 77"
+  },
+  {
+   "id": "idx-per",
+   "type": "text",
+   "x": 410,
+   "y": -290,
+   "width": 200,
+   "height": 302,
+   "text": "**top-2048 picks** of row 1  \nreused by rows 2–4",
+   "color": "#f59e0b"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": -310,
+   "y": -169,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×18"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -140,
+   "y": -340,
+   "width": 810,
+   "height": 388,
+   "label": "×18 — L6–77, a period of 4 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": 740,
+   "y": -554,
+   "width": 1404,
+   "height": 40,
+   "text": "**Every layer, L0 → L77** (1 cell = 1 layer; plain = MoE that reuses top-k)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": 740,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": 758,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": 776,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": 794,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": 812,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": 830,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": 848,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": 866,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": 884,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": 902,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": 920,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": 938,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": 956,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": 974,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": 992,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": 1010,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": 1028,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": 1046,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": 1064,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": 1082,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": 1100,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": 1118,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": 1136,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": 1154,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": 1172,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": 1190,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": 1208,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": 1226,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": 1244,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": 1262,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr30",
+   "type": "text",
+   "x": 1280,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr31",
+   "type": "text",
+   "x": 1298,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr32",
+   "type": "text",
+   "x": 1316,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr33",
+   "type": "text",
+   "x": 1334,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr34",
+   "type": "text",
+   "x": 1352,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr35",
+   "type": "text",
+   "x": 1370,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr36",
+   "type": "text",
+   "x": 1388,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr37",
+   "type": "text",
+   "x": 1406,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr38",
+   "type": "text",
+   "x": 1424,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr39",
+   "type": "text",
+   "x": 1442,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr40",
+   "type": "text",
+   "x": 1460,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr41",
+   "type": "text",
+   "x": 1478,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr42",
+   "type": "text",
+   "x": 1496,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr43",
+   "type": "text",
+   "x": 1514,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr44",
+   "type": "text",
+   "x": 1532,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr45",
+   "type": "text",
+   "x": 1550,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr46",
+   "type": "text",
+   "x": 1568,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr47",
+   "type": "text",
+   "x": 1586,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr48",
+   "type": "text",
+   "x": 1604,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr49",
+   "type": "text",
+   "x": 1622,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr50",
+   "type": "text",
+   "x": 1640,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr51",
+   "type": "text",
+   "x": 1658,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr52",
+   "type": "text",
+   "x": 1676,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr53",
+   "type": "text",
+   "x": 1694,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr54",
+   "type": "text",
+   "x": 1712,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr55",
+   "type": "text",
+   "x": 1730,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr56",
+   "type": "text",
+   "x": 1748,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr57",
+   "type": "text",
+   "x": 1766,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr58",
+   "type": "text",
+   "x": 1784,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr59",
+   "type": "text",
+   "x": 1802,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr60",
+   "type": "text",
+   "x": 1820,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr61",
+   "type": "text",
+   "x": 1838,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr62",
+   "type": "text",
+   "x": 1856,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr63",
+   "type": "text",
+   "x": 1874,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr64",
+   "type": "text",
+   "x": 1892,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr65",
+   "type": "text",
+   "x": 1910,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr66",
+   "type": "text",
+   "x": 1928,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr67",
+   "type": "text",
+   "x": 1946,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr68",
+   "type": "text",
+   "x": 1964,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr69",
+   "type": "text",
+   "x": 1982,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr70",
+   "type": "text",
+   "x": 2000,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr71",
+   "type": "text",
+   "x": 2018,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr72",
+   "type": "text",
+   "x": 2036,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr73",
+   "type": "text",
+   "x": 2054,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr74",
+   "type": "text",
+   "x": 2072,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "lyr75",
+   "type": "text",
+   "x": 2090,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr76",
+   "type": "text",
+   "x": 2108,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "lyr77",
+   "type": "text",
+   "x": 2126,
+   "y": -504,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": 736,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": 916,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": 1096,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick30",
+   "type": "text",
+   "x": 1276,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L30"
+  },
+  {
+   "id": "note-tick40",
+   "type": "text",
+   "x": 1456,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L40"
+  },
+  {
+   "id": "note-tick50",
+   "type": "text",
+   "x": 1636,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L50"
+  },
+  {
+   "id": "note-tick60",
+   "type": "text",
+   "x": 1816,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L60"
+  },
+  {
+   "id": "note-tick70",
+   "type": "text",
+   "x": 1996,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L70"
+  },
+  {
+   "id": "note-tick77",
+   "type": "text",
+   "x": 2122,
+   "y": -454,
+   "width": 60,
+   "height": 30,
+   "text": "L77"
+  },
+  {
+   "id": "ho8",
+   "type": "text",
+   "x": -96,
+   "y": 114,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl9",
+   "type": "text",
+   "x": -556,
+   "y": 102,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 6144] after L77`"
+  },
+  {
+   "id": "fnorm10",
+   "type": "text",
+   "x": 0,
+   "y": 163,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "xf11",
+   "type": "text",
+   "x": -96,
+   "y": 259,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -556,
+   "y": 247,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]`"
+  },
+  {
+   "id": "head13",
+   "type": "text",
+   "x": 0,
+   "y": 308,
+   "width": 300,
+   "height": 56,
+   "text": "**lm_head** — 6144 → 154880  \n951.6M · untied",
+   "color": "2"
+  },
+  {
+   "id": "logits14",
+   "type": "text",
+   "x": -750,
+   "y": 404,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": -1210,
+   "y": 392,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 154880]` — bar clipped (real 12390px)"
+  },
+  {
+   "id": "samp16",
+   "type": "text",
+   "x": 0,
+   "y": 453,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next17",
+   "type": "text",
+   "x": 0,
+   "y": 549,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  },
+  {
+   "id": "mtp-hnorm",
+   "type": "text",
+   "x": 1370,
+   "y": 91,
+   "width": 300,
+   "height": 56,
+   "text": "**hnorm** (RMSNorm)  \nof main-model hidden h",
+   "color": "#e879f9"
+  },
+  {
+   "id": "mtp-enorm",
+   "type": "text",
+   "x": 1730,
+   "y": 91,
+   "width": 300,
+   "height": 56,
+   "text": "**enorm** (RMSNorm)  \nof embed(token t+1), shared table",
+   "color": "#e879f9"
+  },
+  {
+   "id": "mcat18",
+   "type": "text",
+   "x": 1073,
+   "y": 230,
+   "width": 983,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl19",
+   "type": "text",
+   "x": 2077,
+   "y": 218,
+   "width": 440,
+   "height": 34,
+   "text": "`concat [T, 12288]`"
+  },
+  {
+   "id": "meh20",
+   "type": "text",
+   "x": 1415,
+   "y": 279,
+   "width": 300,
+   "height": 56,
+   "text": "**eh_proj** 12288 → 6144",
+   "color": "#e879f9"
+  },
+  {
+   "id": "mx21",
+   "type": "text",
+   "x": 1319,
+   "y": 375,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl22",
+   "type": "text",
+   "x": 1831,
+   "y": 363,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 6144]`"
+  },
+  {
+   "id": "mlayer23",
+   "type": "text",
+   "x": 1415,
+   "y": 424,
+   "width": 300,
+   "height": 80,
+   "text": "**MTP decoder layer**  \nMLA + DSA indexer + MoE 8/256  \n9.95B · layer 78",
+   "color": "#e879f9"
+  },
+  {
+   "id": "mh24",
+   "type": "text",
+   "x": 1319,
+   "y": 544,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl25",
+   "type": "text",
+   "x": 1831,
+   "y": 532,
+   "width": 440,
+   "height": 34,
+   "text": "`h' [T, 6144]`"
+  },
+  {
+   "id": "mhead26",
+   "type": "text",
+   "x": 1415,
+   "y": 593,
+   "width": 300,
+   "height": 56,
+   "text": "**shared_head.norm → lm_head**  \n(lm_head shared with main model)",
+   "color": "#e879f9"
+  },
+  {
+   "id": "mlog27",
+   "type": "text",
+   "x": 665,
+   "y": 689,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl28",
+   "type": "text",
+   "x": 2485,
+   "y": 677,
+   "width": 440,
+   "height": 34,
+   "text": "`draft logits [T, 154880]` — bar clipped (real 12390px)"
+  },
+  {
+   "id": "mdraft29",
+   "type": "text",
+   "x": 1415,
+   "y": 738,
+   "width": 300,
+   "height": 56,
+   "text": "**draft token t+2**  \n(num_nextn_predict_layers = 1)",
+   "color": "#e879f9"
+  },
+  {
+   "id": "note-mtp",
+   "type": "text",
+   "x": 2320,
+   "y": 350,
+   "width": 520,
+   "height": 150,
+   "text": "Multi-token prediction (DeepSeek-V3 style, tensors `layers.78.{eh_proj,enorm,hnorm,shared_head}`). Serving engines use it as a speculative draft head: the main model verifies the drafted token in its next forward pass. Not used for plain next-token sampling, so it counts as 0 in the active-weight bar."
+  },
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1686,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 753.33B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1640,
+   "width": 44,
+   "height": 44,
+   "text": "",
+   "color": "5"
+  },
+  {
+   "id": "bp3",
+   "type": "text",
+   "x": -856,
+   "y": -1640,
+   "width": 2502,
+   "height": 44,
+   "text": "**routed experts (256/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bp7",
+   "type": "text",
+   "x": 1646,
+   "y": -1640,
+   "width": 34,
+   "height": 44,
+   "text": "",
+   "color": "#e879f9"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1590,
+   "width": 2600,
+   "height": 64,
+   "text": "MLA attention ×78 **12.87B** (1.7%) · routed experts (256/layer) **724.78B** (96.2%) · MTP layer **9.95B** (1.3%) · DSA indexer ×21 **196.8M** (0.0%) · dense FFN ×3 **679.5M** (0.1%) · shared expert + router **2.95B** (0.4%) · embed **951.6M** (0.1%) · lm head **951.6M** (0.1%) · norms **1.0M** (0.0%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1486,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one token is multiplied by (active weights, main model)** — total 40.30B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1440,
+   "width": 830,
+   "height": 44,
+   "text": "**MLA attention ×78**",
+   "color": "5"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": -70,
+   "y": -1440,
+   "width": 44,
+   "height": 44,
+   "text": "",
+   "color": "#38bdf8"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": -26,
+   "y": -1440,
+   "width": 1462,
+   "height": 44,
+   "text": "**routed experts (256/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bc4",
+   "type": "text",
+   "x": 1436,
+   "y": -1440,
+   "width": 190,
+   "height": 44,
+   "text": "**shared expert + router**",
+   "color": "#a3e635"
+  },
+  {
+   "id": "bc6",
+   "type": "text",
+   "x": 1626,
+   "y": -1440,
+   "width": 61,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1390,
+   "width": 2600,
+   "height": 64,
+   "text": "MLA attention ×78 **12.87B** (31.9%) · dense FFN ×3 **679.5M** (1.7%) · routed experts (256/layer) **22.65B** (56.2%) · shared expert + router **2.95B** (7.3%) · lm head **951.6M** (2.4%) · DSA indexer ×21 **196.8M** (0.5%) · embed **0** (row lookup) · MTP layer **0** (draft only) · norms **1.0M** (0.0%)"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "x6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "x6",
+   "toNode": "seg0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "seg0",
+   "toNode": "seg3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "seg3",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "per3",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e11",
+   "fromNode": "per3",
+   "toNode": "ho8",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "ho8",
+   "toNode": "fnorm10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "fnorm10",
+   "toNode": "xf11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "xf11",
+   "toNode": "head13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e15",
+   "fromNode": "head13",
+   "toNode": "logits14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "logits14",
+   "toNode": "samp16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "samp16",
+   "toNode": "next17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "ho8",
+   "toNode": "mtp-hnorm",
+   "fromSide": "right",
+   "toSide": "left"
+  },
+  {
+   "id": "e19",
+   "fromNode": "mtp-hnorm",
+   "toNode": "mcat18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "mtp-enorm",
+   "toNode": "mcat18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "mcat18",
+   "toNode": "meh20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "meh20",
+   "toNode": "mx21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "mx21",
+   "toNode": "mlayer23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "mlayer23",
+   "toNode": "mh24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "mh24",
+   "toNode": "mhead26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "mhead26",
+   "toNode": "mlog27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "mlog27",
+   "toNode": "mdraft29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

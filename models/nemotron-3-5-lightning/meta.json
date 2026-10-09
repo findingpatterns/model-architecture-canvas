@@ -1,0 +1,99 @@
+{
+  "name": "NVIDIA Nemotron 3.5 Lightning (30B-A3B)",
+  "description": "Hybrid Mamba-2 / MoE / attention LLM (31.6B, ~3.2B active per token): 52 single-mixer layers, one row each coloured by type — 23 Mamba-2, 23 MoE (6 of 128 ReLU² experts + shared), only 6 GQA attention layers with no RoPE — plus a built-in MTP draft head. Numbers from config.json and the BF16 checkpoint's tensor shapes.",
+  "logo": "Nv",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "nvidia",
+    "nemotron",
+    "hybrid",
+    "mamba",
+    "moe"
+  ],
+  "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "32.9B",
+      "number": 32.91,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "3.23B",
+      "number": 3.23,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "52",
+      "number": 52,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,688",
+      "number": 2688,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "Mamba-2 ×23 + 6 GQA layers (32 q / 2 kv), no RoPE",
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "128 (+1 shared)",
+      "number": 128,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-6",
+      "number": 6,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "131,072",
+      "number": 131072,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP head",
+      "source": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16"
+    }
+  ]
+}

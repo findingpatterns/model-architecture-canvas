@@ -1,0 +1,99 @@
+{
+  "name": "Atria Dawn Preview",
+  "description": "Shanghai AI Lab's 744B MoE agentic model on the GLM-5.2 architecture (GlmMoeDsaForCausalLM): 78 MLA layers with DeepSeek Sparse Attention where only 21 layers run the top-2048 indexer and the rest reuse its picks, 256 routed experts (top-8 + 1 shared, ~40B active) and one MTP draft layer. Numbers from config.json and the safetensors headers.",
+  "logo": "A",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "atria",
+    "glm",
+    "moe",
+    "sparse-attention",
+    "mla"
+  ],
+  "source": "https://huggingface.co/internlm/Atria-Dawn-Preview",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "753B",
+      "number": 753.33,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "40.3B",
+      "number": 40.3,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "78",
+      "number": 78,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,144",
+      "number": 6144,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "MLA + DeepSeek Sparse Attention (top-2048), 64 heads",
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "256 (+1 shared)",
+      "number": 256,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "154,880",
+      "number": 154880,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text",
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/internlm/Atria-Dawn-Preview"
+    }
+  ]
+}

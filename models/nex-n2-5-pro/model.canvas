@@ -1,0 +1,1321 @@
+{
+ "nodes": [
+  {
+   "id": "cap-title",
+   "type": "text",
+   "x": -900,
+   "y": -1270,
+   "width": 1250,
+   "height": 200,
+   "text": "# Nex-N2.5-Pro — model  \n`Qwen3_5MoeForConditionalGeneration`: same config as **Qwen3.5-397B-A17B**, post-trained by Nex-AGI (Nex-N2-Pro's card names that base; the N2.5 card says it builds on N2). One continuous decoder-only stack L0–59, read top → bottom; layers that repeat are drawn once with **×N** (the barcode on the right lists every layer in order). **Grey bars = tensors**, length ∝ channels per token (0.08 px/channel); **boxes = operations**. T = sequence length. *Layer* tab = one layer in detail."
+  },
+  {
+   "id": "cap-legend",
+   "type": "text",
+   "x": 450,
+   "y": -1270,
+   "width": 1250,
+   "height": 200,
+   "text": "Layer rows — **Gated DeltaNet** (45 layers, linear attention, fixed-size state) · **gated attention** (15 layers, every 4th, softmax + KV cache). Every layer then runs the same MoE: router picks **10 of 512** experts (SwiGLU, 1024 wide) plus 1 always-on **shared expert**.    \nLayer ≈ **6.58B** (DeltaNet) / **6.56B** (attention), 98% of it routed experts. Routed experts are stored FP8 (128×128 block scales); everything else BF16. Context 262 144 tokens."
+  },
+  {
+   "id": "raw1",
+   "type": "text",
+   "x": 0,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**raw text**  \"The cat sat…\"",
+   "color": "#64748b"
+  },
+  {
+   "id": "tok2",
+   "type": "text",
+   "x": 0,
+   "y": -864,
+   "width": 300,
+   "height": 56,
+   "text": "**tokenizer** (vocab 248 320)",
+   "color": "#64748b"
+  },
+  {
+   "id": "ids3",
+   "type": "text",
+   "x": 130,
+   "y": -768,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl4",
+   "type": "text",
+   "x": 320,
+   "y": -778,
+   "width": 440,
+   "height": 34,
+   "text": "`token ids [T] — one integer per token`"
+  },
+  {
+   "id": "embed5",
+   "type": "text",
+   "x": 0,
+   "y": -714,
+   "width": 300,
+   "height": 56,
+   "text": "**embed** — look up row *id*  \n1.02B · 248 320 × 4096",
+   "color": "6"
+  },
+  {
+   "id": "x6",
+   "type": "text",
+   "x": -14,
+   "y": -618,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl7",
+   "type": "text",
+   "x": 334,
+   "y": -628,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 4096]  (+ image/video tokens spliced in)`"
+  },
+  {
+   "id": "per0",
+   "type": "text",
+   "x": -80,
+   "y": -434,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL0, 4, …, 56",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per1",
+   "type": "text",
+   "x": -80,
+   "y": -352,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL1, 5, …, 57",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per2",
+   "type": "text",
+   "x": -80,
+   "y": -270,
+   "width": 460,
+   "height": 56,
+   "text": "Gated DeltaNet + MoE  \nL2, 6, …, 58",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "per3",
+   "type": "text",
+   "x": -80,
+   "y": -188,
+   "width": 460,
+   "height": 56,
+   "text": "gated attention + MoE  \nL3, 7, …, 59",
+   "color": "#f97316"
+  },
+  {
+   "id": "cap-repeat",
+   "type": "text",
+   "x": -310,
+   "y": -313,
+   "width": 150,
+   "height": 60,
+   "text": "## ↺ ×15"
+  },
+  {
+   "id": "grp-period",
+   "type": "group",
+   "x": -140,
+   "y": -484,
+   "width": 580,
+   "height": 388,
+   "label": "×15 — L0–59, a period of 4 layers"
+  },
+  {
+   "id": "cap-barcode",
+   "type": "text",
+   "x": 560,
+   "y": -534,
+   "width": 1080,
+   "height": 40,
+   "text": "**Every layer, L0 → L59** (1 cell = 1 layer)"
+  },
+  {
+   "id": "lyr0",
+   "type": "text",
+   "x": 560,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr1",
+   "type": "text",
+   "x": 578,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr2",
+   "type": "text",
+   "x": 596,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr3",
+   "type": "text",
+   "x": 614,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr4",
+   "type": "text",
+   "x": 632,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr5",
+   "type": "text",
+   "x": 650,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr6",
+   "type": "text",
+   "x": 668,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr7",
+   "type": "text",
+   "x": 686,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr8",
+   "type": "text",
+   "x": 704,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr9",
+   "type": "text",
+   "x": 722,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr10",
+   "type": "text",
+   "x": 740,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr11",
+   "type": "text",
+   "x": 758,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr12",
+   "type": "text",
+   "x": 776,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr13",
+   "type": "text",
+   "x": 794,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr14",
+   "type": "text",
+   "x": 812,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr15",
+   "type": "text",
+   "x": 830,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr16",
+   "type": "text",
+   "x": 848,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr17",
+   "type": "text",
+   "x": 866,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr18",
+   "type": "text",
+   "x": 884,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr19",
+   "type": "text",
+   "x": 902,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr20",
+   "type": "text",
+   "x": 920,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr21",
+   "type": "text",
+   "x": 938,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr22",
+   "type": "text",
+   "x": 956,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr23",
+   "type": "text",
+   "x": 974,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr24",
+   "type": "text",
+   "x": 992,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr25",
+   "type": "text",
+   "x": 1010,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr26",
+   "type": "text",
+   "x": 1028,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr27",
+   "type": "text",
+   "x": 1046,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr28",
+   "type": "text",
+   "x": 1064,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr29",
+   "type": "text",
+   "x": 1082,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr30",
+   "type": "text",
+   "x": 1100,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr31",
+   "type": "text",
+   "x": 1118,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr32",
+   "type": "text",
+   "x": 1136,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr33",
+   "type": "text",
+   "x": 1154,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr34",
+   "type": "text",
+   "x": 1172,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr35",
+   "type": "text",
+   "x": 1190,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr36",
+   "type": "text",
+   "x": 1208,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr37",
+   "type": "text",
+   "x": 1226,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr38",
+   "type": "text",
+   "x": 1244,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr39",
+   "type": "text",
+   "x": 1262,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr40",
+   "type": "text",
+   "x": 1280,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr41",
+   "type": "text",
+   "x": 1298,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr42",
+   "type": "text",
+   "x": 1316,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr43",
+   "type": "text",
+   "x": 1334,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr44",
+   "type": "text",
+   "x": 1352,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr45",
+   "type": "text",
+   "x": 1370,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr46",
+   "type": "text",
+   "x": 1388,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr47",
+   "type": "text",
+   "x": 1406,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr48",
+   "type": "text",
+   "x": 1424,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr49",
+   "type": "text",
+   "x": 1442,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr50",
+   "type": "text",
+   "x": 1460,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr51",
+   "type": "text",
+   "x": 1478,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr52",
+   "type": "text",
+   "x": 1496,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr53",
+   "type": "text",
+   "x": 1514,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr54",
+   "type": "text",
+   "x": 1532,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr55",
+   "type": "text",
+   "x": 1550,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "lyr56",
+   "type": "text",
+   "x": 1568,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr57",
+   "type": "text",
+   "x": 1586,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr58",
+   "type": "text",
+   "x": 1604,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "lyr59",
+   "type": "text",
+   "x": 1622,
+   "y": -484,
+   "width": 16,
+   "height": 44,
+   "text": "",
+   "color": "#f97316"
+  },
+  {
+   "id": "note-tick0",
+   "type": "text",
+   "x": 556,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L0"
+  },
+  {
+   "id": "note-tick10",
+   "type": "text",
+   "x": 736,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L10"
+  },
+  {
+   "id": "note-tick20",
+   "type": "text",
+   "x": 916,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L20"
+  },
+  {
+   "id": "note-tick30",
+   "type": "text",
+   "x": 1096,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L30"
+  },
+  {
+   "id": "note-tick40",
+   "type": "text",
+   "x": 1276,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L40"
+  },
+  {
+   "id": "note-tick50",
+   "type": "text",
+   "x": 1456,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L50"
+  },
+  {
+   "id": "note-tick59",
+   "type": "text",
+   "x": 1618,
+   "y": -434,
+   "width": 60,
+   "height": 30,
+   "text": "L59"
+  },
+  {
+   "id": "note-gdn",
+   "type": "text",
+   "x": 560,
+   "y": -364,
+   "width": 460,
+   "height": 250,
+   "text": "**Gated DeltaNet rows** (45): linear attention. Each layer keeps one recurrent state [64 heads × 128 × 128] = 1 048 576 values, the same size at token 10 or token 262 144 — no KV cache that grows with T. Short causal conv (kernel 4) on q/k/v, per-head decay and write strength (β)."
+  },
+  {
+   "id": "note-full",
+   "type": "text",
+   "x": 1060,
+   "y": -364,
+   "width": 460,
+   "height": 250,
+   "text": "**Gated attention rows** (15, L3, L7, …): softmax attention, GQA 32 query : 2 KV heads × 256, a sigmoid output gate per channel, RoPE on 64 of 256 dims. Only these layers cache K/V: 1 024 values per token each."
+  },
+  {
+   "id": "note-moe",
+   "type": "text",
+   "x": 560,
+   "y": -74,
+   "width": 460,
+   "height": 220,
+   "text": "**MoE in every layer**: softmax router over 512 experts → top-10, weights renormalised. Expert = SwiGLU 4096→1024→4096 (12.6M). Shared expert (same width) is added through a sigmoid gate. Per token: 10 + 1 experts of 512 → ~2.1% of FFN weights."
+  },
+  {
+   "id": "note-norm",
+   "type": "text",
+   "x": 1060,
+   "y": -74,
+   "width": 460,
+   "height": 130,
+   "text": "Pre-norm residual blocks; RMSNorm is zero-centred (scale = 1 + w). q/k get their own per-head RMSNorm in the attention layers."
+  },
+  {
+   "id": "img8",
+   "type": "text",
+   "x": -630,
+   "y": -960,
+   "width": 300,
+   "height": 56,
+   "text": "**image / video** frames",
+   "color": "#64748b"
+  },
+  {
+   "id": "patch9",
+   "type": "text",
+   "x": -541,
+   "y": -864,
+   "width": 123,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl10",
+   "type": "text",
+   "x": -1090,
+   "y": -874,
+   "width": 440,
+   "height": 34,
+   "text": "`patches [P, 1536]  (2×16×16×3)`"
+  },
+  {
+   "id": "vit11",
+   "type": "text",
+   "x": -630,
+   "y": -810,
+   "width": 300,
+   "height": 56,
+   "text": "**ViT ×27** (+ learned pos-embed)  \n415.9M · width 1152",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vf12",
+   "type": "text",
+   "x": -526,
+   "y": -714,
+   "width": 92,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl13",
+   "type": "text",
+   "x": -1090,
+   "y": -724,
+   "width": 440,
+   "height": 34,
+   "text": "`[P, 1152]`"
+  },
+  {
+   "id": "mer14",
+   "type": "text",
+   "x": -630,
+   "y": -660,
+   "width": 300,
+   "height": 56,
+   "text": "**merger MLP** — 2×2 patches → 1  \n40.1M",
+   "color": "#a78bfa"
+  },
+  {
+   "id": "vt15",
+   "type": "text",
+   "x": -644,
+   "y": -564,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl16",
+   "type": "text",
+   "x": -1104,
+   "y": -574,
+   "width": 440,
+   "height": 34,
+   "text": "`visual tokens [P/4, 4096]`"
+  },
+  {
+   "id": "ho17",
+   "type": "text",
+   "x": -14,
+   "y": 206,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl18",
+   "type": "text",
+   "x": -474,
+   "y": 196,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 4096]  after L59`"
+  },
+  {
+   "id": "fn19",
+   "type": "text",
+   "x": 0,
+   "y": 260,
+   "width": 300,
+   "height": 56,
+   "text": "**final RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "xf20",
+   "type": "text",
+   "x": -14,
+   "y": 356,
+   "width": 328,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl21",
+   "type": "text",
+   "x": -474,
+   "y": 346,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 4096]`"
+  },
+  {
+   "id": "head22",
+   "type": "text",
+   "x": 0,
+   "y": 410,
+   "width": 300,
+   "height": 56,
+   "text": "**lm head** — 4096 → 248 320  \n1.02B · untied",
+   "color": "2"
+  },
+  {
+   "id": "logits23",
+   "type": "text",
+   "x": -750,
+   "y": 506,
+   "width": 1800,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl24",
+   "type": "text",
+   "x": -1210,
+   "y": 496,
+   "width": 440,
+   "height": 34,
+   "text": "`logits [T, 248320]` — bar clipped (real 19866px)"
+  },
+  {
+   "id": "samp25",
+   "type": "text",
+   "x": 0,
+   "y": 560,
+   "width": 300,
+   "height": 56,
+   "text": "**softmax → sample**",
+   "color": "#64748b"
+  },
+  {
+   "id": "next26",
+   "type": "text",
+   "x": 0,
+   "y": 656,
+   "width": 300,
+   "height": 56,
+   "text": "**next token id**",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-mtp",
+   "type": "text",
+   "x": 370,
+   "y": 576,
+   "width": 560,
+   "height": 130,
+   "text": "config says `mtp_num_hidden_layers: 1`, but **no `mtp.*` tensors ship in this checkpoint** (the Qwen3.5-397B-A17B release has them), so there is no built-in draft head here. Nex publishes separate speculative-decoding drafts (repo Nex-N2.5-Pro-DFlash)."
+  },
+  {
+   "id": "cap-bpt",
+   "type": "text",
+   "x": -900,
+   "y": -1686,
+   "width": 2600,
+   "height": 40,
+   "text": "**Where the parameters are stored** — total 396.80B"
+  },
+  {
+   "id": "bp0",
+   "type": "text",
+   "x": -900,
+   "y": -1640,
+   "width": 2533,
+   "height": 44,
+   "text": "**routed experts (512/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bp2",
+   "type": "text",
+   "x": 1633,
+   "y": -1640,
+   "width": 35,
+   "height": 44,
+   "text": "",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "cap-bpl",
+   "type": "text",
+   "x": -900,
+   "y": -1590,
+   "width": 2600,
+   "height": 40,
+   "text": "routed experts (512/layer) **386.55B** (97.4%) · Gated DeltaNet ×45 **5.31B** (1.3%) · shared expert + router **881.0M** (0.2%) · gated attention ×15 **1.57B** (0.4%) · embed **1.02B** (0.3%) · lm head **1.02B** (0.3%) · ViT + merger **456.0M** (0.1%)"
+  },
+  {
+   "id": "cap-bct",
+   "type": "text",
+   "x": -900,
+   "y": -1506,
+   "width": 2600,
+   "height": 40,
+   "text": "**What one text token is multiplied by (active weights)** — total 16.33B"
+  },
+  {
+   "id": "bc0",
+   "type": "text",
+   "x": -900,
+   "y": -1460,
+   "width": 1202,
+   "height": 44,
+   "text": "**routed experts (512/layer)**",
+   "color": "4"
+  },
+  {
+   "id": "bc1",
+   "type": "text",
+   "x": 302,
+   "y": -1460,
+   "width": 140,
+   "height": 44,
+   "text": "",
+   "color": "#a3e635"
+  },
+  {
+   "id": "bc2",
+   "type": "text",
+   "x": 442,
+   "y": -1460,
+   "width": 846,
+   "height": 44,
+   "text": "**Gated DeltaNet ×45**",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "bc3",
+   "type": "text",
+   "x": 1288,
+   "y": -1460,
+   "width": 250,
+   "height": 44,
+   "text": "**gated attention ×15**",
+   "color": "#f97316"
+  },
+  {
+   "id": "bc5",
+   "type": "text",
+   "x": 1538,
+   "y": -1460,
+   "width": 162,
+   "height": 44,
+   "text": "",
+   "color": "2"
+  },
+  {
+   "id": "cap-bcl",
+   "type": "text",
+   "x": -900,
+   "y": -1410,
+   "width": 2600,
+   "height": 40,
+   "text": "routed experts (512/layer) **7.55B** (46.2%) · shared expert + router **881.0M** (5.4%) · Gated DeltaNet ×45 **5.31B** (32.5%) · gated attention ×15 **1.57B** (9.6%) · lm head **1.02B** (6.2%) · embed **0** (row lookup) · ViT + merger **0** (runs per image)"
+  },
+  {
+   "id": "note-siblings",
+   "type": "text",
+   "x": 370,
+   "y": 712,
+   "width": 700,
+   "height": 170,
+   "text": "Siblings (their config.json):\n- **Nex-N2.5-mini**: `Qwen3_5MoeForConditionalGeneration`, 40 layers × 2048, 256 experts top-8, vision tower\n- **Nex-N2.5-Max**: `DeepseekV4ForCausalLM`, 61 layers × 7168, 384 experts top-6, text-only\n\nmini is this same hybrid design scaled down; Max is a different (DeepSeek-V4) architecture."
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "raw1",
+   "toNode": "tok2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "tok2",
+   "toNode": "ids3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "ids3",
+   "toNode": "embed5",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "embed5",
+   "toNode": "x6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "x6",
+   "toNode": "per0",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "per0",
+   "toNode": "per1",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "per1",
+   "toNode": "per2",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "per2",
+   "toNode": "per3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "per3",
+   "toNode": "per0",
+   "fromSide": "left",
+   "toSide": "left"
+  },
+  {
+   "id": "e9",
+   "fromNode": "img8",
+   "toNode": "patch9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "patch9",
+   "toNode": "vit11",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "vit11",
+   "toNode": "vf12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "vf12",
+   "toNode": "mer14",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "mer14",
+   "toNode": "vt15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "vt15",
+   "toNode": "x6",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "spliced into x"
+  },
+  {
+   "id": "e15",
+   "fromNode": "per3",
+   "toNode": "ho17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "ho17",
+   "toNode": "fn19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "fn19",
+   "toNode": "xf20",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "xf20",
+   "toNode": "head22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "head22",
+   "toNode": "logits23",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "logits23",
+   "toNode": "samp25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "samp25",
+   "toNode": "next26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

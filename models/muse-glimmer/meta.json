@@ -1,0 +1,100 @@
+{
+  "name": "Muse Glimmer 30B",
+  "description": "Meta's 29.8B dense vision-language decoder: 52 layers in a [sliding, sliding, sliding, full] pattern where the sliding-window (2048) layers use RoPE and the full-attention layers use no positional encoding, with GQA 32/2, sigmoid-gated attention, sandwich RMSNorms and a 1.85B ViT perception encoder; the DFlash speculative drafter taps 5 layers. Traced from the transformers muse_glimmer code and checked against checkpoint tensor shapes.",
+  "logo": "MG",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "meta",
+    "dense",
+    "multimodal",
+    "sliding-window",
+    "nope",
+    "gated-attention",
+    "speculative-decoding"
+  ],
+  "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "29.8B",
+      "number": 29.78,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "26.5B",
+      "number": 26.51,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "52",
+      "number": 52,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "6,656",
+      "number": 6656,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-2048 (RoPE) 3 : 1 full (NoPE), GQA 32 q / 2 kv",
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "dense",
+      "number": 0,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "— (dense)",
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "202,048",
+      "number": 202048,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "128K",
+      "number": 131072,
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image",
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B"
+    },
+    {
+      "key": "drafting",
+      "value": "none (DFlash drafter ships separately)",
+      "source": "https://huggingface.co/meta-models/Muse-Glimmer-30B"
+    }
+  ]
+}

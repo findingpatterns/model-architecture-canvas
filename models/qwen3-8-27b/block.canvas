@@ -1,0 +1,759 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1400,
+   "y": -560,
+   "width": 1300,
+   "height": 150,
+   "text": "# Qwen3.8-27B — one layer  \nEvery layer: RMSNorm → **token mixer** → +residual → RMSNorm → **SwiGLU FFN** → +residual. Left mixer is used by 48 layers (3 of every 4), right mixer by 16. Grey bars = tensors, length ∝ channels per token."
+  },
+  {
+   "id": "cap-bnote",
+   "type": "text",
+   "x": 100,
+   "y": -560,
+   "width": 1300,
+   "height": 150,
+   "text": "RMSNorms here scale by (1 + w) with w stored zero-centred. Parameter counts in boxes are per layer (from safetensors shapes). DeltaNet heads: 16 for q/k, 48 for v, dim 128; attention heads: 24 q, 4 kv, dim 256."
+  },
+  {
+   "id": "bx1",
+   "type": "text",
+   "x": -205,
+   "y": -360,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 225,
+   "y": -370,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 5120]  residual stream in`"
+  },
+  {
+   "id": "bn13",
+   "type": "text",
+   "x": -150,
+   "y": -306,
+   "width": 300,
+   "height": 56,
+   "text": "**input RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "bxh4",
+   "type": "text",
+   "x": -205,
+   "y": -210,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 225,
+   "y": -220,
+   "width": 440,
+   "height": 34,
+   "text": "`x̂ [T, 5120]`"
+  },
+  {
+   "id": "dqkv6",
+   "type": "text",
+   "x": -1250,
+   "y": 24,
+   "width": 300,
+   "height": 56,
+   "text": "**in_proj_qkv** 5120 → 10240  \n52.4M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt17",
+   "type": "text",
+   "x": -1510,
+   "y": 120,
+   "width": 819,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1970,
+   "y": 110,
+   "width": 440,
+   "height": 34,
+   "text": "`qkv [T, 10240] = q 2048 · k 2048 · v 6144`"
+  },
+  {
+   "id": "dconv9",
+   "type": "text",
+   "x": -1250,
+   "y": 174,
+   "width": 300,
+   "height": 56,
+   "text": "**causal conv1d** (4 taps, per channel) + SiLU  \n41K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dsplit10",
+   "type": "text",
+   "x": -1250,
+   "y": 270,
+   "width": 300,
+   "height": 56,
+   "text": "**split heads** · L2-norm q, k  \nrepeat q, k 16 → 48 heads",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt211",
+   "type": "text",
+   "x": -1837,
+   "y": 366,
+   "width": 1475,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl12",
+   "type": "text",
+   "x": -2297,
+   "y": 356,
+   "width": 440,
+   "height": 34,
+   "text": "`q, k, v [T, 48, 128] each`"
+  },
+  {
+   "id": "drule13",
+   "type": "text",
+   "x": -1250,
+   "y": 420,
+   "width": 300,
+   "height": 80,
+   "text": "**gated delta rule** (per head)  \nS ← α·S ;  S ← S + k ⊗ β(v − Sᵀk) ;  o = Sᵀq",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt314",
+   "type": "text",
+   "x": -1346,
+   "y": 540,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl15",
+   "type": "text",
+   "x": -1806,
+   "y": 530,
+   "width": 440,
+   "height": 34,
+   "text": "`o [T, 48, 128]   state S [48, 128, 128]`"
+  },
+  {
+   "id": "dgn16",
+   "type": "text",
+   "x": -1250,
+   "y": 594,
+   "width": 300,
+   "height": 56,
+   "text": "**gated RMSNorm** — norm(o) · SiLU(z)",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt417",
+   "type": "text",
+   "x": -1346,
+   "y": 690,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl18",
+   "type": "text",
+   "x": -1806,
+   "y": 680,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "dout19",
+   "type": "text",
+   "x": -1250,
+   "y": 744,
+   "width": 300,
+   "height": 56,
+   "text": "**out_proj** 6144 → 5120  \n31.5M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dt520",
+   "type": "text",
+   "x": -1305,
+   "y": 840,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl21",
+   "type": "text",
+   "x": -1765,
+   "y": 830,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 5120]`"
+  },
+  {
+   "id": "dab",
+   "type": "text",
+   "x": -350,
+   "y": 300,
+   "width": 300,
+   "height": 100,
+   "text": "**in_proj_a, in_proj_b** x̂ → 48 each  \nβ = σ(b) · α = exp(−e^A_log · softplus(a + dt_bias))  \n492K",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "dz",
+   "type": "text",
+   "x": -350,
+   "y": 554,
+   "width": 300,
+   "height": 76,
+   "text": "**in_proj_z** x̂ → 6144  \n31.5M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "aqkv22",
+   "type": "text",
+   "x": 950,
+   "y": 24,
+   "width": 300,
+   "height": 56,
+   "text": "**q_proj** 5120 → 12288 · **k/v_proj** → 1024  \n73.4M",
+   "color": "#f97316"
+  },
+  {
+   "id": "at123",
+   "type": "text",
+   "x": 527,
+   "y": 120,
+   "width": 1147,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl24",
+   "type": "text",
+   "x": 1693,
+   "y": 110,
+   "width": 440,
+   "height": 34,
+   "text": "`q, gate [T, 24, 256] · k, v [T, 4, 256]`"
+  },
+  {
+   "id": "arope25",
+   "type": "text",
+   "x": 950,
+   "y": 174,
+   "width": 300,
+   "height": 80,
+   "text": "**q_norm, k_norm** (RMSNorm per head)  \n**partial mRoPE** on 64 of 256 dims",
+   "color": "#f97316"
+  },
+  {
+   "id": "aatt26",
+   "type": "text",
+   "x": 950,
+   "y": 294,
+   "width": 300,
+   "height": 80,
+   "text": "**causal softmax attention**  \nGQA 24 q / 4 kv heads (6:1)",
+   "color": "#f97316"
+  },
+  {
+   "id": "at227",
+   "type": "text",
+   "x": 854,
+   "y": 414,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl28",
+   "type": "text",
+   "x": 1366,
+   "y": 404,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "agate29",
+   "type": "text",
+   "x": 950,
+   "y": 468,
+   "width": 300,
+   "height": 56,
+   "text": "**× sigmoid(gate)** — per-channel output gate",
+   "color": "#f97316"
+  },
+  {
+   "id": "at330",
+   "type": "text",
+   "x": 854,
+   "y": 564,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl31",
+   "type": "text",
+   "x": 1366,
+   "y": 554,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 6144]`"
+  },
+  {
+   "id": "aout32",
+   "type": "text",
+   "x": 950,
+   "y": 618,
+   "width": 300,
+   "height": 56,
+   "text": "**o_proj** 6144 → 5120  \n31.5M",
+   "color": "#f97316"
+  },
+  {
+   "id": "at433",
+   "type": "text",
+   "x": 895,
+   "y": 714,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl34",
+   "type": "text",
+   "x": 1325,
+   "y": 704,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 5120]`"
+  },
+  {
+   "id": "akv",
+   "type": "text",
+   "x": 530,
+   "y": 294,
+   "width": 240,
+   "height": 80,
+   "text": "**KV cache**  \nk, v [T, 4, 256] per layer",
+   "color": "#f97316"
+  },
+  {
+   "id": "badd1",
+   "type": "text",
+   "x": -150,
+   "y": 1014,
+   "width": 300,
+   "height": 56,
+   "text": "**+ residual** (x)",
+   "color": "#64748b"
+  },
+  {
+   "id": "bh35",
+   "type": "text",
+   "x": -205,
+   "y": 1110,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl36",
+   "type": "text",
+   "x": 225,
+   "y": 1100,
+   "width": 440,
+   "height": 34,
+   "text": "`h [T, 5120]`"
+  },
+  {
+   "id": "bn237",
+   "type": "text",
+   "x": -150,
+   "y": 1164,
+   "width": 300,
+   "height": 56,
+   "text": "**post-attention RMSNorm**",
+   "color": "3"
+  },
+  {
+   "id": "bgu38",
+   "type": "text",
+   "x": -150,
+   "y": 1260,
+   "width": 300,
+   "height": 56,
+   "text": "**gate_proj, up_proj** 5120 → 17408 each  \n178.3M",
+   "color": "4"
+  },
+  {
+   "id": "bff39",
+   "type": "text",
+   "x": -696,
+   "y": 1356,
+   "width": 1393,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl40",
+   "type": "text",
+   "x": 716,
+   "y": 1346,
+   "width": 440,
+   "height": 34,
+   "text": "`SiLU(gate) · up  [T, 17408]`"
+  },
+  {
+   "id": "bdn41",
+   "type": "text",
+   "x": -150,
+   "y": 1410,
+   "width": 300,
+   "height": 56,
+   "text": "**down_proj** 17408 → 5120  \n89.1M",
+   "color": "4"
+  },
+  {
+   "id": "bfo42",
+   "type": "text",
+   "x": -205,
+   "y": 1506,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl43",
+   "type": "text",
+   "x": 225,
+   "y": 1496,
+   "width": 440,
+   "height": 34,
+   "text": "`[T, 5120]`"
+  },
+  {
+   "id": "badd244",
+   "type": "text",
+   "x": -150,
+   "y": 1560,
+   "width": 300,
+   "height": 56,
+   "text": "**+ residual** (h)",
+   "color": "#64748b"
+  },
+  {
+   "id": "bout45",
+   "type": "text",
+   "x": -205,
+   "y": 1656,
+   "width": 410,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl46",
+   "type": "text",
+   "x": 225,
+   "y": 1646,
+   "width": 440,
+   "height": 34,
+   "text": "`x [T, 5120]  → next layer`"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "bx1",
+   "toNode": "bn13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "bn13",
+   "toNode": "bxh4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "bxh4",
+   "toNode": "dqkv6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "dqkv6",
+   "toNode": "dt17",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "dt17",
+   "toNode": "dconv9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "dconv9",
+   "toNode": "dsplit10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "dsplit10",
+   "toNode": "dt211",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "dt211",
+   "toNode": "drule13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "drule13",
+   "toNode": "dt314",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "dt314",
+   "toNode": "dgn16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "dgn16",
+   "toNode": "dt417",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "dt417",
+   "toNode": "dout19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "dout19",
+   "toNode": "dt520",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "dab",
+   "toNode": "drule13",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "label": "α, β"
+  },
+  {
+   "id": "e14",
+   "fromNode": "dz",
+   "toNode": "dgn16",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "z"
+  },
+  {
+   "id": "e15",
+   "fromNode": "bxh4",
+   "toNode": "aqkv22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e16",
+   "fromNode": "aqkv22",
+   "toNode": "at123",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "at123",
+   "toNode": "arope25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "arope25",
+   "toNode": "aatt26",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "aatt26",
+   "toNode": "at227",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "at227",
+   "toNode": "agate29",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "agate29",
+   "toNode": "at330",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "at330",
+   "toNode": "aout32",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "aout32",
+   "toNode": "at433",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "akv",
+   "toNode": "aatt26",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "past k, v"
+  },
+  {
+   "id": "e25",
+   "fromNode": "dt520",
+   "toNode": "badd1",
+   "fromSide": "bottom",
+   "toSide": "left",
+   "label": "3 of 4 layers"
+  },
+  {
+   "id": "e26",
+   "fromNode": "at433",
+   "toNode": "badd1",
+   "fromSide": "bottom",
+   "toSide": "right",
+   "label": "1 of 4 layers"
+  },
+  {
+   "id": "e27",
+   "fromNode": "badd1",
+   "toNode": "bh35",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "bh35",
+   "toNode": "bn237",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e29",
+   "fromNode": "bn237",
+   "toNode": "bgu38",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e30",
+   "fromNode": "bgu38",
+   "toNode": "bff39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e31",
+   "fromNode": "bff39",
+   "toNode": "bdn41",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "bdn41",
+   "toNode": "bfo42",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "bfo42",
+   "toNode": "badd244",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "badd244",
+   "toNode": "bout45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

@@ -1,0 +1,918 @@
+{
+ "nodes": [
+  {
+   "id": "cap-btitle",
+   "type": "text",
+   "x": -1400,
+   "y": -560,
+   "width": 1300,
+   "height": 190,
+   "text": "# Qwen3.8-2.4T-A95B — one decoder layer  \nPre-norm residual block. The token mixer is **either** Gated DeltaNet (left, 69 layers) **or** gated softmax attention (right, 23 layers, every 4th); the MoE below is the same in all 92. Bars ∝ channels (0.06 px/channel). Shapes per token."
+  },
+  {
+   "id": "cap-bsrc",
+   "type": "text",
+   "x": 100,
+   "y": -560,
+   "width": 1300,
+   "height": 190,
+   "text": "Traced from transformers `modeling_qwen3_5_moe.py` (Qwen3_5MoeGatedDeltaNet, Qwen3_5MoeAttention, Qwen3_5MoeSparseMoeBlock) and checked against the checkpoint's tensor names/shapes. Parameter counts are per layer, all BF16. Routed experts are stored fused: gate_up_proj [512, 4096, 8192] + down_proj [512, 8192, 2048]."
+  },
+  {
+   "id": "t1",
+   "type": "text",
+   "x": -246,
+   "y": -320,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl2",
+   "type": "text",
+   "x": 266,
+   "y": -330,
+   "width": 560,
+   "height": 34,
+   "text": "`h [T, 8192]  residual stream in`"
+  },
+  {
+   "id": "op3",
+   "type": "text",
+   "x": -160,
+   "y": -266,
+   "width": 320,
+   "height": 64,
+   "text": "**RMSNorm** (input_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "t4",
+   "type": "text",
+   "x": -246,
+   "y": -162,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl5",
+   "type": "text",
+   "x": 266,
+   "y": -172,
+   "width": 560,
+   "height": 34,
+   "text": "`x [T, 8192]`"
+  },
+  {
+   "id": "op6",
+   "type": "text",
+   "x": -880,
+   "y": -78,
+   "width": 320,
+   "height": 64,
+   "text": "**in_proj_qkv** 8192 → 20480  \n167.8M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t7",
+   "type": "text",
+   "x": -1080,
+   "y": 26,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl8",
+   "type": "text",
+   "x": -1660,
+   "y": 16,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 20480] = q 2048 · k 2048 · v 16384` — bar clipped (real 1229px)"
+  },
+  {
+   "id": "op9",
+   "type": "text",
+   "x": -880,
+   "y": 80,
+   "width": 320,
+   "height": 64,
+   "text": "**causal conv1d** (k=4, per channel) + SiLU",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t10",
+   "type": "text",
+   "x": -1080,
+   "y": 184,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl11",
+   "type": "text",
+   "x": -1660,
+   "y": 174,
+   "width": 560,
+   "height": 34,
+   "text": "`q,k [T, 16, 128] · v [T, 128, 128]` — bar clipped (real 1229px)"
+  },
+  {
+   "id": "op12",
+   "type": "text",
+   "x": -880,
+   "y": 238,
+   "width": 320,
+   "height": 64,
+   "text": "**L2-norm q, k**; repeat 16 → 128 heads",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t13",
+   "type": "text",
+   "x": -1080,
+   "y": 342,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl14",
+   "type": "text",
+   "x": -1660,
+   "y": 332,
+   "width": 560,
+   "height": 34,
+   "text": "`q,k,v [T, 128, 128]` — bar clipped (real 2949px)"
+  },
+  {
+   "id": "op15",
+   "type": "text",
+   "x": -880,
+   "y": 396,
+   "width": 320,
+   "height": 96,
+   "text": "**gated delta rule**  \nS ← α·S(I − β k kᵀ) + β v kᵀ,  o = S q  \nstate S [128, 128, 128] per layer",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t16",
+   "type": "text",
+   "x": -1080,
+   "y": 532,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl17",
+   "type": "text",
+   "x": -1660,
+   "y": 522,
+   "width": 560,
+   "height": 34,
+   "text": "`o [T, 128, 128]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op18",
+   "type": "text",
+   "x": -880,
+   "y": 586,
+   "width": 320,
+   "height": 64,
+   "text": "**gated RMSNorm** per head  \nnorm(o) · swish(z)",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t19",
+   "type": "text",
+   "x": -1080,
+   "y": 690,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl20",
+   "type": "text",
+   "x": -1660,
+   "y": 680,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 16384]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op21",
+   "type": "text",
+   "x": -880,
+   "y": 744,
+   "width": 320,
+   "height": 64,
+   "text": "**out_proj** 16384 → 8192  \n134.2M",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "t22",
+   "type": "text",
+   "x": -966,
+   "y": 848,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl23",
+   "type": "text",
+   "x": -1546,
+   "y": 838,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 8192]  mixer out`"
+  },
+  {
+   "id": "gdn-ab",
+   "type": "text",
+   "x": -330,
+   "y": 396,
+   "width": 270,
+   "height": 110,
+   "text": "**in_proj_a, in_proj_b** (from x)  \nα = exp(−e^A_log · softplus(a + dt_bias))  \nβ = sigmoid(b)  · [T, 128] each",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "gdn-z",
+   "type": "text",
+   "x": -330,
+   "y": 586,
+   "width": 270,
+   "height": 64,
+   "text": "**in_proj_z** (from x) → z [T, 16384]",
+   "color": "#22d3ee"
+  },
+  {
+   "id": "op24",
+   "type": "text",
+   "x": 560,
+   "y": -78,
+   "width": 320,
+   "height": 64,
+   "text": "**q_proj** 8192 → 32768  \n268.4M",
+   "color": "#f97316"
+  },
+  {
+   "id": "t25",
+   "type": "text",
+   "x": 360,
+   "y": 26,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl26",
+   "type": "text",
+   "x": 1100,
+   "y": 16,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 64, 256+256] = query | gate` — bar clipped (real 1966px)"
+  },
+  {
+   "id": "op27",
+   "type": "text",
+   "x": 560,
+   "y": 80,
+   "width": 320,
+   "height": 64,
+   "text": "**split**; RMSNorm on q (per head)",
+   "color": "#f97316"
+  },
+  {
+   "id": "t28",
+   "type": "text",
+   "x": 360,
+   "y": 184,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl29",
+   "type": "text",
+   "x": 1100,
+   "y": 174,
+   "width": 560,
+   "height": 34,
+   "text": "`q [T, 64, 256]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op30",
+   "type": "text",
+   "x": 560,
+   "y": 238,
+   "width": 320,
+   "height": 80,
+   "text": "**RoPE** on 64 of 256 dims  \n(θ = 10 000 000)",
+   "color": "#f97316"
+  },
+  {
+   "id": "t31",
+   "type": "text",
+   "x": 360,
+   "y": 358,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl32",
+   "type": "text",
+   "x": 1100,
+   "y": 348,
+   "width": 560,
+   "height": 34,
+   "text": "`q [T, 64, 256]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op33",
+   "type": "text",
+   "x": 560,
+   "y": 412,
+   "width": 320,
+   "height": 80,
+   "text": "**causal softmax attention**  \nGQA: 16 query heads share each K/V head",
+   "color": "#f97316"
+  },
+  {
+   "id": "t34",
+   "type": "text",
+   "x": 360,
+   "y": 532,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl35",
+   "type": "text",
+   "x": 1100,
+   "y": 522,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 16384]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op36",
+   "type": "text",
+   "x": 560,
+   "y": 586,
+   "width": 320,
+   "height": 64,
+   "text": "**× sigmoid(gate)** per channel",
+   "color": "#f97316"
+  },
+  {
+   "id": "t37",
+   "type": "text",
+   "x": 360,
+   "y": 690,
+   "width": 720,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl38",
+   "type": "text",
+   "x": 1100,
+   "y": 680,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 16384]` — bar clipped (real 983px)"
+  },
+  {
+   "id": "op39",
+   "type": "text",
+   "x": 560,
+   "y": 744,
+   "width": 320,
+   "height": 64,
+   "text": "**o_proj** 16384 → 8192  \n134.2M",
+   "color": "#f97316"
+  },
+  {
+   "id": "t40",
+   "type": "text",
+   "x": 474,
+   "y": 848,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl41",
+   "type": "text",
+   "x": 986,
+   "y": 838,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 8192]  mixer out`"
+  },
+  {
+   "id": "att-kv",
+   "type": "text",
+   "x": 60,
+   "y": 392,
+   "width": 270,
+   "height": 130,
+   "text": "**k_proj, v_proj** (from x) 8192 → 4×256 each · 16.8M  \nRMSNorm + RoPE on k  \nKV cache: 2 048 values / token",
+   "color": "#f97316"
+  },
+  {
+   "id": "op42",
+   "type": "text",
+   "x": -160,
+   "y": 942,
+   "width": 320,
+   "height": 64,
+   "text": "**residual add**  \nh (layer input) + mixer out",
+   "color": "#64748b"
+  },
+  {
+   "id": "t43",
+   "type": "text",
+   "x": -246,
+   "y": 1046,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl44",
+   "type": "text",
+   "x": 266,
+   "y": 1036,
+   "width": 560,
+   "height": 34,
+   "text": "`h [T, 8192]`"
+  },
+  {
+   "id": "op45",
+   "type": "text",
+   "x": -160,
+   "y": 1100,
+   "width": 320,
+   "height": 64,
+   "text": "**RMSNorm** (post_attention_layernorm)",
+   "color": "3"
+  },
+  {
+   "id": "t46",
+   "type": "text",
+   "x": -246,
+   "y": 1204,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl47",
+   "type": "text",
+   "x": -826,
+   "y": 1194,
+   "width": 560,
+   "height": 34,
+   "text": "`x [T, 8192]`"
+  },
+  {
+   "id": "op48",
+   "type": "text",
+   "x": -160,
+   "y": 1258,
+   "width": 320,
+   "height": 80,
+   "text": "**router** 8192 → 512, softmax → top-10  \nweights renormalised to sum 1  \n4.2M",
+   "color": "4"
+  },
+  {
+   "id": "t49",
+   "type": "text",
+   "x": -20,
+   "y": 1378,
+   "width": 40,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl50",
+   "type": "text",
+   "x": -740,
+   "y": 1368,
+   "width": 560,
+   "height": 34,
+   "text": "`expert ids + weights [T, 10]`"
+  },
+  {
+   "id": "op51",
+   "type": "text",
+   "x": -160,
+   "y": 1432,
+   "width": 320,
+   "height": 80,
+   "text": "**10 routed experts** of 512  \nSwiGLU 8192→2048→8192  \n503.3M · active of 25.77B",
+   "color": "4"
+  },
+  {
+   "id": "t52",
+   "type": "text",
+   "x": -246,
+   "y": 1552,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl53",
+   "type": "text",
+   "x": -826,
+   "y": 1542,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 8192]  weighted sum`"
+  },
+  {
+   "id": "op54",
+   "type": "text",
+   "x": -160,
+   "y": 1606,
+   "width": 320,
+   "height": 64,
+   "text": "**sum** routed + gated shared",
+   "color": "4"
+  },
+  {
+   "id": "moe-shared",
+   "type": "text",
+   "x": 420,
+   "y": 1456,
+   "width": 340,
+   "height": 110,
+   "text": "**shared expert** (every token)  \nSwiGLU 8192→2048→8192 × sigmoid(gate)  \n50.3M",
+   "color": "#a3e635"
+  },
+  {
+   "id": "t55",
+   "type": "text",
+   "x": -246,
+   "y": 1710,
+   "width": 492,
+   "height": 9,
+   "text": "",
+   "color": "#64748b"
+  },
+  {
+   "id": "note-lbl56",
+   "type": "text",
+   "x": -826,
+   "y": 1700,
+   "width": 560,
+   "height": 34,
+   "text": "`[T, 8192]  MoE out`"
+  },
+  {
+   "id": "op57",
+   "type": "text",
+   "x": -160,
+   "y": 1764,
+   "width": 320,
+   "height": 64,
+   "text": "**residual add** → h [T, 8192] out",
+   "color": "#64748b"
+  }
+ ],
+ "edges": [
+  {
+   "id": "e0",
+   "fromNode": "t1",
+   "toNode": "op3",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e1",
+   "fromNode": "op3",
+   "toNode": "t4",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e2",
+   "fromNode": "t4",
+   "toNode": "op6",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e3",
+   "fromNode": "op6",
+   "toNode": "t7",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e4",
+   "fromNode": "t7",
+   "toNode": "op9",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e5",
+   "fromNode": "op9",
+   "toNode": "t10",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e6",
+   "fromNode": "t10",
+   "toNode": "op12",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e7",
+   "fromNode": "op12",
+   "toNode": "t13",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e8",
+   "fromNode": "t13",
+   "toNode": "op15",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e9",
+   "fromNode": "op15",
+   "toNode": "t16",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e10",
+   "fromNode": "t16",
+   "toNode": "op18",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e11",
+   "fromNode": "op18",
+   "toNode": "t19",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e12",
+   "fromNode": "t19",
+   "toNode": "op21",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e13",
+   "fromNode": "op21",
+   "toNode": "t22",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e14",
+   "fromNode": "gdn-ab",
+   "toNode": "op15",
+   "fromSide": "left",
+   "toSide": "right",
+   "label": "decay α, write β"
+  },
+  {
+   "id": "e15",
+   "fromNode": "gdn-z",
+   "toNode": "op18",
+   "fromSide": "left",
+   "toSide": "right"
+  },
+  {
+   "id": "e16",
+   "fromNode": "t4",
+   "toNode": "op24",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e17",
+   "fromNode": "op24",
+   "toNode": "t25",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e18",
+   "fromNode": "t25",
+   "toNode": "op27",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e19",
+   "fromNode": "op27",
+   "toNode": "t28",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e20",
+   "fromNode": "t28",
+   "toNode": "op30",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e21",
+   "fromNode": "op30",
+   "toNode": "t31",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e22",
+   "fromNode": "t31",
+   "toNode": "op33",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e23",
+   "fromNode": "op33",
+   "toNode": "t34",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e24",
+   "fromNode": "t34",
+   "toNode": "op36",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e25",
+   "fromNode": "op36",
+   "toNode": "t37",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e26",
+   "fromNode": "t37",
+   "toNode": "op39",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e27",
+   "fromNode": "op39",
+   "toNode": "t40",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e28",
+   "fromNode": "att-kv",
+   "toNode": "op33",
+   "fromSide": "right",
+   "toSide": "left",
+   "label": "K, V"
+  },
+  {
+   "id": "e29",
+   "fromNode": "t22",
+   "toNode": "op42",
+   "fromSide": "bottom",
+   "toSide": "left"
+  },
+  {
+   "id": "e30",
+   "fromNode": "t40",
+   "toNode": "op42",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e31",
+   "fromNode": "op42",
+   "toNode": "t43",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e32",
+   "fromNode": "t43",
+   "toNode": "op45",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e33",
+   "fromNode": "op45",
+   "toNode": "t46",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e34",
+   "fromNode": "t46",
+   "toNode": "op48",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e35",
+   "fromNode": "op48",
+   "toNode": "t49",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e36",
+   "fromNode": "t49",
+   "toNode": "op51",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e37",
+   "fromNode": "op51",
+   "toNode": "t52",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e38",
+   "fromNode": "t52",
+   "toNode": "op54",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e39",
+   "fromNode": "t46",
+   "toNode": "moe-shared",
+   "fromSide": "right",
+   "toSide": "top"
+  },
+  {
+   "id": "e40",
+   "fromNode": "moe-shared",
+   "toNode": "op54",
+   "fromSide": "bottom",
+   "toSide": "right"
+  },
+  {
+   "id": "e41",
+   "fromNode": "op54",
+   "toNode": "t55",
+   "fromSide": "bottom",
+   "toSide": "top"
+  },
+  {
+   "id": "e42",
+   "fromNode": "t55",
+   "toNode": "op57",
+   "fromSide": "bottom",
+   "toSide": "top"
+  }
+ ]
+}

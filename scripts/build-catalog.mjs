@@ -13,13 +13,35 @@
 import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
 import { join, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateModelSummary } from "../web/model-summary.js";
+import { processHardware, listHardwareIds, emitHardware, resetHardwareData } from "./build-hardware-entries.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MODELS_DIR = join(ROOT, "models");
+const HARDWARE_DIR = join(ROOT, "hardware");
 const WEB_DIR = join(ROOT, "web");
 const OUT_CANVASES = join(WEB_DIR, "canvases");
 const OUT_LOGOS = join(WEB_DIR, "logos");
 const OUT_CATALOG = join(WEB_DIR, "catalog.json");
+const OUT_GRAPHS = join(WEB_DIR, "graph-data");
+
+// Optional models/<id>/graph.json powers the data-driven graph viewer (web/graph/).
+// Returns its path when present and structurally valid, else null (failure recorded).
+function graphFileOf(id, dir) {
+  const src = join(dir, "graph.json");
+  if (!existsSync(src)) return null;
+  try {
+    const g = JSON.parse(readFileSync(src, "utf8"));
+    if (!Array.isArray(g.nodes) || !Array.isArray(g.edges)) throw new Error("needs nodes[] and edges[]");
+    const ids = new Set(g.nodes.map((n) => n.id));
+    for (const n of g.nodes) if (n.parent && !ids.has(n.parent)) throw new Error(`node ${n.id}: unknown parent ${n.parent}`);
+    for (const [a, b] of g.edges) if (!ids.has(a) || !ids.has(b)) throw new Error(`edge ${a}->${b}: unknown node`);
+  } catch (err) {
+    fail(id, `graph.json invalid: ${err.message}`);
+    return null;
+  }
+  return src;
+}
 
 const checkOnly = process.argv.includes("--check");
 const errors = [];
@@ -82,6 +104,8 @@ function processModel(id) {
     fail(id, "meta.author must be an object with a name string");
   if (meta.logo !== undefined && typeof meta.logo !== "string")
     fail(id, "meta.logo must be a string (a filename in this folder, an http(s) URL, or a short glyph/emoji)");
+  // Optional spec rows for the ?compare=a,b view (keys in web/model-summary.js).
+  if (meta.summary !== undefined) for (const e of validateModelSummary(meta.summary)) fail(id, `meta.${e}`);
 
   // Resolve logo: a local file in the model folder → copy it; otherwise pass the
   // string through (emoji / short text / http URL). Trademark note: only commit
@@ -153,6 +177,9 @@ function processModel(id) {
     tags: Array.isArray(meta.tags) ? meta.tags : [],
     source: typeof meta.source === "string" && meta.source ? meta.source : null,
     logo: logoValue, // glyph / url, or replaced with a copied path below
+    summary: Array.isArray(meta.summary) ? meta.summary : null,
+    graph: null, // set below when graph.json is emitted
+    _graphFile: graphFileOf(id, dir), // internal; copied below if set
     _levels, // internal; copied below
     _logoFile: logoFile, // internal; copied below if set
   };
@@ -172,6 +199,10 @@ try {
 
 const entries = modelIds.map(processModel).filter(Boolean);
 entries.sort((a, b) => a.name.localeCompare(b.name));
+const hardware = listHardwareIds(HARDWARE_DIR).map((id) => processHardware(HARDWARE_DIR, id, fail)).filter(Boolean);
+hardware.sort((a, b) => a.name.localeCompare(b.name));
+// Models and chips share catalog ids, ?model= links and canvases/<id>.canvas.
+for (const hw of hardware) if (modelIds.includes(hw.id)) fail(hw.id, "id is already used by a model in models/");
 
 if (errors.length) {
   console.error(`\nCatalog validation failed (${errors.length} issue${errors.length > 1 ? "s" : ""}):`);
@@ -180,6 +211,7 @@ if (errors.length) {
 }
 
 console.log(`Validated ${entries.length} model${entries.length === 1 ? "" : "s"}: ${entries.map((e) => e.id).join(", ") || "(none)"}`);
+console.log(`Validated ${hardware.length} chip${hardware.length === 1 ? "" : "s"}: ${hardware.map((e) => e.id).join(", ") || "(none)"}`);
 
 if (checkOnly) {
   console.log("--check passed (no files written).");
@@ -189,10 +221,17 @@ if (checkOnly) {
 // Emit: fresh canvases/ + logos/ + catalog.json
 rmSync(OUT_CANVASES, { recursive: true, force: true });
 rmSync(OUT_LOGOS, { recursive: true, force: true });
+rmSync(OUT_GRAPHS, { recursive: true, force: true });
+resetHardwareData(WEB_DIR);
 mkdirSync(OUT_CANVASES, { recursive: true });
 mkdirSync(OUT_LOGOS, { recursive: true });
-const catalog = entries.map(({ _levels, _logoFile, ...entry }) => {
+mkdirSync(OUT_GRAPHS, { recursive: true });
+const catalog = entries.map(({ _levels, _logoFile, _graphFile, ...entry }) => {
   for (const lv of _levels) copyFileSync(lv.src, join(OUT_CANVASES, lv.dest));
+  if (_graphFile) {
+    copyFileSync(_graphFile, join(OUT_GRAPHS, `${entry.id}.json`));
+    entry.graph = `graph/?model=${entry.id}`;
+  }
   if (_logoFile) {
     const dest = `${entry.id}${extname(_logoFile)}`;
     copyFileSync(_logoFile, join(OUT_LOGOS, dest));
@@ -200,5 +239,6 @@ const catalog = entries.map(({ _levels, _logoFile, ...entry }) => {
   }
   return entry;
 });
+for (const hw of hardware) catalog.push(emitHardware(hw, WEB_DIR));
 writeFileSync(OUT_CATALOG, JSON.stringify(catalog, null, 2) + "\n");
 console.log(`Wrote ${OUT_CATALOG}, ${catalog.length} canvas file(s), and logos to ${WEB_DIR}`);

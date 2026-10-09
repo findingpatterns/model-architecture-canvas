@@ -1,0 +1,100 @@
+{
+  "name": "GLM-5.3-Flash",
+  "description": "Z.ai's 321B hybrid MoE (Glm5NextForConditionalGeneration): 45 layers where 34 use Kimi-style KDA linear attention and 11 use MLA made sparse by DeepSeek Sparse Attention (top-2048 tokens), a 288-expert MoE (top-8 + 1 shared, ~16.7B active), a 4-lane mHC residual stream, one MTP draft layer and a ViT for images and video. Numbers from config.json and the safetensors headers.",
+  "logo": "G",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "glm",
+    "moe",
+    "linear-attention",
+    "sparse-attention",
+    "mla",
+    "multimodal"
+  ],
+  "source": "https://huggingface.co/zai-org/GLM-5.3-Flash",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "321.3B",
+      "number": 321.32,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "16.7B",
+      "number": 16.74,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded."
+    },
+    {
+      "key": "layers",
+      "value": "45",
+      "number": 45,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "4,096",
+      "number": 4096,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "34 KDA linear + 11 MLA with DSA (top-2048), 64 heads",
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "288 (+1 shared)",
+      "number": 288,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8",
+      "number": 8,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "154,880",
+      "number": 154880,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "1M",
+      "number": 1048576,
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "FP8 E4M3 (experts, FFN, MLA) + BF16",
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video",
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    },
+    {
+      "key": "drafting",
+      "value": "MTP ×1",
+      "source": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/config.json"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "name": "DiffusionGemma 26B-A4B-it",
+  "description": "Google DeepMind's block-diffusion LM on the Gemma 4 26B-A4B backbone (DiffusionGemmaForBlockDiffusion): one set of 30 MoE layers ([5 × sliding-window 1024, 1 × global] pattern, every layer a dense MLP plus top-8 of 128 experts) is run causally as an encoder to cache the prompt, then bidirectionally as a decoder that denoises 256-token canvases from uniform random ids in up to 48 steps, with self-conditioning on the previous step's logits and an entropy-bound sampler. 27-layer ViT for images. Numbers from config.json, generation_config.json and the safetensors headers.",
+  "logo": "DG",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "gemma",
+    "google",
+    "moe",
+    "diffusion",
+    "block-diffusion",
+    "multimodal",
+    "sliding-window"
+  ],
+  "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "25.8B",
+      "number": 25.82,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/model.safetensors.index.json",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers."
+    },
+    {
+      "key": "params_active",
+      "value": "3.84B",
+      "number": 3.84,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/model.safetensors.index.json",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. Counted per canvas token per denoising step; includes the always-on dense MLP and the self-conditioning MLP. The lm head is tied to the embedding (0.74B, counted here as the head)."
+    },
+    {
+      "key": "layers",
+      "value": "30",
+      "number": 30,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "2,816",
+      "number": 2816,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-1024 5 : 1 global, GQA 16 q / 8 kv × 256 (sliding) · 16 q / 2 kv × 512, K = V (global); bidirectional over the canvas",
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "128",
+      "number": 128,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "top-8 (+ dense MLP)",
+      "number": 8,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "262,144",
+      "number": 262144,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it/blob/main/model.safetensors.index.json"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image",
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it"
+    },
+    {
+      "key": "drafting",
+      "value": "none (parallel denoising of 256-token canvases)",
+      "source": "https://huggingface.co/google/diffusiongemma-26B-A4B-it"
+    }
+  ]
+}

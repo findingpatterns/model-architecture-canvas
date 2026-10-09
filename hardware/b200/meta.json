@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA B200",
+  "description": "Blackwell: two dies joined by NV-HBI, 8 HBM3e stacks, 5th-gen Tensor Cores with Tensor Memory.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "blackwell", "gpu"],
+  "source": "https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/"
+}

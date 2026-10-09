@@ -1,0 +1,101 @@
+{
+  "name": "Gemma 4 12B-it (Unified)",
+  "description": "Google DeepMind's 12B encoder-free multimodal decoder (Gemma4UnifiedForConditionalGeneration): no vision or audio tower — raw 48×48 pixel patches and raw 40 ms waveform frames each pass through norms + one linear layer into the 3,840-wide embedding space. 48 layers in a [5 × sliding-window (1024), 1 × full] pattern, GQA 16/8 × 256 on sliding layers and MQA 16/1 × 512 with K = V on full layers, GELU MLP 15,360, tied 262K-vocab head with logit softcap 30; the 423M MTP drafter ships separately as gemma-4-12B-it-assistant. Numbers from config.json and the safetensors header.",
+  "logo": "G4",
+  "author": {
+    "name": "ModelCanvas",
+    "github": ""
+  },
+  "tags": [
+    "gemma",
+    "google",
+    "dense",
+    "multimodal",
+    "encoder-free",
+    "sliding-window",
+    "speculative-decoding"
+  ],
+  "source": "https://huggingface.co/google/gemma-4-12B-it",
+  "levels": [
+    {
+      "label": "Model",
+      "file": "model.canvas"
+    },
+    {
+      "label": "Layer",
+      "file": "block.canvas"
+    }
+  ],
+  "summary": [
+    {
+      "key": "params_total",
+      "value": "12.0B",
+      "number": 11.96,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/model.safetensors",
+      "note": "Every tensor in the checkpoint (incl. MTP / draft and vision weights), summed from the safetensors headers. Single-file checkpoint (no index). The 0.42B MTP drafter ships in a separate repo (google/gemma-4-12B-it-assistant) and is not included."
+    },
+    {
+      "key": "params_active",
+      "value": "11.9B",
+      "number": 11.91,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/model.safetensors",
+      "note": "Weights multiplied per text token by the main model: lm head included; embedding (a row lookup), MTP / draft heads and vision / audio encoders excluded. The lm head is tied to the embedding, so the same 1.01B table counts here as the head."
+    },
+    {
+      "key": "layers",
+      "value": "48",
+      "number": 48,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "hidden_size",
+      "value": "3,840",
+      "number": 3840,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "attention",
+      "value": "SWA-1024 5 : 1 full, GQA 16 q / 8 kv (sliding) · 16 q / 1 kv, K = V (full)",
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts",
+      "value": "dense",
+      "number": 0,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "experts_active",
+      "value": "— (dense)",
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "vocab",
+      "value": "262,144",
+      "number": 262144,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "context",
+      "value": "256K",
+      "number": 262144,
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/config.json"
+    },
+    {
+      "key": "weight_dtype",
+      "value": "BF16",
+      "source": "https://huggingface.co/google/gemma-4-12B-it/blob/main/model.safetensors"
+    },
+    {
+      "key": "modalities",
+      "value": "text, image, video, audio",
+      "source": "https://huggingface.co/google/gemma-4-12B-it/raw/main/README.md",
+      "note": "Card: \"text, audio, image, and video inputs\"; encoder-free — patches and audio waveforms enter via linear projections."
+    },
+    {
+      "key": "drafting",
+      "value": "none (MTP drafter ships separately: gemma-4-12B-it-assistant)",
+      "source": "https://huggingface.co/google/gemma-4-12B-it"
+    }
+  ]
+}
