@@ -1,0 +1,744 @@
+{
+  "schemaVersion": 1,
+  "id": "groq-lpu",
+  "name": "Groq LPU (GroqChip)",
+  "vendor": "Groq",
+  "arch": "Tensor Streaming Processor (TSP)",
+  "disclaimer": "Die drawn to real proportions (1 unit = 1 mm; estimates where noted). Slice widths within the die, exact superlane count rendering, and C2C link placement are illustrative, not an exact floorplan.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          34,
+          0.6,
+          30
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "Single-die package. No interposer and no HBM stacks: the GroqChip is a monolithic die with all memory on-chip.",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "GroqChip die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          29,
+          0.5,
+          25
+        ],
+        "pos": [
+          0,
+          0.55,
+          0
+        ]
+      },
+      "explode": 1.5,
+      "desc": "Monolithic 14nm die organized as a **functionally-sliced** architecture: columns of identical functional units (slices) span the die east–west, mirrored into two hemispheres around the central vector slice. Instructions flow north from the ICU; operand and result data stream east–west between slices every cycle.",
+      "specs": [
+        {
+          "label": "Die size",
+          "value": "~725 mm² (25 × 29 mm)",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        },
+        {
+          "label": "Process",
+          "value": "GlobalFoundries 14nm",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        },
+        {
+          "label": "Clock",
+          "value": "900 MHz",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        },
+        {
+          "label": "Peak throughput",
+          "value": "750 TOPS INT8 / 188 TFLOPS FP16 @ 900 MHz",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "icu",
+      "parent": "die",
+      "name": "ICU (Instruction Control Units)",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [
+          29,
+          0.3,
+          2
+        ],
+        "pos": [
+          0,
+          0.95,
+          -10.5
+        ]
+      },
+      "explode": 2.2,
+      "desc": "144 independent Instruction Control Units stream a **statically compiler-scheduled** instruction sequence into each column, cycle by cycle. No dynamic scheduling, out-of-order execution, branch prediction, or caches — the compiler already knows exactly when every operand arrives.",
+      "specs": [
+        {
+          "label": "Instruction queues",
+          "value": "144 independent ICUs on-chip, statically scheduled",
+          "source": "https://groq.humain.ai/wp-content/uploads/2024/02/2020-Isca.pdf"
+        }
+      ],
+      "role": "instruction-control"
+    },
+    {
+      "id": "mxm-west",
+      "parent": "die",
+      "name": "MXM — Matrix unit (west)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.2,
+          0.3,
+          25
+        ],
+        "pos": [
+          -11.9,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.4,
+      "drill": "mxm-detail",
+      "desc": "Matrix execution module: a **320×320** fused multiply-accumulate (MACC) systolic array per plane. Weights stay stationary in the array while activation vectors stream through east–west. Click **Open** to look inside.",
+      "specs": [
+        {
+          "label": "MACC array",
+          "value": "320×320 fused multiply-accumulate array",
+          "source": "https://hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HotChips34%20-%20Groq%20-%20Abts%20-%20final.pdf"
+        },
+        {
+          "label": "Planes per chip",
+          "value": "4 independent 320×320 MACC planes (2 per hemisphere)",
+          "source": "https://hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HotChips34%20-%20Groq%20-%20Abts%20-%20final.pdf"
+        }
+      ],
+      "role": "tensor-core"
+    },
+    {
+      "id": "sxm-west",
+      "parent": "die",
+      "name": "SXM — Switch unit (west)",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [
+          2.3,
+          0.3,
+          25
+        ],
+        "pos": [
+          -8.15,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "desc": "On-chip network / switch slice: permutes, rotates, shifts and broadcasts lanes between the MXM and MEM slices without any round-trip through memory.",
+      "specs": [
+        {
+          "label": "Function",
+          "value": "Lane permute / rotate / broadcast between slices, no memory round-trip",
+          "estimate": true
+        }
+      ],
+      "role": "switch-unit"
+    },
+    {
+      "id": "mem-west",
+      "parent": "die",
+      "name": "MEM — SRAM slice (west)",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.6,
+          0.3,
+          25
+        ],
+        "pos": [
+          -4.2,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "drill": "mem-detail",
+      "desc": "On-chip SRAM slice. Holds weights, activations and KV-cache for the west hemisphere — there is no HBM and no DRAM on this chip at all. Click **Open** to see the superlane bank structure.",
+      "specs": [
+        {
+          "label": "Capacity (this MEM column)",
+          "value": "~115 MB (20 superlanes × ~5.5 MB)",
+          "estimate": true
+        },
+        {
+          "label": "Total on-chip SRAM (both columns)",
+          "value": "230 MB, ~80 TB/s aggregate on-chip bandwidth",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        }
+      ],
+      "role": "sram-slice"
+    },
+    {
+      "id": "vxm",
+      "parent": "die",
+      "name": "VXM — Vector unit",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [
+          2.8,
+          0.3,
+          25
+        ],
+        "pos": [
+          0,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "desc": "Central vector execution slice, mirrored symmetrically between the two hemispheres. Issues the vector instruction stream that the MXM/SXM/MEM slices on either side act on.",
+      "specs": [
+        {
+          "label": "ALUs",
+          "value": "5,120 vector ALUs (320 lanes × 16)",
+          "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+        },
+        {
+          "label": "Max vector length",
+          "value": "320 elements (20 superlanes × 16 lanes)",
+          "estimate": true
+        }
+      ],
+      "role": "vector-engine"
+    },
+    {
+      "id": "mem-east",
+      "parent": "die",
+      "name": "MEM — SRAM slice (east)",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.6,
+          0.3,
+          25
+        ],
+        "pos": [
+          4.2,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "desc": "Mirror of the west MEM slice, serving the east hemisphere.",
+      "specs": [
+        {
+          "label": "Capacity (this MEM column)",
+          "value": "~115 MB (20 superlanes × ~5.5 MB)",
+          "estimate": true
+        }
+      ],
+      "role": "sram-slice"
+    },
+    {
+      "id": "sxm-east",
+      "parent": "die",
+      "name": "SXM — Switch unit (east)",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [
+          2.3,
+          0.3,
+          25
+        ],
+        "pos": [
+          8.15,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "desc": "Mirror of the west switch slice.",
+      "role": "switch-unit"
+    },
+    {
+      "id": "mxm-east",
+      "parent": "die",
+      "name": "MXM — Matrix unit (east)",
+      "group": "compute",
+      "color": "#2a58b8",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.2,
+          0.3,
+          25
+        ],
+        "pos": [
+          11.9,
+          0.95,
+          0
+        ]
+      },
+      "explode": 2.4,
+      "desc": "Mirror of the west matrix unit, completing the symmetric hemisphere layout.",
+      "role": "tensor-core"
+    },
+    {
+      "id": "c2c-link-x",
+      "parent": "package",
+      "name": "C2C link (east/west edge)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          1,
+          0.3,
+          6
+        ],
+        "pos": [
+          16.5,
+          0.3,
+          0
+        ]
+      },
+      "repeat": {
+        "count": [
+          2,
+          1,
+          1
+        ],
+        "step": [
+          -33,
+          0,
+          0
+        ]
+      },
+      "explode": 1.2,
+      "desc": "RealScale chip-to-chip (C2C) links: phase-aligned, fixed-latency SerDes lanes that let the same deterministic, statically-scheduled pipeline extend across many chips wired in a 2D torus.",
+      "specs": [
+        {
+          "label": "Link (legacy GroqChip v1 estimate)",
+          "value": "~4 lanes × 30 Gbps ≈ 15 GB/s per direction",
+          "estimate": true
+        }
+      ],
+      "role": "c2c-link"
+    },
+    {
+      "id": "c2c-link-z",
+      "parent": "package",
+      "name": "C2C link (north/south edge)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          6,
+          0.3,
+          1
+        ],
+        "pos": [
+          0,
+          0.3,
+          14.8
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          2
+        ],
+        "step": [
+          0,
+          0,
+          -29.6
+        ]
+      },
+      "explode": 1.2,
+      "desc": "Second pair of C2C link breakouts, completing the 2D torus wiring on the other two die edges.",
+      "role": "c2c-link"
+    }
+  ],
+  "scenes": {
+    "mxm-detail": {
+      "anchor": "mxm-east",
+      "offset": [
+        2.5,
+        3.5,
+        1.5
+      ],
+      "components": [
+        {
+          "id": "macc-array",
+          "name": "320×320 MACC array",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              3.2,
+              0.12,
+              1.6
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ]
+          },
+          "repeat": {
+            "count": [
+              1,
+              20,
+              1
+            ],
+            "step": [
+              0,
+              0.16,
+              0
+            ]
+          },
+          "desc": "The matrix unit is built from **20 stacked superlane rows**, each contributing 16 lanes to the systolic array — giving the chip's maximum vector length (maxVL) of 320. Weights load once and stay stationary; activations stream through row by row, one MAC per PE per cycle.",
+          "specs": [
+            {
+              "label": "Array",
+              "value": "320×320 MACC array, built from 20 stacked superlane rows (16 lanes each)",
+              "source": "https://hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HotChips34%20-%20Groq%20-%20Abts%20-%20final.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "mxm-accumulator",
+          "parent": "macc-array",
+          "name": "Accumulator",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [
+              3.2,
+              0.1,
+              1.6
+            ],
+            "pos": [
+              0,
+              3.6,
+              0
+            ]
+          },
+          "desc": "Accumulates partial products across the 320-deep pipeline every cycle. The compiler knows the exact cycle each partial sum is ready — no scoreboarding, no stalls.",
+          "role": "accumulator-register"
+        }
+      ]
+    },
+    "mem-detail": {
+      "anchor": "mem-east",
+      "offset": [
+        2.5,
+        3.5,
+        -1.5
+      ],
+      "components": [
+        {
+          "id": "sram-bank",
+          "name": "Superlane SRAM bank",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              3.6,
+              0.14,
+              1.1
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ]
+          },
+          "repeat": {
+            "count": [
+              1,
+              20,
+              1
+            ],
+            "step": [
+              0,
+              0.18,
+              0
+            ]
+          },
+          "desc": "Each MEM slice is built from **20 superlane SRAM banks** (one per superlane row), each holding roughly 5.5 MB. Both MEM columns together give the chip its full 230 MB of on-chip SRAM — there is no cache hierarchy and no HBM: this *is* the memory.",
+          "specs": [
+            {
+              "label": "Bank size",
+              "value": "~5.5 MB per superlane per MEM column",
+              "estimate": true
+            }
+          ],
+          "role": "sram-slice"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "mxm-west-to-sxm-west",
+      "from": "mxm-west",
+      "to": "sxm-west",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "sxm-west-to-mem-west",
+      "from": "sxm-west",
+      "to": "mem-west",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "mem-west-to-vxm",
+      "from": "mem-west",
+      "to": "vxm",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "vxm-to-mem-east",
+      "from": "vxm",
+      "to": "mem-east",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "mem-east-to-sxm-east",
+      "from": "mem-east",
+      "to": "sxm-east",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "sxm-east-to-mxm-east",
+      "from": "sxm-east",
+      "to": "mxm-east",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "icu-issue",
+      "from": "icu",
+      "to": "vxm",
+      "group": "control",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. The compiler statically schedules every instruction ahead of time, down to the cycle. 144 ICUs stream a fixed sequence into their columns — no dynamic scheduling, no caches, no branch prediction.",
+      "focus": [
+        "icu"
+      ],
+      "dot": "icu",
+      "explode": 0.4,
+      "stage": "instruction-fetch"
+    },
+    {
+      "text": "2. Weights, activations and the KV-cache already sit in on-chip MEM slices — 230 MB of SRAM split across 20 superlanes, with no HBM or DRAM round-trip.",
+      "focus": [
+        "mem-west",
+        "mem-east"
+      ],
+      "dot": "mem-west",
+      "drill": "mem-detail",
+      "stage": "sram"
+    },
+    {
+      "text": "3. Zoomed in: each MEM slice is built from 20 superlane SRAM banks (~5.5 MB each) running in lockstep with the matrix and vector units beside them.",
+      "focus": [
+        "sram-bank"
+      ],
+      "dot": "sram-bank",
+      "drill": "mem-detail",
+      "stage": "sram-bank"
+    },
+    {
+      "text": "4. The VXM (5,120 vector ALUs) issues a vector instruction; the resulting data stream heads west toward the MXM.",
+      "focus": [
+        "vxm"
+      ],
+      "dot": "vxm",
+      "drill": null,
+      "stage": "vector-unit"
+    },
+    {
+      "text": "5. En route it passes through the SXM (switch unit), which can permute, rotate or broadcast lanes on the fly without touching memory.",
+      "focus": [
+        "sxm-west"
+      ],
+      "dot": "sxm-west",
+      "stage": "switch-unit"
+    },
+    {
+      "text": "6. The MXM's 320×320 fused multiply-accumulate array streams the activation vector past stationary weights, one row per cycle.",
+      "focus": [
+        "mxm-west"
+      ],
+      "dot": "mxm-west",
+      "drill": "mxm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. Zoomed in: the array is built from 20 stacked superlane rows (16 lanes each), giving the chip's maximum vector length of 320 elements.",
+      "focus": [
+        "macc-array"
+      ],
+      "dot": "macc-array",
+      "drill": "mxm-detail",
+      "stage": "superlane"
+    },
+    {
+      "text": "8. Partial products accumulate deterministically every cycle — the compiler already knows exactly when each result is ready, so there's no stalling or scoreboarding.",
+      "focus": [
+        "mxm-accumulator"
+      ],
+      "dot": "mxm-accumulator",
+      "drill": null,
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Results stream back east through the mirrored SXM/MEM slices in the east hemisphere, ready for the next statically-scheduled instruction.",
+      "focus": [
+        "sxm-east",
+        "mem-east"
+      ],
+      "dot": "mem-east",
+      "stage": "writeback"
+    },
+    {
+      "text": "10. For models too large for one chip, RealScale C2C links extend the same fixed-latency pipeline across chips wired in a 2D torus — the whole multi-chip system stays cycle-deterministic.",
+      "focus": [
+        "c2c-link-x"
+      ],
+      "dot": "c2c-link-x",
+      "stage": "die-to-die"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "1 (monolithic, no chiplets, no interposer)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+    },
+    {
+      "key": "die_area",
+      "value": "~725 mm² (25 × 29 mm), GlobalFoundries 14nm",
+      "number": 725,
+      "role": "compute-die",
+      "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~725 mm² (single die)",
+      "number": 725,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "GlobalFoundries 14nm",
+      "role": "compute-die",
+      "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+    },
+    {
+      "key": "tdp",
+      "value": "215 W TDP (max 300 W, average 185 W) per GroqChip",
+      "number": 215,
+      "role": "compute-die",
+      "source": "https://groq.com/product-spec-sheet-groqchip-processor/"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "INT8 (750 TOPS); FP16 also supported (188 TFLOPS)",
+      "role": "tensor-core",
+      "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+    },
+    {
+      "key": "int8_dense",
+      "value": "Up to 750 TOPS INT8 @ 900 MHz (no sparsity)",
+      "number": 750,
+      "role": "tensor-core",
+      "source": "https://groq.com/product-spec-sheet-groqchip-processor/"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "Up to 188 TFLOPS FP16 @ 900 MHz (FP16, not BF16)",
+      "number": 188,
+      "role": "tensor-core",
+      "source": "https://groq.com/product-spec-sheet-groqchip-processor/"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "230 MB SRAM per chip (the only model memory; no HBM/DRAM)",
+      "number": 230,
+      "role": "sram-slice",
+      "source": "https://groq.com/product-spec-sheet-groqchip-processor/"
+    },
+    {
+      "key": "on_chip_sram_bandwidth",
+      "value": "Up to 80 TB/s on-die memory bandwidth",
+      "number": 80,
+      "role": "sram-slice",
+      "source": "https://groq.com/product-spec-sheet-groqchip-processor/"
+    },
+    {
+      "key": "packaging",
+      "value": "Single monolithic die package — no interposer, no HBM stacks",
+      "role": "compute-die",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 1,
+    "basis": "1 unit = 1 mm; die ≈ 25 × 29 mm (~725 mm², GlobalFoundries 14nm)",
+    "source": "https://www.techpowerup.com/319286/groq-lpu-ai-inference-chip-is-rivaling-major-players-like-nvidia-amd-and-intel"
+  }
+}

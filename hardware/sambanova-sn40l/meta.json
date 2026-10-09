@@ -1,0 +1,8 @@
+{
+  "name": "SambaNova SN40L RDU",
+  "description": "Cerulean architecture: 2 Reconfigurable Dataflow Dies on CoWoS, a PCU/PMU/switch checkerboard, AGCUs, and a 3-tier SRAM/HBM3/DDR5 memory system.",
+  "kind": "hardware",
+  "tags": ["sambanova", "rdu", "dataflow", "accelerator"],
+  "source": "https://arxiv.org/abs/2405.07518",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

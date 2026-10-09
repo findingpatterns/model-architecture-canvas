@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "id": "rubin",
+  "name": "NVIDIA Rubin (R100/VR200)",
+  "vendor": "NVIDIA",
+  "arch": "Rubin",
+  "disclaimer": "Many Rubin figures are GTC 2025/2026 announcements for a GPU not yet shipping at the time of writing (labeled \"announced\"); die/IO-die/HBM footprints are illustrative and drawn to a common scale (1 unit = 4 mm). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [34, 0.6, 16], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate for the Rubin GPU package (announced). Routes power and signals from the four dies and 8 HBM4 stacks to the SXM/board connectors.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer (CoWoS-L, ~4x reticle)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [30, 0.3, 12.4], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "TSMC CoWoS-L interposer, reported at roughly 4x a single reticle to fit two compute dies, two I/O dies and 8 HBM4 stacks.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "CoWoS-L, ~4x reticle size (announced)",
+          "source": "https://newsletter.semianalysis.com/p/nvidia-gtc-2025-built-for-reasoning-vera-rubin-kyber-cpo-dynamo-inference-jensen-math-feynman"
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die0",
+      "parent": "interposer",
+      "name": "Die 0 (compute)",
+      "group": "compute",
+      "geom": { "type": "box", "size": [6.5, 0.4, 8.25], "pos": [-4, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "One of two near-reticle-sized Rubin compute dies. Holds SMs, L2 slice and memory controllers; NVLink/PCIe SerDes are moved off-die onto a dedicated I/O die to free up area for more SMs. With NVIDIA's Rubin-era counting, each compute die is one \"GPU\" (so a 72-package NVL72 rack is called NVL144).",
+      "specs": [
+        {
+          "label": "Transistors (whole package: 2 compute + 2 I/O dies)",
+          "value": "336 billion (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC N3 family (3nm; exact node not confirmed by NVIDIA)",
+          "estimate": true,
+          "source": "https://www.trendforce.com/news/2026/04/01/news-nvidias-rubin-ultra-seen-sticking-to-dual-die-design-on-packaging-constraints-tsmc-3nm-demand-intact/"
+        },
+        {
+          "label": "SMs (whole package)",
+          "value": "224 Streaming Multiprocessors (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Die size",
+          "value": "near-reticle limit, ~26 x 33 mm (not published; estimate)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1",
+      "parent": "interposer",
+      "name": "Die 1 (compute)",
+      "group": "compute",
+      "geom": { "type": "box", "size": [6.5, 0.4, 8.25], "pos": [4, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Second Rubin compute die, identical to die 0.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "io-die0",
+      "parent": "interposer",
+      "name": "I/O die (left)",
+      "group": "io",
+      "color": "#1f7a52",
+      "geom": { "type": "box", "size": [2, 0.4, 8.25], "pos": [-9, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Dedicated I/O chiplet carrying the NVLink 6, PCIe and NVLink-C2C SerDes for die 0 — new vs. Blackwell, which puts I/O on the compute die itself. Frees die-0 area for more SMs.",
+      "specs": [
+        {
+          "label": "Role",
+          "value": "NVLink 6 / PCIe / NVLink-C2C SerDes (announced)",
+          "source": "https://newsletter.semianalysis.com/p/nvidia-gtc-2025-built-for-reasoning-vera-rubin-kyber-cpo-dynamo-inference-jensen-math-feynman"
+        }
+      ],
+      "role": "io-die"
+    },
+    {
+      "id": "io-die1",
+      "parent": "interposer",
+      "name": "I/O die (right)",
+      "group": "io",
+      "color": "#1f7a52",
+      "geom": { "type": "box", "size": [2, 0.4, 8.25], "pos": [9, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Second I/O chiplet, serving die 1.",
+      "role": "io-die"
+    },
+    {
+      "id": "nv-hbi",
+      "parent": "interposer",
+      "name": "Die-to-die link",
+      "group": "io",
+      "geom": { "type": "box", "size": [0.3, 0.35, 6], "pos": [0, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "High-bandwidth, coherent link between the two compute dies (successor to NV-HBI). Exact name/bandwidth not disclosed by NVIDIA; software still sees one GPU package.",
+      "specs": [
+        {
+          "label": "Bandwidth",
+          "value": "not disclosed (estimate: faster than Blackwell's 10 TB/s NV-HBI)",
+          "estimate": true
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "io-link-left",
+      "parent": "interposer",
+      "name": "Compute-die <-> I/O-die link",
+      "group": "io",
+      "geom": { "type": "box", "size": [1.2, 0.3, 5], "pos": [-6.5, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "On-package link carrying NVLink/PCIe traffic between die 0 and its I/O die. Illustrative — NVIDIA has not published this interconnect's name or bandwidth.",
+      "role": "io-link"
+    },
+    {
+      "id": "io-link-right",
+      "parent": "interposer",
+      "name": "Compute-die <-> I/O-die link",
+      "group": "io",
+      "geom": { "type": "box", "size": [1.2, 0.3, 5], "pos": [6.5, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "Same link for die 1 and its I/O die.",
+      "role": "io-link"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [-13.5, 0.66, -4.425] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack: the PHY that talks to the memory controller through the interposer.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM4 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [-13.5, 0.78, -4.425] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked HBM4 DRAM dies joined by TSVs. 4 of the package's 8 stacks sit on this side, beyond the I/O die, feeding die 0. LLM decoding is usually bound by this bandwidth: every token re-reads the weights.",
+      "specs": [
+        {
+          "label": "Capacity (per GPU package)",
+          "value": "up to 288 GB HBM4 (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Bandwidth (per GPU package)",
+          "value": "up to 22 TB/s aggregate (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "Stacks",
+          "value": "8",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM4 base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [13.5, 0.66, -4.425] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM4 stack, feeding die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM4 DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [13.5, 0.78, -4.425] },
+      "repeat": { "count": [1, 8, 4], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked HBM4 DRAM dies joined by TSVs, feeding die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "l2-die0",
+      "parent": "die0",
+      "name": "L2 cache (die 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [5.797, 0.08, 0.737], "pos": [-4, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice, coherent across both compute dies. Buffers data between HBM4 and all SMs; hot weights and KV cache stay here instead of round-tripping to HBM. Size not disclosed by NVIDIA.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-die1",
+      "parent": "die1",
+      "name": "L2 cache (die 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [5.797, 0.08, 0.737], "pos": [4, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Shared L2 cache slice on die 1.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-die0",
+      "parent": "die0",
+      "name": "Memory controllers (die 0)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.439, 0.08, 7.661], "pos": [-6.899, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM4 PHY: turn read/write requests into signals for the 4 HBM4 stacks beyond the I/O die on this side.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-die1",
+      "parent": "die1",
+      "name": "Memory controllers (die 1)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.439, 0.08, 7.661], "pos": [6.899, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM4 PHY for die 1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink-die0",
+      "parent": "die0",
+      "name": "NVLink 6 / PCIe (via I/O die)",
+      "group": "io",
+      "geom": { "type": "box", "size": [2.459, 0.08, 0.206], "pos": [-4, 1.04, -3.978] },
+      "explode": 3.2,
+      "desc": "Off-chip I/O, physically routed through the adjacent I/O die. NVLink 6 connects GPUs through NVSwitch in the NVL72/NVL144 rack; NVLink-C2C connects the Vera CPU.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth (per GPU package, bidirectional)",
+          "value": "3.6 TB/s (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        },
+        {
+          "label": "NVLink-C2C bandwidth (to Vera CPU)",
+          "value": "1.8 TB/s (announced)",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "nvlink-die1",
+      "parent": "die1",
+      "name": "NVLink 6 / PCIe (via I/O die)",
+      "group": "io",
+      "geom": { "type": "box", "size": [2.459, 0.08, 0.206], "pos": [4, 1.04, 3.978] },
+      "explode": 3.2,
+      "desc": "Off-chip I/O ports on die 1, routed through its I/O die.",
+      "role": "nvlink"
+    },
+    {
+      "id": "sm-die0-a",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.457, 0.14, 0.648], "pos": [-6.196, 1.07, -3.536] },
+      "repeat": { "count": [8, 1, 4], "step": [0.58, 0, 0.81] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors — the basic compute unit. 224 SMs total across the package (announced); this grid is symbolic. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "224 total on package (announced); grid below is symbolic",
+          "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die0-b",
+      "parent": "die0",
+      "name": "SMs (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.457, 0.14, 0.648], "pos": [-6.196, 1.07, 0.884] },
+      "repeat": { "count": [8, 1, 4], "step": [0.58, 0, 0.81] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die1-a",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.457, 0.14, 0.648], "pos": [1.804, 1.07, -3.536] },
+      "repeat": { "count": [8, 1, 4], "step": [0.58, 0, 0.81] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-die1-b",
+      "parent": "die1",
+      "name": "SMs (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.457, 0.14, 0.648], "pos": [1.804, 1.07, 0.884] },
+      "repeat": { "count": [8, 1, 4], "step": [0.58, 0, 0.81] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-die0-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [3.4, 0.2, 2.4], "pos": [0, 0, 0] },
+          "desc": "Programmable scratchpad shared by the threads of a block. TMA fills it with A/B tiles; Tensor Cores read operands straight from here. Size not disclosed for Rubin.",
+          "specs": [
+            { "label": "Size (per SM)", "value": "not disclosed; estimate similar order to Blackwell's ~256 KB", "estimate": true }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tmem",
+          "parent": "smem",
+          "name": "Tensor Memory (TMEM)",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": { "type": "box", "size": [3.4, 0.2, 2.4], "pos": [0, 0.35, 0] },
+          "desc": "Dedicated memory where Tensor Cores keep accumulators instead of registers, carried over from Blackwell. Frees registers for other work and allows larger matmul tiles.",
+          "specs": [
+            { "label": "Size (per SM)", "value": "not disclosed for Rubin; estimate similar order to Blackwell's 256 KB", "estimate": true }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "tmem",
+          "name": "Rubin Tensor Core",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [0.7, 0.35, 0.9], "pos": [-1.25, 0.75, -0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Multiplies whole matrix tiles per instruction, now with native NVFP4 and a 3rd-generation Transformer Engine (adaptive, two-level micro-block scaling). NVIDIA's own materials describe it as an enhanced 5th-generation Tensor Core; several press reports call it 6th-gen — treat the generation number as unsettled.",
+          "specs": [
+            {
+              "label": "Tensor Core generation",
+              "value": "NVIDIA: enhanced 5th-gen; several press reports: 6th-gen (unsettled naming)",
+              "estimate": true
+            },
+            {
+              "label": "NVFP4 dense (per GPU package)",
+              "value": "35 PFLOPS training-grade dense (announced)",
+              "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+            },
+            {
+              "label": "NVFP4 effective/inference (per GPU package)",
+              "value": "up to 50 PFLOPS via 3rd-gen Transformer Engine sparsity (announced)",
+              "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "tmem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.7, 0.25, 0.9], "pos": [-1.25, 0.7, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Per-thread registers — the fastest storage. One slice per SM sub-partition.",
+          "specs": [
+            { "label": "Size (per SM)", "value": "not disclosed; estimate similar order to Blackwell", "estimate": true }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": { "type": "box", "size": [0.7, 0.15, 0.9], "pos": [-1.25, 1, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores run the epilogue: bias, activation, quantization. NVIDIA cites dedicated softmax acceleration at 32 ops/clock/SM (FP32) and 64 ops/clock/SM (FP16) for attention workloads.",
+          "specs": [
+            {
+              "label": "Softmax acceleration (per SM)",
+              "value": "32 ops/clock (FP32), 64 ops/clock (FP16) (announced)",
+              "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+            }
+          ],
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "tma",
+          "parent": "smem",
+          "name": "TMA (Tensor Memory Accelerator)",
+          "group": "io",
+          "geom": { "type": "box", "size": [1.6, 0.15, 0.4], "pos": [-0.9, -0.25, 1.4] },
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM4 and shared memory asynchronously, without spending threads.",
+          "role": "tma"
+        }
+      ]
+    }
+  },
+  "flows": [
+    { "id": "hbm-to-die0", "from": "hbm-dram-left", "to": "die0", "group": "memory", "particles": 2 },
+    { "id": "hbm-to-die1", "from": "hbm-dram-right", "to": "die1", "group": "memory", "particles": 2 },
+    { "id": "die-to-die", "from": "die0", "to": "die1", "group": "io", "particles": 4 },
+    { "id": "io-to-die0", "from": "io-die0", "to": "die0", "group": "io", "particles": 2 },
+    { "id": "io-to-die1", "from": "io-die1", "to": "die1", "group": "io", "particles": 2 }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights W and activations X sit in HBM4.",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. A memory controller reads the HBM4 stacks attached to its die, through the interposer beyond the I/O die.",
+      "focus": ["mc-die0"],
+      "dot": "mc-die0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the data lives in the other die's HBM4, it crosses the die-to-die link — invisible to software, both dies behave as one GPU package.",
+      "focus": ["nv-hbi"],
+      "dot": "nv-hbi",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. Data lands in the shared L2 cache.",
+      "focus": ["l2-die0"],
+      "dot": "l2-die0",
+      "stage": "l2"
+    },
+    {
+      "text": "5. TMA copies A and B tiles from L2 into shared memory, asynchronously.",
+      "focus": ["tma"],
+      "dot": "tma",
+      "drill": "sm-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "6. Tiles sit in shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "7. The Rubin Tensor Cores multiply the tiles natively in NVFP4 (micro-block scaled), with the 3rd-gen Transformer Engine adjusting precision per layer.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate in TMEM, not in registers. Steps 5-8 repeat along K.",
+      "focus": ["tmem"],
+      "dot": "tmem",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: results move TMEM -> registers; CUDA cores add bias, apply activation (softmax accel for attention), quantize back to NVFP4.",
+      "focus": ["register-file", "warp-scheduler"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. Results go back to HBM4 via TMA; with tensor parallelism, NVLink 6 (3.6 TB/s, through the I/O die) all-reduces with other GPUs in the NVL72/NVL144 rack.",
+      "focus": ["nvlink-die0"],
+      "dot": "nvlink-die0",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "336 billion (announced; package: 2 compute + 2 I/O dies)",
+      "number": 336,
+      "role": "compute-die",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "dies",
+      "value": "2 compute dies + 2 I/O dies (announced)",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "die_area",
+      "value": "~858 mm² per compute die (reticle limit; estimate, not published)",
+      "number": 858,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~1,716 mm² (2 compute dies; estimate)",
+      "number": 1716,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC N3 family (3nm; exact node unconfirmed)",
+      "estimate": true
+    },
+    {
+      "key": "tdp",
+      "value": "~1,800 W per Rubin GPU (NVIDIA datasheet power assumption for Vera Rubin NVL4)",
+      "number": 1800,
+      "source": "https://dam-cdn.nvd.orangelogic.com/AssetLink/56p68o47y6f1yucpubl0ump1c0aif422.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "224 SMs (both compute dies)",
+      "number": 224,
+      "role": "sm-array",
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "enhanced 5th-gen (NVIDIA); reported as 6th-gen elsewhere (unsettled)",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "NVFP4",
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "35 PFLOPS dense NVFP4, training-grade (announced)",
+      "number": 35,
+      "role": "tensor-core",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "17.5 PFLOPS dense FP8/FP6 (training spec), per Rubin GPU",
+      "number": 17.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "4,000 TFLOPS dense FP16/BF16 (4 PFLOPS), per Rubin GPU",
+      "number": 4000,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "2,000 TFLOPS dense TF32 (2 PFLOPS), per Rubin GPU",
+      "number": 2000,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "up to 288 GB HBM4 (announced)",
+      "number": 288,
+      "role": "hbm-stack",
+      "source": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "19.2 TB/s per Rubin GPU (Vera Rubin NVL72 spec; launch blog said 'up to 22 TB/s')",
+      "number": 19.2,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "3,000 GB/s per GPU (NVLink 6; current datasheet, launch blog said 3.6 TB/s)",
+      "number": 3000,
+      "role": "nvlink",
+      "source": "https://dam-cdn.nvd.orangelogic.com/AssetLink/56p68o47y6f1yucpubl0ump1c0aif422.pdf"
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "1,800 GB/s bidirectional NVLink-C2C to Vera CPU",
+      "number": 1800,
+      "source": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS-L, ~4x reticle size (announced)",
+      "role": "interposer",
+      "source": "https://newsletter.semianalysis.com/p/nvidia-gtc-2025-built-for-reasoning-vera-rubin-kyber-cpo-dynamo-inference-jensen-math-feynman"
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Compute die ~= 26 x 33 mm (reticle limit, estimate); I/O die and HBM4 stack footprints estimated",
+    "estimate": true
+  }
+}

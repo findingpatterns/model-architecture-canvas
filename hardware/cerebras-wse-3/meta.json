@@ -1,0 +1,8 @@
+{
+  "name": "Cerebras WSE-3",
+  "description": "Wafer-Scale Engine 3: one whole 300 mm wafer as the chip, 900K cores on a 2D mesh with 5-port routers, 44 GB on-chip SRAM — no HBM, no off-chip memory round trip.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["cerebras", "wafer-scale", "cs-3"],
+  "source": "https://cerebras.ai/product-chip/"
+}

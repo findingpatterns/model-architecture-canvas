@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA V100",
+  "description": "Volta GV100: the first GPU with Tensor Cores — 1st-gen 4×4×4 FP16 MMA, 80 of 84 SMs, 900 GB/s HBM2, NVLink 2 at 300 GB/s.",
+  "kind": "hardware",
+  "tags": ["nvidia", "volta", "gpu"],
+  "source": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

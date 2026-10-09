@@ -1,0 +1,8 @@
+{
+  "name": "Google TPU v7 (Ironwood)",
+  "description": "Inference-focused 7th-gen TPU: 2 TensorCores + 4 SparseCores per chip, 192 GB HBM3e, 256×256 weight-stationary systolic-array MXUs, 1.2 TB/s ICI torus.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["google", "tpu", "ironwood", "tpu-v7"],
+  "source": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/ironwood-tpu-age-of-inference/"
+}

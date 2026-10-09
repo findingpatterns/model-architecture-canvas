@@ -1,0 +1,8 @@
+{
+  "name": "AWS Trainium2",
+  "description": "Dual 5 nm compute dies (8× NeuronCore-v3) joined by an ABF substrate link, 4 HBM3e stacks, NeuronLink-v3 chip-to-chip interconnect.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["aws", "trainium2", "neuroncore-v3", "accelerator"],
+  "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+}

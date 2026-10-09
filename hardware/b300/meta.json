@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA B300 (Blackwell Ultra)",
+  "description": "Blackwell Ultra: same two dies as B200, 12-Hi HBM3e stacks (288 GB), 15 PFLOPS NVFP4 dense, 2x SFU attention-layer acceleration.",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "blackwell-ultra", "gpu"],
+  "source": "https://developer.nvidia.com/blog/inside-nvidia-blackwell-ultra-the-chip-powering-the-ai-factory-era"
+}

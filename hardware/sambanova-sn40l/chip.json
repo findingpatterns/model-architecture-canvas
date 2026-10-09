@@ -1,0 +1,1071 @@
+{
+  "schemaVersion": 1,
+  "id": "sambanova-sn40l",
+  "name": "SambaNova SN40L RDU",
+  "vendor": "SambaNova Systems",
+  "arch": "Cerulean Reconfigurable Dataflow Unit (RDU)",
+  "disclaimer": "Package, die and HBM footprints drawn to a common scale (1 unit = 4 mm). Die size (~600 mm²) is a secondary-source estimate — SambaNova has not published exact die dimensions or the full PCU/PMU tile-grid dimensions, so the checkerboard, switch mesh and AGCU counts/positions here are symbolic, not an exact floorplan.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          20,
+          0.6,
+          14
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "Organic package substrate carrying the CoWoS interposer. Breaks out power and host/P2P I/O (PCIe to an x86 host, plus peer-to-peer links to other SN40L sockets).",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "CoWoS silicon interposer",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": {
+        "type": "box",
+        "size": [
+          16,
+          0.3,
+          11
+        ],
+        "pos": [
+          0,
+          0.45,
+          0
+        ]
+      },
+      "explode": 1,
+      "desc": "TSMC 2.5D Chip-on-Wafer-on-Substrate (CoWoS) interposer. Carries the two Reconfigurable Dataflow Dies (RDDs) and the co-packaged HBM3 stacks on one piece of silicon, with direct die-to-die wiring between the two RDDs.",
+      "specs": [
+        {
+          "label": "Packaging",
+          "value": "2.5D Chip-on-Wafer-on-Substrate (CoWoS), 2 dies + co-packaged HBM",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die-0",
+      "parent": "interposer",
+      "name": "RDD 0 (Reconfigurable Dataflow Die)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          6,
+          0.4,
+          6.5
+        ],
+        "pos": [
+          -3.5,
+          0.8,
+          0
+        ]
+      },
+      "explode": 2.2,
+      "desc": "One of two identical Reconfigurable Dataflow Dies. Each die holds half of the chip's 1,040 Pattern Compute Units (PCUs) and Pattern Memory Units (PMUs), arranged in a checkerboard with a mesh of non-blocking switches, plus the AGCUs that bridge the tile fabric to HBM, DDR and the host.",
+      "specs": [
+        {
+          "label": "Transistors (both dies)",
+          "value": "102 billion",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 5 nm",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        },
+        {
+          "label": "Die size (per die)",
+          "value": "~600 mm², sub-reticle (exact figure not officially published)",
+          "estimate": true
+        },
+        {
+          "label": "PCUs + PMUs (both dies)",
+          "value": "1,040 PCUs and 1,040 PMUs total (\"1,040 RDU cores\"), ~520 PCU/PMU pairs per die",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        },
+        {
+          "label": "Peak compute",
+          "value": "638 TFLOPS BF16 per socket",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die-1",
+      "parent": "interposer",
+      "name": "RDD 1 (Reconfigurable Dataflow Die)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          6,
+          0.4,
+          6.5
+        ],
+        "pos": [
+          3.5,
+          0.8,
+          0
+        ]
+      },
+      "explode": 2.2,
+      "desc": "Second RDD, identical to RDD 0. Its tile fabric is not redrawn tile-by-tile here for clarity — see RDD 0's checkerboard for the shared design.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "tile-array-die1",
+      "parent": "die-1",
+      "name": "PCU/PMU checkerboard (mirror)",
+      "group": "compute",
+      "color": "#5c86dd",
+      "geom": {
+        "type": "box",
+        "size": [
+          4.2,
+          0.1,
+          4.6
+        ],
+        "pos": [
+          3.5,
+          1,
+          0
+        ]
+      },
+      "explode": 2.3,
+      "desc": "Symbolic stand-in for RDD 1's ~520 PCU/PMU tile pairs and switch mesh, identical in design to RDD 0's checkerboard.",
+      "role": "pattern-compute-unit"
+    },
+    {
+      "id": "die-to-die-link",
+      "parent": "interposer",
+      "name": "Die-to-die RDN link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.4,
+          0.35,
+          6
+        ],
+        "pos": [
+          0,
+          0.8,
+          0
+        ]
+      },
+      "explode": 2.2,
+      "desc": "SN40L tile components can stream data between the two RDDs directly over the Reconfigurable Dataflow Network (RDN) switch mesh, without round-tripping through off-chip HBM or DDR.",
+      "specs": [
+        {
+          "label": "Function",
+          "value": "Direct inter-die streaming for RDN vector/scalar/control traffic, no off-chip round trip",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "pmu-grid",
+      "parent": "die-0",
+      "name": "PMU grid (Pattern Memory Units)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.9,
+          0.3,
+          0.9
+        ],
+        "pos": [
+          -5.3,
+          1,
+          -2
+        ]
+      },
+      "repeat": {
+        "count": [
+          3,
+          1,
+          3
+        ],
+        "step": [
+          1.3,
+          0,
+          1.3
+        ]
+      },
+      "explode": 2.3,
+      "drill": "pmu-detail",
+      "desc": "Pattern Memory Units: programmer-managed scratchpad SRAM organized as banked arrays, each with its own fragmentable address-generation ALU pipeline. Paired one-to-one with a neighboring PCU to form a tile. Click **Open** to see one PMU's internals.",
+      "specs": [
+        {
+          "label": "On-chip SRAM (both dies)",
+          "value": "520 MB total, distributed across all PMU scratchpads",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        },
+        {
+          "label": "Aggregate on-chip bandwidth",
+          "value": "\"Hundreds of TBps\" of on-chip PMU SRAM bandwidth",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        }
+      ],
+      "role": "pattern-memory-unit"
+    },
+    {
+      "id": "pcu-grid",
+      "parent": "die-0",
+      "name": "PCU grid (Pattern Compute Units)",
+      "group": "compute",
+      "color": "#5c86dd",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.9,
+          0.3,
+          0.9
+        ],
+        "pos": [
+          -4,
+          1,
+          -2
+        ]
+      },
+      "repeat": {
+        "count": [
+          3,
+          1,
+          3
+        ],
+        "step": [
+          1.3,
+          0,
+          1.3
+        ]
+      },
+      "explode": 2.3,
+      "drill": "pcu-pipeline-detail",
+      "desc": "Pattern Compute Units: the chip's only math datapath. Each PCU is reconfigured per graph either as an output-stationary systolic array or as a pipelined SIMD vector core. Click **Open** to see the header/SIMD/tail pipeline inside one PCU.",
+      "specs": [
+        {
+          "label": "Reconfigurable modes",
+          "value": "Output-stationary systolic array, or pipelined SIMD vector unit with M lanes",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        },
+        {
+          "label": "Data types",
+          "value": "BF16, FP32, INT32, INT8 compute; configurable storage data types",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        }
+      ],
+      "role": "pattern-compute-unit"
+    },
+    {
+      "id": "switch-grid",
+      "parent": "die-0",
+      "name": "RDN mesh switches",
+      "group": "control",
+      "color": "#3fae6a",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.16,
+          0.16,
+          0.16
+        ],
+        "pos": [
+          -5.95,
+          1.05,
+          -2.65
+        ]
+      },
+      "repeat": {
+        "count": [
+          4,
+          1,
+          4
+        ],
+        "step": [
+          1.3,
+          0,
+          1.3
+        ]
+      },
+      "explode": 2.4,
+      "desc": "Mesh of non-blocking switches sitting at every tile junction, carrying the Reconfigurable Dataflow Network's three physical fabrics: **vector** (data, packet-switched), **scalar** (addresses/metadata, packet-switched), and **control** (flow control, synchronization, graph-orchestration tokens). Routing uses hardware 2-D dimension-order routing with a software override.",
+      "specs": [
+        {
+          "label": "Fabrics",
+          "value": "3 physical networks: vector, scalar, control",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        },
+        {
+          "label": "Routing",
+          "value": "Hardware 2-D dimension-order routing (DOR) with software override; point-to-point, multicast, and many-to-one",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        }
+      ],
+      "role": "noc-router"
+    },
+    {
+      "id": "agcu-west",
+      "parent": "die-0",
+      "name": "AGCU column (west)",
+      "group": "control",
+      "color": "#7a4fb0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.4,
+          0.3,
+          0.8
+        ],
+        "pos": [
+          -6.7,
+          1,
+          -1.3
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          3
+        ],
+        "step": [
+          0,
+          0,
+          1.3
+        ]
+      },
+      "explode": 2.5,
+      "desc": "Address Generation and Coalescing Units (AGCUs): the tile fabric's portal to the outside world. Generate memory addresses for HBM/DDR/host accesses, hold a Segment Lookaside Buffer for virtual-to-physical translation, carry peer-to-peer traffic between RDU sockets, and expose a graph-control interface so the RDU can orchestrate a schedule of dataflow graphs without the host CPU in the loop.",
+      "specs": [
+        {
+          "label": "Functions",
+          "value": "Memory address generation (DDR/HBM/host), P2P between RDUs, graph control interface, Segment Lookaside Buffer",
+          "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+        }
+      ],
+      "role": "address-unit"
+    },
+    {
+      "id": "agcu-east",
+      "parent": "die-1",
+      "name": "AGCU column (east)",
+      "group": "control",
+      "color": "#7a4fb0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.4,
+          0.3,
+          0.8
+        ],
+        "pos": [
+          6.7,
+          1,
+          -1.3
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          3
+        ],
+        "step": [
+          0,
+          0,
+          1.3
+        ]
+      },
+      "explode": 2.5,
+      "desc": "Mirror AGCU column serving RDD 1's edge of the tile fabric.",
+      "role": "address-unit"
+    },
+    {
+      "id": "hbm-west",
+      "parent": "interposer",
+      "name": "HBM3 stack (west)",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          1.2,
+          1.6,
+          2.2
+        ],
+        "pos": [
+          -7.4,
+          0.9,
+          -1.5
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          2
+        ],
+        "step": [
+          0,
+          0,
+          3
+        ]
+      },
+      "explode": 2.2,
+      "desc": "Co-packaged HBM3, tier 2 of the 3-tier memory system. Models are streamed from DDR into HBM, which acts as the staging/caching tier close to the tile fabric (not the primary operand storage — that's the on-chip PMU SRAM).",
+      "specs": [
+        {
+          "label": "Capacity (per socket)",
+          "value": "64 GiB co-packaged HBM3",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        },
+        {
+          "label": "Bandwidth (per socket)",
+          "value": "~2 TB/s peak",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        },
+        {
+          "label": "Stack count/capacity split",
+          "value": "4 stacks × 16 GiB (not officially disclosed; a plausible HBM3 configuration for 64 GiB)",
+          "estimate": true
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-east",
+      "parent": "interposer",
+      "name": "HBM3 stack (east)",
+      "group": "memory",
+      "color": "#d9822b",
+      "geom": {
+        "type": "box",
+        "size": [
+          1.2,
+          1.6,
+          2.2
+        ],
+        "pos": [
+          7.4,
+          0.9,
+          -1.5
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          2
+        ],
+        "step": [
+          0,
+          0,
+          3
+        ]
+      },
+      "explode": 2.2,
+      "desc": "Second pair of HBM3 stacks, mirroring the west side.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "ddr-memory",
+      "name": "DDR5 DRAM (off-package)",
+      "group": "memory",
+      "color": "#c98a3a",
+      "geom": {
+        "type": "box",
+        "size": [
+          10,
+          2.2,
+          5
+        ],
+        "pos": [
+          -16,
+          1.4,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "Tier 3 of the 3-tier memory system: up to 1.5 TiB of DDR5 DRAM per socket, reached through the AGCUs over the host/P2P fabric rather than a GPU-style unified memory bus. This is the key differentiator versus HBM-only accelerators — it lets a single socket hold far more model/KV-cache capacity than HBM alone, at the cost of lower bandwidth, with the RDU's compiler orchestrating what gets staged into HBM and SRAM ahead of time.",
+      "specs": [
+        {
+          "label": "Capacity (per socket)",
+          "value": "Up to 1.5 TiB DDR DRAM",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        },
+        {
+          "label": "Bandwidth (per socket)",
+          "value": "Over 200 GB/s peak; DDR→HBM load bandwidth over 1 TB/s",
+          "source": "https://arxiv.org/html/2405.07518v1"
+        }
+      ],
+      "role": "ddr-memory"
+    }
+  ],
+  "scenes": {
+    "tile-mesh-detail": {
+      "anchor": "pcu-grid",
+      "offset": [
+        0,
+        5,
+        2
+      ],
+      "components": [
+        {
+          "id": "mesh-pmu",
+          "name": "PMU",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.8,
+              0.25,
+              0.8
+            ],
+            "pos": [
+              -2.2,
+              0,
+              -2.2
+            ]
+          },
+          "repeat": {
+            "count": [
+              3,
+              1,
+              3
+            ],
+            "step": [
+              2,
+              0,
+              2
+            ]
+          },
+          "desc": "Zoomed checkerboard: each tile pairs one PMU (memory) with one PCU (compute), bordered on two sides by mesh switches — the layout repeats uniformly across the whole die.",
+          "role": "pattern-memory-unit"
+        },
+        {
+          "id": "mesh-pcu",
+          "name": "PCU",
+          "group": "compute",
+          "color": "#5c86dd",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.8,
+              0.25,
+              0.8
+            ],
+            "pos": [
+              -1.1,
+              0,
+              -2.2
+            ]
+          },
+          "repeat": {
+            "count": [
+              3,
+              1,
+              3
+            ],
+            "step": [
+              2,
+              0,
+              2
+            ]
+          },
+          "desc": "PCU of the pair, directly adjacent to its PMU so operand reads/writes never leave the tile boundary.",
+          "role": "pattern-compute-unit"
+        },
+        {
+          "id": "mesh-switch",
+          "name": "Switch (S)",
+          "group": "control",
+          "color": "#3fae6a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.22,
+              0.3,
+              0.22
+            ],
+            "pos": [
+              -2.9,
+              0.1,
+              -2.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              4,
+              1,
+              4
+            ],
+            "step": [
+              2,
+              0,
+              2
+            ]
+          },
+          "desc": "Non-blocking switch at each tile corner. Every tile's vector/scalar/control traffic hops through its local switch toward a neighboring tile or out to an AGCU — this mesh is what lets a whole fused pipeline be spatially mapped across many tiles.",
+          "role": "noc-router"
+        }
+      ]
+    },
+    "pcu-pipeline-detail": {
+      "anchor": "pcu-grid",
+      "offset": [
+        3,
+        8,
+        0
+      ],
+      "components": [
+        {
+          "id": "pcu-header",
+          "name": "Header",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.5,
+              0.4,
+              1.2
+            ],
+            "pos": [
+              -2.4,
+              0,
+              0
+            ]
+          },
+          "desc": "Decodes the configured instruction for this PCU and feeds the SIMD/systolic body from the Vector-In/Scalar-In FIFOs and counters.",
+          "role": "address-unit"
+        },
+        {
+          "id": "pcu-simd-stage",
+          "name": "SIMD/systolic stage",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.5,
+              0.4,
+              1.2
+            ],
+            "pos": [
+              -1.2,
+              0,
+              0
+            ]
+          },
+          "repeat": {
+            "count": [
+              3,
+              1,
+              1
+            ],
+            "step": [
+              0.9,
+              0,
+              0
+            ]
+          },
+          "desc": "The PCU body: multiple pipelined SIMD/systolic compute stages, each followed by a register stage. Configured per-graph as either an **output-stationary systolic array** (weights held in place, activations stream through) or a **pipelined SIMD vector core** with M lanes doing arithmetic, logical and bitwise ops. A cross-lane reduction tree taps across the stages for reductions (e.g. softmax sum).",
+          "specs": [
+            {
+              "label": "Stages",
+              "value": "Multiple pipelined SIMD/systolic compute stages + register stages, plus a cross-lane reduction tree",
+              "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "pcu-tail",
+          "name": "Tail",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.5,
+              0.4,
+              1.2
+            ],
+            "pos": [
+              1.8,
+              0,
+              0
+            ]
+          },
+          "desc": "Transcendental functions (exp, etc.), casting, and stochastic rounding, then drives the Vector-Out/Scalar-Out FIFOs toward the switch mesh.",
+          "role": "address-unit"
+        }
+      ]
+    },
+    "pmu-detail": {
+      "anchor": "pmu-grid",
+      "offset": [
+        -3,
+        8,
+        0
+      ],
+      "components": [
+        {
+          "id": "pmu-addr-pipeline",
+          "name": "Fragmentable scalar ALU / address-gen pipeline",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.4,
+              0.8
+            ],
+            "pos": [
+              -1.6,
+              0,
+              0
+            ]
+          },
+          "desc": "Several stages of integer ALUs with complex addressing instructions (bitfield extraction, shift-and-set). Produces up to 4 addresses per cycle for the scratchpad banks, with address-predication support so multiple PMUs can jointly store one large tensor.",
+          "specs": [
+            {
+              "label": "Throughput",
+              "value": "Up to 4 addresses generated per cycle",
+              "source": "https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf"
+            }
+          ],
+          "role": "address-unit"
+        },
+        {
+          "id": "pmu-sram-bank",
+          "name": "Scratchpad SRAM bank",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.5,
+              0.4,
+              0.5
+            ],
+            "pos": [
+              0.6,
+              0,
+              -0.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              3,
+              1,
+              2
+            ],
+            "step": [
+              0.65,
+              0,
+              1.2
+            ]
+          },
+          "desc": "Programmer-managed scratchpad SRAM, organized as an array of banked SRAM instances supporting concurrent reads and writes. Data-alignment crossbars on the read/write paths enable high-throughput tensor transforms (transpose, dilation, downcast) in flight.",
+          "role": "on-chip-sram"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "ddr-to-hbm",
+      "from": "ddr-memory",
+      "to": "hbm-west",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-pmu",
+      "from": "hbm-west",
+      "to": "pmu-grid",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "agcu-to-hbm",
+      "from": "agcu-west",
+      "to": "hbm-west",
+      "group": "control",
+      "particles": 1
+    },
+    {
+      "id": "pmu-to-pcu",
+      "from": "pmu-grid",
+      "to": "pcu-grid",
+      "group": "compute",
+      "particles": 3
+    },
+    {
+      "id": "pcu-to-pmu",
+      "from": "pcu-grid",
+      "to": "pmu-grid",
+      "group": "compute",
+      "particles": 2
+    },
+    {
+      "id": "die0-to-link",
+      "from": "die-0",
+      "to": "die-to-die-link",
+      "group": "io",
+      "particles": 2
+    },
+    {
+      "id": "link-to-die1",
+      "from": "die-to-die-link",
+      "to": "die-1",
+      "group": "io",
+      "particles": 2
+    },
+    {
+      "id": "pmu-to-hbm-east",
+      "from": "pmu-grid",
+      "to": "hbm-east",
+      "group": "memory",
+      "particles": 1
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. The SN40L socket is 2 identical Reconfigurable Dataflow Dies (RDDs) on one CoWoS interposer — 102B transistors total, TSMC 5nm — plus co-packaged HBM3. Unlike a GPU, there's no SM/kernel split: every tile does the same job, compute or memory, as the compiler assigns it.",
+      "focus": [
+        "die-0",
+        "die-1",
+        "interposer"
+      ],
+      "dot": "die-0",
+      "explode": 0.3,
+      "stage": "package-overview"
+    },
+    {
+      "text": "2. Tier 3, the capacity tier: up to 1.5 TiB of DDR5 per socket sits off-package, reached through the AGCUs. This is the key differentiator vs. HBM-only accelerators — a trillion-parameter model's weights can live here without ever fitting in HBM at once.",
+      "focus": [
+        "ddr-memory"
+      ],
+      "dot": "ddr-memory",
+      "drill": null,
+      "stage": "ddr-capacity-tier"
+    },
+    {
+      "text": "3. Tier 2: the compiler streams the next layer's weights from DDR into the 64 GiB of co-packaged HBM3 at over 1 TB/s — HBM acts as a staging buffer, not the primary operand store.",
+      "focus": [
+        "hbm-west",
+        "hbm-east"
+      ],
+      "dot": "hbm-west",
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "4. AGCUs are the tile fabric's only portal to the outside world: they generate addresses into DDR/HBM/host memory, translate them via a Segment Lookaside Buffer, and can orchestrate a whole schedule of dataflow graphs without the host CPU in the loop.",
+      "focus": [
+        "agcu-west",
+        "agcu-east"
+      ],
+      "dot": "agcu-west",
+      "drill": null,
+      "stage": "address-gen"
+    },
+    {
+      "text": "5. Opening one die: 520 PCU/PMU tile pairs form a checkerboard, bordered by a mesh of non-blocking switches carrying 3 physical fabrics — vector (data), scalar (addresses), and control (sync/orchestration tokens).",
+      "focus": [
+        "pcu-grid",
+        "pmu-grid",
+        "switch-grid"
+      ],
+      "dot": "pcu-grid",
+      "drill": "tile-mesh-detail",
+      "stage": "tile-mesh"
+    },
+    {
+      "text": "6. Tier 1: weights and activations for the fused operator land directly in a PMU's banked scratchpad SRAM (520 MB total, hundreds of TB/s aggregate) — the operand store the PCU actually reads from, not HBM.",
+      "focus": [
+        "pmu-grid"
+      ],
+      "dot": "pmu-grid",
+      "drill": "pmu-detail",
+      "stage": "pmu-scratchpad"
+    },
+    {
+      "text": "7. The PMU's address-generation ALU pipeline produces up to 4 addresses/cycle into its scratchpad banks, with data-alignment crossbars doing transpose/dilation/downcast in flight as data moves out toward the paired PCU.",
+      "focus": [
+        "pmu-addr-pipeline",
+        "pmu-sram-bank"
+      ],
+      "dot": "pmu-addr-pipeline",
+      "drill": "pmu-detail",
+      "stage": "address-pipeline"
+    },
+    {
+      "text": "8. Data crosses the switch mesh into the paired PCU, which is reconfigured per-graph as an output-stationary systolic array or a pipelined SIMD vector core — this is the same tensor-core-equivalent role a GPU's tensor core plays, but wired directly to its own memory tile.",
+      "focus": [
+        "pcu-grid"
+      ],
+      "dot": "pcu-grid",
+      "drill": "pcu-pipeline-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "9. Inside the PCU: header → several pipelined SIMD/systolic compute stages (with a cross-lane reduction tree) → tail (transcendentals, casting, stochastic rounding). One operator's whole compute pipeline is spatially mapped across these stages, not re-issued cycle by cycle from an instruction queue.",
+      "focus": [
+        "pcu-header",
+        "pcu-simd-stage",
+        "pcu-tail"
+      ],
+      "dot": "pcu-simd-stage",
+      "drill": "pcu-pipeline-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "10. Results flow back across the switch mesh into the next PMU in the fused chain — e.g. softmax's map→reduce→zip stages each land in their own PMU/PCU tile, wired together by the compiler as one dataflow graph instead of 3 separate kernel launches.",
+      "focus": [
+        "pmu-grid",
+        "pcu-grid"
+      ],
+      "dot": "pmu-grid",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "11. For operators that span both dies, the RDN extends straight across the die-to-die link — tiles on RDD 0 and RDD 1 stream to each other without ever leaving the chip to touch HBM or DDR.",
+      "focus": [
+        "die-to-die-link"
+      ],
+      "dot": "die-to-die-link",
+      "drill": null,
+      "stage": "die-to-die"
+    },
+    {
+      "text": "12. Contrast with a GPU: a GPU compiles each op (matmul, softmax, etc.) to a separate kernel, launched onto SMs that re-read operands from HBM/L2 each time. The RDU's compiler instead spatially maps a whole fused operator pipeline once across many PCU/PMU tiles — data flows PMU→PCU→PMU across the switch mesh with no kernel-launch overhead and no repeated HBM round trips mid-pipeline.",
+      "focus": [
+        "pcu-grid",
+        "pmu-grid",
+        "switch-grid"
+      ],
+      "dot": "switch-grid",
+      "drill": null,
+      "stage": "fused-pipeline-vs-kernel-launch"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "102 billion",
+      "number": 102,
+      "role": "compute-die",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "dies",
+      "value": "2 identical Reconfigurable Dataflow Dies (RDDs) on one CoWoS interposer",
+      "number": 2,
+      "role": "compute-die",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "die_area",
+      "value": "~600 mm² per die (sub-reticle; exact figure not officially published)",
+      "number": 600,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~1,200 mm² across both dies",
+      "number": 1200,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC 5 nm",
+      "role": "compute-die",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "compute_units",
+      "value": "1,040 PCUs (Pattern Compute Units) per socket, across 2 dies; plus 1,040 PMUs",
+      "number": 1040,
+      "role": "pattern-compute-unit",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "INT8 supported; native tensor pipeline is BF16 (638 TFLOPS BF16 per socket)",
+      "role": "pattern-compute-unit",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "638 TFLOPS BF16 peak per socket (dense)",
+      "number": 638,
+      "role": "pattern-compute-unit",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "520 MiB SRAM per socket in the PMUs (≈545 MB)",
+      "number": 545,
+      "role": "pattern-memory-unit",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "64 GiB co-packaged HBM3 per socket",
+      "number": 64,
+      "role": "hbm-stack",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "~2 TB/s peak per socket",
+      "number": 2,
+      "role": "hbm-stack",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    },
+    {
+      "key": "packaging",
+      "value": "2.5D CoWoS: 2 RDDs + HBM3 on one silicon interposer; off-package DDR5 as a 3rd memory tier",
+      "role": "interposer",
+      "source": "https://arxiv.org/html/2405.07518v1"
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "1 unit = 4 mm, same basis as other chips in this catalog. Die footprint derived from a ~600 mm² sub-reticle estimate (not an official SambaNova figure); package/interposer/HBM placement is illustrative.",
+    "estimate": true
+  }
+}

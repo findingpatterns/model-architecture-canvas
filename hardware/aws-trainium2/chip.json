@@ -1,0 +1,662 @@
+{
+  "schemaVersion": 1,
+  "id": "aws-trainium2",
+  "name": "AWS Trainium2",
+  "vendor": "AWS Annapurna Labs",
+  "arch": "NeuronCore-v3",
+  "disclaimer": "Die, HBM and engine footprints are illustrative and drawn to a common scale (1 unit = 4 mm; estimates where noted). AWS has not published exact die size, process node or transistor count; proportions follow the publicly confirmed component list (2 compute dies, 4 HBM3e stacks, 8 NeuronCore-v3) but not real silicon dimensions.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.6, 14],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Organic (ABF) substrate carrying two compute dies and four HBM3e stacks, each die packaged with its two adjacent HBM stacks via CoWoS-R.",
+      "role": "substrate"
+    },
+    {
+      "id": "die0",
+      "parent": "package",
+      "name": "Compute die 0",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [5.5, 0.4, 7],
+        "pos": [-3.2, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "One of two 5 nm compute dies (process unconfirmed by AWS). Holds 4 NeuronCore-v3, DMA engines and NeuronLink-v3 I/O. Software sees the whole chip as one accelerator.",
+      "specs": [
+        {
+          "label": "Process (reported, unofficial)",
+          "value": "TSMC 5 nm",
+          "source": "https://iamfabian.substack.com/p/amazon-trainium-the-strategic-silicon",
+          "estimate": true
+        },
+        {
+          "label": "Die size",
+          "value": "not publicly disclosed",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "die1",
+      "parent": "package",
+      "name": "Compute die 1",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [5.5, 0.4, 7],
+        "pos": [3.2, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "Second 5 nm compute die, identical to die 0, serving the other 4 NeuronCore-v3 and 2 HBM3e stacks.",
+      "role": "second-compute-die"
+    },
+    {
+      "id": "die-link",
+      "parent": "package",
+      "name": "Die-to-die substrate link",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.35, 5],
+        "pos": [0, 0.8, 0]
+      },
+      "explode": 2.2,
+      "desc": "The two compute dies interface through the ABF package substrate rather than a single silicon interposer (two separate CoWoS-R assemblies). Carries memory-pooling and coherency traffic between the two halves of the chip.",
+      "specs": [
+        {
+          "label": "Packaging approach",
+          "value": "2× CoWoS-R assemblies + substrate link (not one interposer)",
+          "source": "https://www.vamsitalkstech.com/ai/amazons-trainium-2-a-deep-dive-into-awss-next-generation-ai-chip/",
+          "estimate": true
+        }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "hbm-base-die0",
+      "parent": "package",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.12, 2.6],
+        "pos": [-7.6, 0.66, -1.5]
+      },
+      "repeat": {
+        "count": [1, 1, 2],
+        "step": [0, 0, 3]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM3e stack feeding die 0.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-die0",
+      "parent": "hbm-base-die0",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.1, 2.6],
+        "pos": [-7.6, 0.78, -1.5]
+      },
+      "repeat": {
+        "count": [1, 8, 2],
+        "step": [0, 0.11, 3],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs. 4 HBM3e stacks total (2 per die) give 96 GiB at 2.9 TB/s per chip. Training/inference on Trainium is usually bandwidth-bound, like on GPUs.",
+      "specs": [
+        {
+          "label": "Capacity (per chip)",
+          "value": "96 GiB",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        },
+        {
+          "label": "Bandwidth (per chip)",
+          "value": "2.9 TB/s",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        },
+        {
+          "label": "Stacks",
+          "value": "4 (2 per die)",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-die1",
+      "parent": "package",
+      "name": "HBM3e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.12, 2.6],
+        "pos": [7.6, 0.66, -1.5]
+      },
+      "repeat": {
+        "count": [1, 1, 2],
+        "step": [0, 0, 3]
+      },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM3e stack feeding die 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-die1",
+      "parent": "hbm-base-die1",
+      "name": "HBM3e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [2.6, 0.1, 2.6],
+        "pos": [7.6, 0.78, -1.5]
+      },
+      "repeat": {
+        "count": [1, 8, 2],
+        "step": [0, 0.11, 3],
+        "spread": 0.28
+      },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs, feeding die 1's 4 NeuronCore-v3.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "neuroncore-die0",
+      "parent": "die0",
+      "name": "NeuronCore-v3 (die 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.14, 1.1],
+        "pos": [-4.5, 1.07, -2.6]
+      },
+      "repeat": {
+        "count": [2, 1, 2],
+        "step": [2.6, 0, 3.2]
+      },
+      "explode": 3.2,
+      "drill": "neuroncore-detail",
+      "desc": "4 of the chip's 8 NeuronCore-v3 cores live on die 0. Each has its own Tensor/Vector/Scalar/GpSimd engines, SBUF and PSUM. Click **Open** to look inside.",
+      "specs": [
+        {
+          "label": "NeuronCores on this die",
+          "value": "4",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "neuroncore-die1",
+      "parent": "die1",
+      "name": "NeuronCore-v3 (die 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.14, 1.1],
+        "pos": [1.9, 1.07, -2.6]
+      },
+      "repeat": {
+        "count": [2, 1, 2],
+        "step": [2.6, 0, 3.2]
+      },
+      "explode": 3.2,
+      "drill": "neuroncore-detail",
+      "desc": "The other 4 NeuronCore-v3 cores, on die 1.",
+      "role": "sm-array"
+    },
+    {
+      "id": "dma-engine-die0",
+      "parent": "die0",
+      "name": "DMA engines (die 0)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.08, 6.4],
+        "pos": [-5.5, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "Half of the chip's 128 DMA engines, which move tensors between HBM and SBUF (and across chips) in parallel with compute.",
+      "specs": [
+        {
+          "label": "DMA engines (chip total)",
+          "value": "128",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+        }
+      ],
+      "role": "dma-engine"
+    },
+    {
+      "id": "dma-engine-die1",
+      "parent": "die1",
+      "name": "DMA engines (die 1)",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [0.3, 0.08, 6.4],
+        "pos": [5.5, 1.04, 0]
+      },
+      "explode": 3.2,
+      "desc": "The other half of the chip's 128 DMA engines, serving die 1.",
+      "role": "dma-engine"
+    },
+    {
+      "id": "cc-core",
+      "parent": "package",
+      "name": "CC-Cores (collective communication)",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [3, 0.1, 0.5],
+        "pos": [0, 1.04, 6]
+      },
+      "explode": 2.2,
+      "desc": "16 CC-Cores orchestrate collective communication (all-reduce, all-gather) among Trainium2 chips within and across instances, offloading collectives from the NeuronCores.",
+      "specs": [
+        {
+          "label": "CC-Cores",
+          "value": "16",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        }
+      ],
+      "role": "collective-engine"
+    },
+    {
+      "id": "neuronlink-die0",
+      "parent": "die0",
+      "name": "NeuronLink-v3",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2, 0.08, 0.2],
+        "pos": [-3.2, 1.04, -3.4]
+      },
+      "explode": 3.2,
+      "desc": "Chip-to-chip interconnect. Links Trainium2 chips directly for tensor-parallel collectives and memory pooling across up to 64 chips.",
+      "specs": [
+        {
+          "label": "Bandwidth (per chip)",
+          "value": "1.28 TB/s",
+          "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+        }
+      ],
+      "role": "neuronlink"
+    },
+    {
+      "id": "neuronlink-die1",
+      "parent": "die1",
+      "name": "NeuronLink-v3",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2, 0.08, 0.2],
+        "pos": [3.2, 1.04, 3.4]
+      },
+      "explode": 3.2,
+      "desc": "NeuronLink-v3 ports on die 1.",
+      "role": "neuronlink"
+    }
+  ],
+  "scenes": {
+    "neuroncore-detail": {
+      "anchor": "neuroncore-die0",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "sbuf",
+          "name": "SBUF (on-chip SRAM)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.2, 0.2, 2.2],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Software-managed scratchpad SRAM, 128 partitions × 224 KiB. DMA fills it with A/B tiles from HBM; the Tensor, Vector, Scalar and GpSimd engines all read/write it directly.",
+          "specs": [
+            {
+              "label": "Size (per NeuronCore)",
+              "value": "28 MiB (128 × 224 KiB)",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "dge",
+          "parent": "sbuf",
+          "name": "DMA / Descriptor Generation Engine",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [1.6, 0.15, 0.4],
+            "pos": [-0.9, -0.25, 1.3]
+          },
+          "desc": "Hardware Descriptor Generation Engine (DGE): schedules asynchronous DMA copies of tensor tiles between HBM and SBUF on demand, without pre-built descriptor lists.",
+          "role": "dma-engine"
+        },
+        {
+          "id": "psum",
+          "parent": "sbuf",
+          "name": "PSUM",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": {
+            "type": "box",
+            "size": [1.8, 0.2, 1.3],
+            "pos": [0, 0.35, 0.6]
+          },
+          "desc": "Dedicated accumulator memory for the Tensor Engine, separate from SBUF — the NeuronCore analogue of a Tensor-Core accumulator buffer. Partial sums across the contraction dimension build up here instead of in general-purpose registers.",
+          "specs": [
+            {
+              "label": "Size (per NeuronCore)",
+              "value": "2 MiB",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            }
+          ],
+          "role": "tensor-memory"
+        },
+        {
+          "id": "tensor-engine",
+          "parent": "psum",
+          "name": "Tensor Engine",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [1.5, 0.35, 1.5],
+            "pos": [-0.95, 0.75, -0.6]
+          },
+          "desc": "A 128×128 systolic array of PEs. The stationary operand (e.g. weights) loads into the array; the moving operand (activations) streams through and multiply-accumulates happen every cycle. For FP8, each PE does 2 multiply-adds per cycle, presenting an effective 256×128 array to the programmer.",
+          "specs": [
+            {
+              "label": "Systolic array",
+              "value": "128 rows × 128 columns of PEs",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            },
+            {
+              "label": "Dense TFLOPS (per NeuronCore)",
+              "value": "158 FP8 / 79 BF16-FP16-TF32 / 20 FP32",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            },
+            {
+              "label": "Sparse TFLOPS (per NeuronCore)",
+              "value": "316 FP8/BF16/FP16/TF32",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "vector-engine",
+          "parent": "psum",
+          "name": "Vector Engine",
+          "group": "compute",
+          "color": "#4a8f6b",
+          "geom": {
+            "type": "box",
+            "size": [0.9, 0.2, 0.7],
+            "pos": [0.85, 0.7, -0.6]
+          },
+          "desc": "Executes reductions and elementwise ops across SBUF/PSUM: e.g. layernorm statistics, softmax normalization. 4× faster for select BF16/FP16 ops than NeuronCore-v2.",
+          "specs": [
+            {
+              "label": "Throughput",
+              "value": "1.0 TFLOPS FP32",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            }
+          ],
+          "role": "vector-engine"
+        },
+        {
+          "id": "scalar-engine",
+          "parent": "psum",
+          "name": "Scalar Engine",
+          "group": "compute",
+          "color": "#7aa0e0",
+          "geom": {
+            "type": "box",
+            "size": [0.9, 0.2, 0.7],
+            "pos": [0.85, 0.7, 0.3]
+          },
+          "desc": "Accelerates elementwise and non-linear functions (activations, bias add) and supports bit-accurate tensor copies without intermediate casting — part of the matmul epilogue.",
+          "role": "scalar-engine"
+        },
+        {
+          "id": "gpsimd-engine",
+          "parent": "sbuf",
+          "name": "GpSimd Engine",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.3, 0.15, 0.3],
+            "pos": [-1.5, 0.2, -0.95]
+          },
+          "repeat": {
+            "count": [8, 1, 1],
+            "step": [0.4, 0, 0]
+          },
+          "desc": "8 fully programmable processors running arbitrary C/C++ custom operators that don't map to the Tensor/Vector/Scalar engines, each with its own integrated DMA.",
+          "specs": [
+            {
+              "label": "Integrated DMA bandwidth (total)",
+              "value": "307 GB/s",
+              "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+            }
+          ],
+          "role": "gpsimd-engine"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "hbm-to-die0",
+      "from": "hbm-dram-die0",
+      "to": "die0",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "hbm-to-die1",
+      "from": "hbm-dram-die1",
+      "to": "die1",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-die",
+      "from": "die0",
+      "to": "die1",
+      "group": "io",
+      "particles": 4
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and activations sit across the 4 HBM3e stacks (96 GiB, 2.9 TB/s per chip).",
+      "focus": ["hbm-dram-die0", "hbm-dram-die1", "hbm-base-die0", "hbm-base-die1"],
+      "dot": "hbm-dram-die0",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. A DMA engine on the local die reads the HBM stacks attached to it.",
+      "focus": ["dma-engine-die0"],
+      "dot": "dma-engine-die0",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the needed tile lives in the other die's HBM, it crosses the ABF substrate die-to-die link.",
+      "focus": ["die-link"],
+      "dot": "die-link",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. The Descriptor Generation Engine (DGE) schedules an asynchronous DMA copy of the A/B tiles into SBUF.",
+      "focus": ["dge"],
+      "dot": "dge",
+      "drill": "neuroncore-detail",
+      "stage": "tma"
+    },
+    {
+      "text": "5. Tiles sit in SBUF (28 MiB on-chip SRAM per NeuronCore), ready for the Tensor Engine.",
+      "focus": ["sbuf"],
+      "dot": "sbuf",
+      "drill": "neuroncore-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. The Tensor Engine loads the stationary operand into its 128×128 PE array; the moving operand streams through and multiplies every cycle.",
+      "focus": ["tensor-engine"],
+      "dot": "tensor-engine",
+      "drill": "neuroncore-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. Partial sums accumulate in PSUM (2 MiB), not in general registers. Steps 4–7 repeat along the contraction dimension.",
+      "focus": ["psum"],
+      "dot": "psum",
+      "drill": "neuroncore-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. Epilogue: the Vector and Scalar Engines apply bias, activation and casts; GpSimd handles any custom op the other engines can't.",
+      "focus": ["vector-engine", "scalar-engine", "gpsimd-engine"],
+      "dot": "vector-engine",
+      "drill": "neuroncore-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results DMA back to HBM; with tensor parallelism, NeuronLink-v3 (1.28 TB/s) and the CC-Cores all-reduce across chips.",
+      "focus": ["neuronlink-die0"],
+      "dot": "neuronlink-die0",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "2 compute dies (5 nm, reported), joined by an ABF substrate link",
+      "number": 2,
+      "role": "die-to-die-link",
+      "source": "https://www.vamsitalkstech.com/ai/amazons-trainium-2-a-deep-dive-into-awss-next-generation-ai-chip/",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC 5 nm (reported; not disclosed by AWS)",
+      "source": "https://iamfabian.substack.com/p/amazon-trainium-the-strategic-silicon",
+      "estimate": true
+    },
+    {
+      "key": "compute_units",
+      "value": "8 NeuronCores (NeuronCore-v3)",
+      "number": 8,
+      "role": "sm-array",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8 (double-rate matmul)",
+      "role": "tensor-core",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "1.299 PFLOPS dense FP8, per chip",
+      "number": 1.299,
+      "role": "sm-array",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "2,563 TFLOPS sparse FP8 (8 NeuronCores combined; 1,299 TFLOPS dense)",
+      "number": 2.563,
+      "role": "tensor-core",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "667 TFLOPS dense BF16 / FP16, per chip",
+      "number": 667,
+      "role": "sm-array",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "667 TFLOPS dense TF32, per chip",
+      "number": 667,
+      "role": "sm-array",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "224 MiB (~235 MB) SBUF scratchpad across 8 NeuronCores",
+      "number": 234.9,
+      "role": "sm-array",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "96 GiB per chip",
+      "number": 96,
+      "role": "hbm-stack",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "2.9 TB/s per chip",
+      "number": 2.9,
+      "role": "hbm-stack",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "1,280 GB/s (NeuronLink-v3; 1.28 TB/s per chip)",
+      "number": 1280,
+      "role": "neuronlink",
+      "source": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium2.html"
+    },
+    {
+      "key": "packaging",
+      "value": "2× CoWoS-R assemblies + ABF substrate link (reported)",
+      "role": "substrate",
+      "source": "https://www.vamsitalkstech.com/ai/amazons-trainium-2-a-deep-dive-into-awss-next-generation-ai-chip/",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die size, HBM footprint and engine proportions are not publicly disclosed by AWS; drawn illustratively on the same per-unit scale as other chips in this explorer",
+    "estimate": true
+  }
+}

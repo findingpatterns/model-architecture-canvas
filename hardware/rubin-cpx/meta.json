@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA Rubin CPX",
+  "description": "Rubin's context/prefill-processing variant: one monolithic die, 128 GB GDDR7 instead of HBM, NVFP4 compute, hardware attention acceleration and on-die video encode/decode.",
+  "kind": "hardware",
+  "tags": ["nvidia", "rubin", "gpu", "inference", "prefill", "gddr7"],
+  "source": "https://nvidianews.nvidia.com/news/nvidia-unveils-rubin-cpx-a-new-class-of-gpu-designed-for-massive-context-inference",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

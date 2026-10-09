@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA A100",
+  "description": "Ampere: GA100 die with 3rd-gen Tensor Cores (TF32, BF16, structured 2:4 sparsity), split 40 MB L2, and cp.async copying HBM tiles straight into shared memory.",
+  "kind": "hardware",
+  "tags": ["nvidia", "ampere", "gpu"],
+  "source": "https://www.nvidia.com/en-us/data-center/a100/",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "h200",
-  "name": "NVIDIA H200",
+  "id": "h100",
+  "name": "NVIDIA H100 SXM5",
   "vendor": "NVIDIA",
   "arch": "Hopper",
   "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
@@ -23,7 +23,14 @@
         "pos": [0, 0, 0]
       },
       "explode": 0,
-      "desc": "Multi-layer organic substrate. Routes power and thousands of signals from the chip to the SXM board through solder balls.",
+      "desc": "Multi-layer organic substrate (SXM5 module). Routes power and thousands of signals from the chip to the SXM5 board through solder balls.",
+      "specs": [
+        {
+          "label": "Max thermal design power (TDP)",
+          "value": "700 W (configurable)",
+          "source": "https://www.nvidia.com/en-us/data-center/h100/"
+        }
+      ],
       "role": "substrate"
     },
     {
@@ -59,7 +66,7 @@
         "pos": [0, 0.8, 0]
       },
       "explode": 2.2,
-      "desc": "The same GH100 die as H100 (TSMC 4N). H200 differs from H100 only in memory: HBM3e, larger and faster.",
+      "desc": "GH100 die (TSMC 4N) — the same compute die used in H200. H100 SXM5 differs from H200 only in memory: 5 active HBM3 stacks instead of 6 active HBM3e stacks.",
       "specs": [
         {
           "label": "Transistors",
@@ -67,7 +74,7 @@
           "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
         },
         {
-          "label": "SMs enabled (H100/H200 SXM)",
+          "label": "SMs enabled (SXM5)",
           "value": "132 of 144",
           "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
         },
@@ -82,7 +89,7 @@
     {
       "id": "hbm-base-left",
       "parent": "interposer",
-      "name": "HBM3e base die",
+      "name": "HBM3 base die",
       "group": "memory",
       "color": "#8a5a1c",
       "geom": {
@@ -95,13 +102,13 @@
         "step": [0, 0, 2.95]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack.",
+      "desc": "Logic base die at the bottom of each HBM stack. All 3 sites on this side are active.",
       "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-left",
       "parent": "hbm-base-left",
-      "name": "HBM3e DRAM layers",
+      "name": "HBM3 DRAM layers",
       "group": "memory",
       "color": "#c98a2e",
       "geom": {
@@ -115,17 +122,17 @@
         "spread": 0.28
       },
       "explode": 2.3,
-      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die. H200 upgraded these from HBM3 to HBM3e — same compute as H100, much more memory bandwidth, which is what LLM decoding needs.",
+      "desc": "Stacked DRAM dies joined by TSVs. H100 SXM5 uses HBM3 (not HBM3e): 5 of the 6 physical stack sites around the die are activated, for 80 GB total at 3.35 TB/s.",
       "specs": [
         {
           "label": "Capacity",
-          "value": "141 GB",
-          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+          "value": "80 GB",
+          "source": "https://www.nvidia.com/en-us/data-center/h100/"
         },
         {
           "label": "Bandwidth",
-          "value": "4.8 TB/s",
-          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+          "value": "3.35 TB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/h100/"
         }
       ],
       "role": "hbm-stack"
@@ -133,7 +140,7 @@
     {
       "id": "hbm-base-right",
       "parent": "interposer",
-      "name": "HBM3e base die",
+      "name": "HBM3 base die",
       "group": "memory",
       "color": "#8a5a1c",
       "geom": {
@@ -142,17 +149,17 @@
         "pos": [4.925, 0.66, -2.95]
       },
       "repeat": {
-        "count": [1, 1, 3],
+        "count": [1, 1, 2],
         "step": [0, 0, 2.95]
       },
       "explode": 2,
-      "desc": "Logic base die at the bottom of each HBM stack.",
+      "desc": "Logic base die at the bottom of each HBM stack. Only 2 of the 3 sites on this side are active.",
       "role": "hbm-stack"
     },
     {
       "id": "hbm-dram-right",
       "parent": "hbm-base-right",
-      "name": "HBM3e DRAM layers",
+      "name": "HBM3 DRAM layers",
       "group": "memory",
       "color": "#c98a2e",
       "geom": {
@@ -161,13 +168,34 @@
         "pos": [4.925, 0.78, -2.95]
       },
       "repeat": {
-        "count": [1, 8, 3],
+        "count": [1, 8, 2],
         "step": [0, 0.11, 2.95],
         "spread": 0.28
       },
       "explode": 2.3,
-      "desc": "Stacked DRAM dies joined by TSVs. 6 stack sites around the die.",
+      "desc": "Stacked DRAM dies joined by TSVs, for the 2 active sites on this side.",
       "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-site-empty",
+      "parent": "interposer",
+      "name": "Unpopulated HBM site",
+      "group": "substrate",
+      "color": "#5c5c56",
+      "geom": {
+        "type": "box",
+        "size": [2.75, 0.12, 2.75],
+        "pos": [4.925, 0.66, 2.95]
+      },
+      "explode": 2,
+      "desc": "The 6th HBM stack site on the GH100 package, left unpopulated on H100 SXM5 (5 of 6 sites active, 80 GB). H200 activates this site too, with HBM3e, for 141 GB.",
+      "specs": [
+        {
+          "label": "Active sites (SXM5)",
+          "value": "5 of 6",
+          "source": "https://www.nvidia.com/en-us/data-center/h100/"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -235,7 +263,7 @@
         {
           "label": "NVLink bandwidth",
           "value": "900 GB/s",
-          "source": "https://www.nvidia.com/en-us/data-center/h200/"
+          "source": "https://www.nvidia.com/en-us/data-center/h100/"
         }
       ],
       "role": "nvlink"
@@ -251,7 +279,7 @@
         "pos": [0, 1.04, 3.753]
       },
       "explode": 3.2,
-      "desc": "Distributes thread blocks (CTAs) from launched kernels to idle SMs."
+      "desc": "Distributes thread blocks (CTAs) from launched kernels to idle SMs, and groups cooperating blocks into Thread Block Clusters."
     },
     {
       "id": "sm-a",
@@ -320,6 +348,27 @@
           "role": "shared-memory"
         },
         {
+          "id": "cluster-link",
+          "parent": "smem",
+          "name": "Thread Block Cluster (DSMEM)",
+          "group": "io",
+          "color": "#2f9e6e",
+          "geom": {
+            "type": "box",
+            "size": [1.3, 0.15, 0.55],
+            "pos": [1.15, -0.2, -1.4]
+          },
+          "desc": "Thread Block Clusters co-schedule several blocks across SMs in the same GPC. The SM-to-SM network lets one block load, store, and atomically update another block's shared memory directly — distributed shared memory (DSMEM) — without a trip through L2.",
+          "specs": [
+            {
+              "label": "Max cluster size",
+              "value": "8 blocks portable (up to 16 non-portable)",
+              "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+            }
+          ],
+          "role": "distributed-shared-memory"
+        },
+        {
           "id": "tensor-core",
           "parent": "smem",
           "name": "Tensor Core (4th gen)",
@@ -334,11 +383,11 @@
             "count": [4, 1, 1],
             "step": [0.83, 0, 0]
           },
-          "desc": "Multiplies matrix tiles per warpgroup instruction (wgmma), FP8 via the Transformer Engine. Accumulators live in registers — Hopper has no TMEM.",
+          "desc": "Multiplies matrix tiles per warpgroup instruction (wgmma). The Transformer Engine drives FP8 precision here, recasting and rescaling tensors layer by layer. Accumulators live in registers — Hopper has no TMEM.",
           "specs": [
             {
               "label": "Low-precision format",
-              "value": "FP8 (E4M3, E5M2)",
+              "value": "FP8 (E4M3, E5M2) via Transformer Engine",
               "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
             }
           ],
@@ -396,7 +445,7 @@
             "size": [1.6, 0.15, 0.4],
             "pos": [-0.9, -0.25, 1.4]
           },
-          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads.",
+          "desc": "Copies whole multi-dimensional tensor tiles between L2/HBM and shared memory asynchronously, without spending threads. Can also push a tile straight into another SM's shared memory within a Thread Block Cluster.",
           "role": "tma"
         }
       ]
@@ -420,8 +469,8 @@
   ],
   "steps": [
     {
-      "text": "1. Weights sit in HBM3e (141 GB, 4.8 TB/s).",
-      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "text": "1. Weights sit in HBM3 (80 GB, 5 of 6 stacks active, 3.35 TB/s).",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right", "hbm-site-empty"],
       "dot": "hbm-dram-left",
       "explode": 0.6,
       "drill": null,
@@ -454,28 +503,35 @@
       "stage": "shared-memory"
     },
     {
-      "text": "6. A warpgroup issues wgmma: Tensor Cores multiply the tiles (e.g. in FP8).",
+      "text": "6. A Thread Block Cluster can fetch a tile straight from a neighboring SM's shared memory (DSMEM), skipping L2.",
+      "focus": ["cluster-link"],
+      "dot": "cluster-link",
+      "drill": "sm-detail",
+      "stage": "thread-block-cluster"
+    },
+    {
+      "text": "7. A warpgroup issues wgmma: Tensor Cores multiply the tiles, e.g. in FP8 via the Transformer Engine.",
       "focus": ["tensor-core"],
       "dot": "tensor-core",
       "drill": "sm-detail",
       "stage": "tensor-core"
     },
     {
-      "text": "7. Partial sums accumulate in registers — Hopper has no Tensor Memory.",
+      "text": "8. Partial sums accumulate in registers — Hopper has no Tensor Memory.",
       "focus": ["register-file"],
       "dot": "register-file",
       "drill": "sm-detail",
       "stage": "accumulate"
     },
     {
-      "text": "8. Epilogue: CUDA cores add bias, apply activation, quantize.",
+      "text": "9. Epilogue: CUDA cores add bias, apply activation, quantize.",
       "focus": ["warp-scheduler", "register-file"],
       "dot": "warp-scheduler",
       "drill": "sm-detail",
       "stage": "epilogue"
     },
     {
-      "text": "9. Results go back to HBM; with tensor parallelism, NVLink all-reduces with other GPUs.",
+      "text": "10. Results go back to HBM; with tensor parallelism, NVLink all-reduces with other GPUs.",
       "focus": ["nvlink"],
       "dot": "nvlink",
       "drill": null,
@@ -485,11 +541,10 @@
   "summary": [
     {
       "key": "transistors",
-      "value": "80 billion (GH100 die, same as H100)",
+      "value": "80 billion (GH100)",
       "number": 80,
       "role": "compute-die",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
     },
     {
       "key": "dies",
@@ -514,7 +569,7 @@
     },
     {
       "key": "process",
-      "value": "TSMC 4N (GH100 die, same as H100)",
+      "value": "TSMC 4N",
       "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
       "estimate": true
     },
@@ -522,15 +577,14 @@
       "key": "tdp",
       "value": "Up to 700 W (SXM, configurable)",
       "number": 700,
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "compute_units",
-      "value": "132 SMs (of 144; same GH100 config as H100 SXM5)",
+      "value": "132 SMs (of 144 on full GH100)",
       "number": 132,
       "role": "sm-array",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
     },
     {
       "key": "tensor_core_gen",
@@ -555,39 +609,39 @@
       "value": "1.979 PFLOPS dense (3,958 TFLOPS sparse ÷ 2)",
       "number": 1.979,
       "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "fp8_sparse",
       "value": "3.958 PFLOPS (3,958 TFLOPS)",
       "number": 3.958,
       "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "int8_dense",
       "value": "1,979 TOPS dense (3,958 TOPS sparse ÷ 2)",
       "number": 1979,
       "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "bf16_dense",
       "value": "989 TFLOPS dense BF16/FP16 (1,979 sparse ÷ 2)",
       "number": 989,
       "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "tf32_dense",
       "value": "494.5 TFLOPS dense (989 sparse ÷ 2)",
       "number": 494.5,
       "role": "tensor-core",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "on_chip_sram",
-      "value": "~116 MB derived (same GH100 config as H100): 50 MB L2 + 132 SMs × (256 KB L1/shared + 256 KB register file)",
+      "value": "~116 MB derived: 50 MB L2 + 132 SMs × (256 KB L1/shared + 256 KB register file)",
       "number": 116,
       "role": "l2-cache",
       "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
@@ -595,38 +649,37 @@
     },
     {
       "key": "l2_cache",
-      "value": "50 MB (as stated for H100 SXM5)",
+      "value": "50 MB",
       "number": 50,
       "role": "l2-cache",
-      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
-      "estimate": true
+      "source": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
     },
     {
       "key": "hbm_capacity",
-      "value": "141 GB HBM3e",
-      "number": 141,
+      "value": "80 GB HBM3 (5 of 6 stacks active)",
+      "number": 80,
       "role": "hbm-stack",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "hbm_bandwidth",
-      "value": "4.8 TB/s",
-      "number": 4.8,
+      "value": "3.35 TB/s",
+      "number": 3.35,
       "role": "hbm-stack",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "scale_up_bandwidth",
       "value": "900 GB/s (NVLink 4)",
       "number": 900,
       "role": "nvlink",
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "mig_instances",
-      "value": "Up to 7 MIGs @ 18 GB",
+      "value": "Up to 7 MIGs @ 10 GB",
       "number": 7,
-      "source": "https://www.nvidia.com/en-us/data-center/h200/"
+      "source": "https://www.nvidia.com/en-us/data-center/h100/"
     },
     {
       "key": "packaging",

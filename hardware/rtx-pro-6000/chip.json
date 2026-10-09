@@ -1,0 +1,731 @@
+{
+  "schemaVersion": 1,
+  "id": "rtx-pro-6000",
+  "name": "NVIDIA RTX PRO 6000 Blackwell",
+  "vendor": "NVIDIA",
+  "arch": "Blackwell (RTX Blackwell / GB202)",
+  "disclaimer": "Illustrative geometry at a common scale (1 unit = 4 mm). The GB202 die size (~750 mm²) and GDDR7 chip count/footprint are third-party reported, not officially published by NVIDIA in exact mm² or chip-count form. SM grid, RT core, texture unit, ROP and video-engine block counts are symbolic, not drawn to exact silicon layout. Covers the RTX PRO 6000 Blackwell Workstation/Server/Max-Q Editions, which share the same GB202 ASIC and spec sheet — only cooling and form factor differ.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "media": "#9a4fbf"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [20, 0.6, 15],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "Standard organic flip-chip substrate, like a gaming GPU board. No silicon interposer or CoWoS bridge is needed — GDDR7 chips wire-bond straight to the substrate, unlike HBM-equipped data-center parts (B200, Rubin).",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "GB202 compute die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [6, 0.4, 7.75],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 2.2,
+      "desc": "A single monolithic die — GB202, NVIDIA's flagship RTX Blackwell GPU, also used (cut-down) in the GeForce RTX 5090. The RTX PRO 6000 enables 188 of the full die's 192 SMs. Holds SMs, a unified 128 MB L2, GDDR7 memory controllers, RT Cores, texture units, ROPs and video engines — everything on one piece of silicon, no die-to-die link like B200's two-die MCM.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "92.2 billion",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "Full die config",
+          "value": "12 GPCs, 96 TPCs, 192 SMs, 512-bit memory interface (16 x 32-bit controllers)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "SMs enabled (this card)",
+          "value": "188 of 192 (full GB202 die, 4 disabled for yield)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "Die size",
+          "value": "~750 mm² (third-party reported; NVIDIA has not published an exact mm² figure)",
+          "estimate": true
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4N-class (widely reported as N4P; not officially specified by NVIDIA)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [5.4, 0.08, 0.9],
+        "pos": [0, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "128 MB of unified L2 cache shared by all 188 SMs — one die, one cache, no NV-HBI coherency link to manage like B200's two dies. Buffers KV cache and weight tiles between GDDR7 and the SMs.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "128 MB (131,072 KB)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-left",
+      "parent": "die",
+      "name": "GDDR7 memory controllers (left)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.5, 0.08, 7.6],
+        "pos": [-2.85, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "Half of the 512-bit GDDR7 PHY (16 x 32-bit controllers total). GDDR7 with on-die ECC gives data integrity without the capacity tax of HBM's dedicated ECC bits — fewer, faster pins per byte than HBM, lower cost and package area for a given capacity.",
+      "specs": [
+        {
+          "label": "Memory type",
+          "value": "GDDR7 with ECC (not HBM)",
+          "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+        },
+        {
+          "label": "Interface",
+          "value": "512-bit total (16 x 32-bit controllers)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-right",
+      "parent": "die",
+      "name": "GDDR7 memory controllers (right)",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.5, 0.08, 7.6],
+        "pos": [2.85, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "Other half of the 512-bit GDDR7 PHY.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "rt-core",
+      "parent": "die",
+      "name": "RT Cores (4th gen)",
+      "group": "compute",
+      "color": "#c0463c",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.6],
+        "pos": [2.6, 0.74, 3.2]
+      },
+      "explode": 3.2,
+      "desc": "188 fourth-generation RT Cores (one per SM), new with Mega Geometry (cluster-based BVH for huge scenes), Linear Swept Spheres for curves/hair, an Opacity Micromap engine and a Triangle Cluster Compression engine. Pure graphics/visualization hardware — absent on AI-only parts like B200.",
+      "specs": [
+        {
+          "label": "RT Cores",
+          "value": "188 (4th gen)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "RT TFLOPS",
+          "value": "381.8",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "rt-core"
+    },
+    {
+      "id": "texture-unit",
+      "parent": "die",
+      "name": "Texture units",
+      "group": "compute",
+      "color": "#5a8fd6",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.4],
+        "pos": [2.6, 0.74, 2.4]
+      },
+      "explode": 3.2,
+      "desc": "752 texture units (4 per SM) feed filtered texture data to shaders for rasterized and ray-traced rendering.",
+      "specs": [
+        {
+          "label": "Texture units",
+          "value": "752",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "texture-unit"
+    },
+    {
+      "id": "rop",
+      "parent": "die",
+      "name": "ROPs",
+      "group": "compute",
+      "color": "#7aa6e0",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.4],
+        "pos": [2.6, 0.74, 1.6]
+      },
+      "explode": 3.2,
+      "desc": "192 raster operations units (8 per GPC partition x 2 partitions x 12 GPCs) write finished pixels to the frame buffer — workstation/visualization hardware with no equivalent on compute-only data-center GPUs.",
+      "specs": [
+        {
+          "label": "ROPs",
+          "value": "192",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "Pixel fill-rate",
+          "value": "502.5 Gigapixels/sec",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "rop"
+    },
+    {
+      "id": "video-engine",
+      "parent": "die",
+      "name": "Video encode/decode engines",
+      "group": "media",
+      "geom": {
+        "type": "box",
+        "size": [0.9, 0.08, 0.9],
+        "pos": [-2.6, 0.74, 3.2]
+      },
+      "explode": 3.2,
+      "desc": "4x ninth-generation NVENC encoders + 4x sixth-generation NVDEC decoders — useful for multimodal pre/post-processing pipelines as well as professional video workflows.",
+      "specs": [
+        {
+          "label": "Video engines",
+          "value": "4x NVENC (9th gen) + 4x NVDEC (6th gen)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe 5.0 x16",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.459, 0.08, 0.206],
+        "pos": [0, 0.74, -3.978]
+      },
+      "explode": 3.2,
+      "desc": "Host and (where used) peer-to-peer connectivity is PCIe 5.0 x16 only — this card has no NVLink. That caps multi-GPU bandwidth well below NVLink-equipped data-center parts (e.g. B200's 1.8 TB/s NVLink 5 per GPU) but keeps the board a standard add-in card for workstations and PCIe-based servers.",
+      "specs": [
+        {
+          "label": "Interface",
+          "value": "PCIe Gen 5.0 x16",
+          "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+        },
+        {
+          "label": "NVLink",
+          "value": "None — PCIe only (unlike NVLink-equipped data-center Blackwell GPUs)",
+          "estimate": true
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs (bank A)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-2.196, 0.77, -3.536]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors. Each SM has 128 FP32/INT32 CUDA cores, 4 fifth-generation Tensor Cores, a 256 KB register file and 128 KB unified L1/shared memory. The grid is symbolic — this model does not claim an exact layout. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "symbolic grid; 188 enabled, see die specs",
+          "estimate": true
+        },
+        {
+          "label": "CUDA cores",
+          "value": "24,064 (128 per SM x 188 SMs)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs (bank B)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.457, 0.14, 0.648],
+        "pos": [-2.196, 0.77, 0.884]
+      },
+      "repeat": {
+        "count": [8, 1, 4],
+        "step": [0.58, 0, 0.81]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid), second bank.",
+      "role": "sm-array"
+    },
+    {
+      "id": "gddr-left",
+      "parent": "package",
+      "name": "GDDR7 chips (left bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [-6.3, 0.65, -4.5]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.3, 0, 3]
+      },
+      "explode": 2.3,
+      "desc": "Discrete GDDR7 packages, surface-mounted (clamshell: front + back of the PCB) — no interposer, no TSV stack. 96 GB total with ECC, 3x the RTX 5090's 32GB (same die, but the 5090 has no ECC and a single-sided, non-clamshell layout) and 2x the previous-gen L40S's 48GB GDDR6.",
+      "specs": [
+        {
+          "label": "Capacity (whole GPU)",
+          "value": "96 GB GDDR7 with ECC",
+          "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+        },
+        {
+          "label": "Bandwidth (whole GPU)",
+          "value": "1,792 GB/s (28 Gbps x 512-bit)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+        },
+        {
+          "label": "Chip arrangement",
+          "value": "Drawn as 16 packages per side (left+right); real card uses clamshell mounting (front+back) for 96 GB — exact per-chip density not disclosed",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr-right",
+      "parent": "package",
+      "name": "GDDR7 chips (right bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [6.3, 0.65, -4.5]
+      },
+      "repeat": {
+        "count": [2, 1, 4],
+        "step": [1.3, 0, 3]
+      },
+      "explode": 2.3,
+      "desc": "Second bank of GDDR7 packages, mirroring the left bank.",
+      "role": "gddr-memory"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 Data Cache / Shared Memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "128 KB unified, programmable L1 data cache / shared memory per SM. Operand tiles for the Tensor Core and ray/triangle data for the RT Core both stage here. Unlike data-center Blackwell (B200), RTX Blackwell's SM has no separate Tensor Memory (TMEM) — accumulation happens straight in the register file.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "128 KB",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (5th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.75, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "4 fifth-generation Tensor Cores per SM. New FP4 support doubles throughput over FP8 and halves memory footprint for quantized inference — the same Tensor Core generation as B200, minus the TMEM-based tile sizes B200's datacenter SM supports.",
+          "specs": [
+            {
+              "label": "Lowest precision",
+              "value": "FP4",
+              "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+            },
+            {
+              "label": "FP4 Tensor (per GPU)",
+              "value": "2,015.2 TFLOPS dense / 4,030.4 TFLOPS sparse, FP32 accumulate",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+            },
+            {
+              "label": "FP8 Tensor (per GPU)",
+              "value": "1,007.6 TFLOPS dense / 2,015.2 TFLOPS sparse, FP32 accumulate",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.7, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers, one 64 KB slice (16,384 x 32-bit) per SM sub-partition, 256 KB total per SM. With no TMEM, Tensor Core accumulators land here directly.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 x 64 KB, 16,384 x 32-bit per partition)",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each of the SM's 4 partitions has its own L0 instruction cache, warp scheduler and dispatch unit issuing 32 threads/clk. Scalar FP32/INT32 CUDA cores run the epilogue: bias, activation, requantize.",
+          "specs": [
+            {
+              "label": "Partitions per SM",
+              "value": "4, each with its own warp scheduler",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+            }
+          ],
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-left-to-die",
+      "from": "gddr-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr-right-to-die",
+      "from": "gddr-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-pcie",
+      "from": "die",
+      "to": "pcie",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and KV cache sit in 96 GB of GDDR7 ECC memory across a 512-bit bus — 3x the RTX 5090's 32GB (same die, no ECC) and 2x the previous-gen L40S's 48GB GDDR6.",
+      "focus": ["gddr-left", "gddr-right"],
+      "dot": "gddr-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "gddr"
+    },
+    {
+      "text": "2. One of the 512-bit GDDR7 memory controllers reads the request, reaching up to 1,792 GB/s aggregate across the whole GPU.",
+      "focus": ["mc-left"],
+      "dot": "mc-left",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the single 128 MB L2 cache shared by every SM on this monolithic die — no die-to-die coherency link needed, unlike B200's two-die MCM.",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. The request reaches one of 188 enabled SMs (4 disabled from the full 192-SM GB202 die for yield).",
+      "focus": ["sm-a"],
+      "dot": "sm-a",
+      "drill": "sm-detail",
+      "stage": "sm"
+    },
+    {
+      "text": "5. Operand tiles stage in the 128 KB unified L1 Data Cache / Shared Memory — RTX Blackwell has no separate Tensor Memory (TMEM); that's a data-center Blackwell (B200) feature only.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. The 5th-generation Tensor Core multiplies the tiles. New FP4 support doubles throughput over FP8 and halves the memory footprint for quantized inference.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. Partial sums accumulate directly in the register file (FP32 accumulate) — no dedicated accumulator memory like B200's TMEM.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "8. Epilogue: the warp scheduler issues CUDA cores to apply bias, activation and requantize back to FP4/FP8.",
+      "focus": ["warp-scheduler"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results write back through L2 to GDDR7. With no NVLink on this card, multi-GPU scaling goes over PCIe 5.0 x16 only — well below B200's 1.8 TB/s NVLink 5 per GPU.",
+      "focus": ["pcie"],
+      "dot": "pcie",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "10. For visualization workloads, the 4th-gen RT Core traces rays with Mega Geometry support for massive scenes — fixed-function hardware absent on AI-only parts like B200.",
+      "focus": ["rt-core"],
+      "dot": "rt-core",
+      "drill": null,
+      "stage": "rt-core"
+    },
+    {
+      "text": "11. ROPs and texture units finish the rasterized frame — professional visualization stays a first-class workload on this card, unlike data-center-only GPUs.",
+      "focus": ["rop", "texture-unit"],
+      "dot": "rop",
+      "drill": null,
+      "stage": "rop"
+    },
+    {
+      "text": "12. Multi-Instance GPU (MIG) can split the card into up to 4 isolated instances (e.g. 4 x 24 GB) for secure multi-tenant inference serving.",
+      "focus": ["die"],
+      "dot": "die",
+      "drill": null,
+      "stage": "mig"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "92.2 billion",
+      "number": 92.2,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "dies",
+      "value": "1 (monolithic, vs B200's 2 dies)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "die_area",
+      "value": "750 mm²",
+      "number": 750,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "750 mm² (1 die)",
+      "number": 750,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4nm 4N (NVIDIA custom process)",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "600 W TGP (Workstation Edition; Max-Q Edition is 300 W)",
+      "number": 600,
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "188 SMs enabled (of 192 on the full GB202 die)",
+      "number": 188,
+      "role": "sm-array",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "5th generation (new FP4 support)",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP4",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "2.015 PFLOPS dense, FP32 accumulate (4.03 with sparsity; Workstation Edition)",
+      "number": 2.0152,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "1.0076 PFLOPS dense, FP32 accumulate (2.015 with sparsity; Workstation Edition)",
+      "number": 1.0076,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "2.015 PFLOPS with sparsity, FP32 accumulate (1.008 dense; Workstation Edition)",
+      "number": 2.0152,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "int8_dense",
+      "value": "1,007.6 TOPS dense (2,015.2 with sparsity; Workstation Edition)",
+      "number": 1007.6,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "503.8 TFLOPS dense BF16, FP32 accumulate (Workstation Edition)",
+      "number": 503.8,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "251.9 TFLOPS dense (503.8 with sparsity; Workstation Edition)",
+      "number": 251.9,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "rt_cores",
+      "value": "188 (4th gen)",
+      "number": 188,
+      "role": "rt-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "l2_cache",
+      "value": "128 MB (unified, single die)",
+      "number": 128,
+      "role": "l2-cache",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "96 GB GDDR7 (per card)",
+      "number": 96,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "1.792 TB/s (Workstation Edition, 512-bit @ 28 Gbps; Server Edition is lower)",
+      "number": 1.792,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "mig_instances",
+      "value": "4 (MIG: 1x96 GB, 2x48 GB or 4x24 GB)",
+      "number": 4,
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Standard organic flip-chip substrate — no CoWoS/interposer (GDDR7, not HBM)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die drawn at ~24 x 31 mm (~750 mm² reported GB202 die, not an official NVIDIA figure); GDDR7 package footprint is an illustrative estimate, not a real IC's exact pad size",
+    "estimate": true
+  }
+}

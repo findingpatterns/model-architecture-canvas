@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA RTX PRO 6000 Blackwell",
+  "description": "GB202, single monolithic die: 188 enabled SMs, 96 GB GDDR7 ECC at 1,792 GB/s, 5th-gen Tensor Cores with FP4, 4th-gen RT Cores, MIG, PCIe 5.0 only (no NVLink).",
+  "kind": "hardware",
+  "author": { "name": "ModelCanvas", "github": "" },
+  "tags": ["nvidia", "blackwell", "gpu", "workstation", "gddr7"],
+  "source": "https://www.nvidia.com/en-us/data-center/rtx-pro-6000-blackwell-server-edition/"
+}

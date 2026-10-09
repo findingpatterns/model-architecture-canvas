@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA L40S",
+  "description": "Same Ada Lovelace AD102 silicon as L40, re-tuned for AI: ~2x L40's FP8 Tensor throughput (733/1,466 TFLOPS dense/sparse) at 350W, Transformer Engine, display outputs disabled by default.",
+  "kind": "hardware",
+  "tags": ["nvidia", "ada-lovelace", "ad102", "gpu", "gddr6", "ai-inference", "transformer-engine"],
+  "source": "https://www.nvidia.com/en-us/data-center/l40s/",
+  "author": { "name": "ModelCanvas", "github": "" }
+}

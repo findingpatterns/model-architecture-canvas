@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "id": "tenstorrent-grayskull",
+  "name": "Tenstorrent Grayskull (e150)",
+  "vendor": "Tenstorrent",
+  "arch": "Grayskull",
+  "disclaimer": "First-generation Tensix chip (2021), drawn to the same illustrative scale as Wormhole/Blackhole (die size ~620 mm² is a secondary-source figure, not officially published). Tensix grid, NoC torus and PCIe/ARC tile placement are symbolic, not a literal floorplan. Shown as the oldest point in the Grayskull → Wormhole → Blackhole lineage because no later Tenstorrent AI-accelerator chip (e.g. the Quasar chiplet or the Ascalon/\"Grendel\" multi-chiplet platform) has shipped with enough public, sourced detail to model as of 2026-10-03.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          8,
+          0.4,
+          8
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "Organic substrate carrying the single Grayskull die — Tenstorrent's first commercial Tensix chip, launched 2021. One monolithic ASIC, no interposer or chiplets.",
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "Grayskull die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          6.3,
+          0.3,
+          6.3
+        ],
+        "pos": [
+          0,
+          0.35,
+          0
+        ]
+      },
+      "explode": 1.2,
+      "desc": "One monolithic die holding a 10×12 Tensix torus, 8 LPDDR4 memory interfaces, PCIe 4.0 x16, and an ARC HS48 management microcontroller. Unlike Wormhole/Blackhole, Grayskull has **no on-die Ethernet** — chip-to-chip scale-out over Ethernet was introduced with Wormhole.",
+      "specs": [
+        {
+          "label": "Process node",
+          "value": "GlobalFoundries 12nm",
+          "source": "https://www.eejournal.com/article/tenstorrent-takes-ai-by-storm/"
+        },
+        {
+          "label": "Die area",
+          "value": "~620 mm² (secondary-source estimate; not officially published)",
+          "estimate": true
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "noc-fabric",
+      "parent": "die",
+      "name": "2D Network-on-Chip torus (NoC0 / NoC1)",
+      "group": "io",
+      "color": "#1c6b4a",
+      "geom": {
+        "type": "box",
+        "size": [
+          5.4,
+          0.04,
+          5.4
+        ],
+        "pos": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "explode": 1.6,
+      "desc": "Two independent NoC planes (NoC0, NoC1) overlay the 10×12 Tensix grid as a 2D torus — opposite edges wrap around, and row-first (horizontal, then vertical) routing moves tile packets between cores, the LPDDR4 controllers and the host bridge.",
+      "specs": [
+        {
+          "label": "Topology / planes",
+          "value": "2D torus, 2 independent NoC planes (NoC0, NoC1), row-first routing",
+          "source": "https://arxiv.org/pdf/2407.13885"
+        },
+        {
+          "label": "Per-core NoC bandwidth",
+          "value": "192 GB/s",
+          "source": "https://arxiv.org/pdf/2409.18835"
+        }
+      ],
+      "role": "noc-router"
+    },
+    {
+      "id": "tensix-core",
+      "parent": "die",
+      "name": "Tensix core",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.85,
+          0.08,
+          0.6
+        ],
+        "pos": [
+          -5.5,
+          0.54,
+          -3
+        ]
+      },
+      "repeat": {
+        "count": [
+          12,
+          1,
+          10
+        ],
+        "step": [
+          1,
+          0,
+          0.78
+        ]
+      },
+      "explode": 1.8,
+      "drill": "tensix-detail",
+      "desc": "Compute tile: 5 single-issue RISC-V cores + a packet unpacker/packer feeding a matrix engine (FPU) and a vector engine (SFPU), with 1 MB of local L1 SRAM and 2 NoC router ports — the same Tensix pattern that Wormhole and Blackhole later reused and extended. Click **Open** to look inside.",
+      "specs": [
+        {
+          "label": "Tensix cores (e150)",
+          "value": "120, in a 10×12 torus grid",
+          "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+        },
+        {
+          "label": "L1 SRAM per core",
+          "value": "1 MB; 120 MB total on-die (e150)",
+          "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+        }
+      ],
+      "role": "tensix-core"
+    },
+    {
+      "id": "lpddr4",
+      "parent": "die",
+      "name": "LPDDR4 controller + PHY",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [
+          1,
+          0.1,
+          1
+        ],
+        "pos": [
+          -6.3,
+          0.54,
+          -4.2
+        ]
+      },
+      "repeat": {
+        "count": [
+          1,
+          1,
+          8
+        ],
+        "step": [
+          0,
+          0,
+          1.2
+        ]
+      },
+      "explode": 1.8,
+      "desc": "8 LPDDR4 memory interfaces along one die edge, 256-bit combined bus. Grayskull uses standard LPDDR4 — not GDDR6 (Wormhole/Blackhole) and not HBM — the cheapest, lowest-power option of the three generations.",
+      "specs": [
+        {
+          "label": "Capacity (e150)",
+          "value": "8 GB LPDDR4, 256-bit bus",
+          "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+        },
+        {
+          "label": "Bandwidth (e150)",
+          "value": "118 GB/s (3.7 GT/s)",
+          "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe 4.0 x16",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          1.2,
+          0.1,
+          1
+        ],
+        "pos": [
+          -5,
+          0.54,
+          -4.7
+        ]
+      },
+      "explode": 1.8,
+      "desc": "Host interconnect: PCI Express 4.0 x16 — Grayskull's only off-board interface. With no on-die Ethernet, every e75/e150 card is reached solely through the host over PCIe; there is no native chip-to-chip scale-out fabric.",
+      "specs": [
+        {
+          "label": "Interface",
+          "value": "PCIe 4.0 x16",
+          "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "arc",
+      "parent": "die",
+      "name": "ARC HS48 management microcontroller",
+      "group": "control",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.8,
+          0.1,
+          0.8
+        ],
+        "pos": [
+          -3.8,
+          0.54,
+          -4.7
+        ]
+      },
+      "explode": 1.8,
+      "desc": "Synopsys ARC HS48 microcontroller handling boot, power/thermal management and board telemetry — separate from the compute RISC-V cores. The same ARC-based management-controller role continues into Wormhole and Blackhole.",
+      "specs": [
+        {
+          "label": "IP",
+          "value": "Synopsys DesignWare ARC HS48 processor",
+          "source": "https://www.prnewswire.com/news-releases/tenstorrent-achieves-first-pass-silicon-success-for-high-performance-ai-processor-soc-using-synopsys-broad-designware-ip-portfolio-301093923.html"
+        }
+      ],
+      "role": "management-controller"
+    }
+  ],
+  "scenes": {
+    "tensix-detail": {
+      "anchor": "tensix-core",
+      "offset": [
+        1,
+        3,
+        1
+      ],
+      "components": [
+        {
+          "id": "l1-sram",
+          "name": "L1 SRAM (local scratchpad)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              3,
+              0.3,
+              2.2
+            ],
+            "pos": [
+              0,
+              0,
+              0
+            ]
+          },
+          "desc": "1 MB of local SRAM per Tensix core — smaller than Wormhole/Blackhole's 1.5 MB — organized into circular buffers (CBs) holding unpacked input tiles, packed output tiles and kernel binaries/scratch.",
+          "specs": [
+            {
+              "label": "Size",
+              "value": "1 MB",
+              "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "unpacker",
+          "parent": "l1-sram",
+          "name": "Unpacker",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.2,
+              0.8
+            ],
+            "pos": [
+              -1.3,
+              0.3,
+              -0.7
+            ]
+          },
+          "desc": "Reads incoming tile packets from the NoC into the L1 SRAM buffer and unpacks/converts them into the layout the FPU/SFPU expect — first stage of Tensix's unpack→math→pack pipeline, unchanged in spirit through Wormhole and Blackhole.",
+          "role": "unpacker"
+        },
+        {
+          "id": "fpu",
+          "parent": "l1-sram",
+          "name": "FPU (tile matrix engine)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.3,
+              1
+            ],
+            "pos": [
+              0,
+              0.35,
+              -0.7
+            ]
+          },
+          "desc": "Matrix/convolution engine — the main source of matmul FLOPs on Grayskull, analogous to a Tensor Core. e150 peaks at 332 TFLOPS FP8 / 83 TFLOPS FP16 across all 120 cores.",
+          "specs": [
+            {
+              "label": "Chip peak (e150, FP8)",
+              "value": "332 TFLOPS",
+              "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+            },
+            {
+              "label": "Chip peak (e150, FP16 / Block FP8)",
+              "value": "83 TFLOPS",
+              "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "sfpu",
+          "parent": "l1-sram",
+          "name": "SFPU (vector engine)",
+          "group": "compute",
+          "color": "#4a7fd8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.3,
+              1
+            ],
+            "pos": [
+              1.3,
+              0.35,
+              -0.7
+            ]
+          },
+          "explode": 0,
+          "desc": "Wide SIMD vector engine for elementwise/transcendental ops (activations, normalization) on the FPU's output — Grayskull's compute engine handles matrix, convolution and vector/SIMD work side by side.",
+          "role": "vector-engine"
+        },
+        {
+          "id": "packer",
+          "parent": "l1-sram",
+          "name": "Packer",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.2,
+              0.8
+            ],
+            "pos": [
+              1.3,
+              0.3,
+              0.7
+            ]
+          },
+          "desc": "Takes FPU/SFPU results out of L1, repacketizes them into NoC packet format, and hands them to a NoC router toward the next destination core.",
+          "role": "packer"
+        },
+        {
+          "id": "baby-riscv",
+          "parent": "l1-sram",
+          "name": "RISC-V core",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.3,
+              0.15,
+              0.3
+            ],
+            "pos": [
+              -0.7,
+              0.45,
+              0.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              5,
+              1,
+              1
+            ],
+            "step": [
+              0.35,
+              0,
+              0
+            ]
+          },
+          "desc": "5 single-issue RISC-V cores per Tensix, driving compute, data movement (unpack/pack, NoC transfers) and local storage management — the same 5-RISC-V pattern Wormhole and Blackhole kept.",
+          "specs": [
+            {
+              "label": "Count per Tensix",
+              "value": "5",
+              "source": "https://news.ycombinator.com/item?id=39660778"
+            }
+          ],
+          "role": "riscv-core"
+        },
+        {
+          "id": "tensix-router",
+          "parent": "l1-sram",
+          "name": "NoC router",
+          "group": "io",
+          "color": "#1c6b4a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.4,
+              0.15,
+              0.4
+            ],
+            "pos": [
+              -1.3,
+              0.45,
+              -0.9
+            ]
+          },
+          "repeat": {
+            "count": [
+              2,
+              1,
+              1
+            ],
+            "step": [
+              0.5,
+              0,
+              0
+            ]
+          },
+          "desc": "2 router ports per Tensix core, one into each of the two NoC planes (NoC0, NoC1), moving packets to/from neighboring cores across the torus.",
+          "specs": [
+            {
+              "label": "Routers per Tensix",
+              "value": "2",
+              "source": "https://arxiv.org/pdf/2407.13885"
+            }
+          ],
+          "role": "noc-router"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "lpddr4-to-tensix",
+      "from": "lpddr4",
+      "to": "tensix-core",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "tensix-to-noc",
+      "from": "tensix-core",
+      "to": "noc-fabric",
+      "group": "io",
+      "particles": 2
+    },
+    {
+      "id": "tensix-to-pcie",
+      "from": "tensix-core",
+      "to": "pcie",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. A weight/activation tile sits in LPDDR4 (8 GB, 118 GB/s on the e150) — Grayskull's cheapest, lowest-power memory choice of the three generations.",
+      "focus": [
+        "lpddr4"
+      ],
+      "dot": "lpddr4",
+      "explode": 0.4,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. The 2D NoC torus (NoC0/NoC1, row-first routing) routes the tile's packet across the 10×12 Tensix grid toward its target core.",
+      "focus": [
+        "noc-fabric"
+      ],
+      "dot": "noc-fabric",
+      "explode": 0.5,
+      "stage": "noc"
+    },
+    {
+      "text": "3. The packet reaches a Tensix core and is handed to its local 1 MB L1 SRAM.",
+      "focus": [
+        "tensix-core"
+      ],
+      "dot": "tensix-core",
+      "drill": "tensix-detail",
+      "explode": 0.6,
+      "stage": "l1"
+    },
+    {
+      "text": "4. The unpacker reads the packet into L1 and converts it into tile layout.",
+      "focus": [
+        "unpacker"
+      ],
+      "dot": "unpacker",
+      "drill": "tensix-detail",
+      "stage": "unpack"
+    },
+    {
+      "text": "5. The FPU (tile matrix engine) multiplies/convolves tiles — 332 TFLOPS FP8 peak across all 120 cores on the e150.",
+      "focus": [
+        "fpu"
+      ],
+      "dot": "fpu",
+      "drill": "tensix-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. The SFPU vector engine applies elementwise ops — activations, normalization — on the FPU's output.",
+      "focus": [
+        "sfpu"
+      ],
+      "dot": "sfpu",
+      "drill": "tensix-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "7. The packer repackitizes the results from L1 back into NoC packet format.",
+      "focus": [
+        "packer"
+      ],
+      "dot": "packer",
+      "drill": "tensix-detail",
+      "stage": "pack"
+    },
+    {
+      "text": "8. The packet leaves through one of the Tensix's 2 NoC routers toward the next core in the dataflow graph, or back to LPDDR4.",
+      "focus": [
+        "tensix-router"
+      ],
+      "dot": "tensix-router",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "9. Grayskull has no on-die Ethernet, so there is no chip-to-chip scale-out step here — that fabric arrives with Wormhole. Every result that leaves the die goes back out through PCIe.",
+      "focus": [
+        "pcie"
+      ],
+      "dot": "pcie",
+      "stage": "ethernet"
+    },
+    {
+      "text": "10. The host CPU talks to the card over PCIe 4.0 x16 to launch kernels and stream tensors; the ARC HS48 microcontroller manages boot and power.",
+      "focus": [
+        "pcie",
+        "arc"
+      ],
+      "dot": "pcie",
+      "stage": "host"
+    }
+  ],
+  "summary": [
+    {
+      "key": "dies",
+      "value": "1 (monolithic, no chiplets/interposer)",
+      "number": 1,
+      "role": "compute-die",
+      "source": "https://www.eejournal.com/article/tenstorrent-takes-ai-by-storm/"
+    },
+    {
+      "key": "die_area",
+      "value": "~620 mm² (secondary-source estimate; not officially published)",
+      "number": 620,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~620 mm² (single die)",
+      "number": 620,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "GlobalFoundries 12nm",
+      "source": "https://www.eejournal.com/article/tenstorrent-takes-ai-by-storm/"
+    },
+    {
+      "key": "tdp",
+      "value": "200 W TBP (e150 board)",
+      "number": 200,
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "compute_units",
+      "value": "120 Tensix cores (e150)",
+      "number": 120,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8 (332 TFLOPS peak, e150)",
+      "role": "tensor-core",
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "0.332 PFLOPS vendor 'FP8' figure (e150)",
+      "number": 0.332,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "83 TFLOPS FP16 (e150)",
+      "number": 83,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "120 MB SRAM (1 MB L1 per Tensix core, e150)",
+      "number": 120,
+      "role": "tensix-core",
+      "source": "https://docs.tenstorrent.com/aibs/grayskull/specifications.html"
+    },
+    {
+      "key": "packaging",
+      "value": "Monolithic die, flip-chip on organic substrate (no interposer/chiplets)",
+      "role": "compute-die",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die ~620 mm² estimated as a square (~24.9 × 24.9 mm, i.e. ~6.3 units at 4 mm/unit); exact die dimensions not officially disclosed",
+    "estimate": true
+  }
+}

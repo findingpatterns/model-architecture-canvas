@@ -1,0 +1,658 @@
+{
+  "schemaVersion": 1,
+  "id": "cerebras-wse-3",
+  "name": "Cerebras WSE-3",
+  "vendor": "Cerebras Systems",
+  "arch": "Wafer-Scale Engine 3",
+  "disclaimer": "One whole 300 mm wafer is the chip (1 unit = 4 mm, same basis as other chips here, so real-size scale is meaningful). Tile/core/port counts are symbolic grids, not the real ~84 tiles or ~900,000 cores. Geometry is illustrative.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "external": "#8a4fb8"
+  },
+  "components": [
+    {
+      "id": "connector-pcb",
+      "name": "I/O connector PCB",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [
+          60,
+          1,
+          60
+        ],
+        "pos": [
+          0,
+          0,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "The wafer has no conventional package. Spring-pin (pogo) connectors on this PCB deliver power (~23 kW) and I/O straight to the wafer's edge — there is no reticle-sized die to solder down.",
+      "specs": [
+        {
+          "label": "System power",
+          "value": "~23 kW (CS-3 system)",
+          "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "wafer-disc",
+      "parent": "connector-pcb",
+      "name": "300 mm silicon wafer",
+      "group": "substrate",
+      "color": "#55624f",
+      "geom": {
+        "type": "cylinder",
+        "size": [
+          75,
+          0.8,
+          75
+        ],
+        "pos": [
+          0,
+          0.9,
+          0
+        ]
+      },
+      "explode": 0.6,
+      "desc": "The starting point is one uncut, round 300 mm TSMC wafer. The corners outside the inscribed square (below) are unused silicon.",
+      "role": "substrate"
+    },
+    {
+      "id": "wafer",
+      "parent": "wafer-disc",
+      "name": "Active wafer (the chip)",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [
+          53.75,
+          0.6,
+          53.75
+        ],
+        "pos": [
+          0,
+          1.6,
+          0
+        ]
+      },
+      "explode": 1,
+      "desc": "The whole wafer **is** the chip: no die is cut out. A square of active silicon inscribed in the 300 mm wafer, built by stepping the same reticle mask across the wafer and wiring across the scribe lines so every core joins one 2D mesh.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "4 trillion",
+          "source": "https://cerebras.ai/product-chip/"
+        },
+        {
+          "label": "Cores",
+          "value": "900,000 AI-optimized cores",
+          "source": "https://cerebras.ai/product-chip/"
+        },
+        {
+          "label": "Active silicon area",
+          "value": "46,225 mm² (≈ 215 × 215 mm square)",
+          "source": "https://cerebras.ai/product-chip/"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 5 nm",
+          "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+        },
+        {
+          "label": "On-chip SRAM",
+          "value": "44 GB, 21 PB/s aggregate bandwidth",
+          "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+        },
+        {
+          "label": "On-chip fabric bandwidth",
+          "value": "214 Pb/s",
+          "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+        },
+        {
+          "label": "Peak AI compute",
+          "value": "125 PFLOPS FP16 at launch; rated up to 250 PFLOPS on later firmware",
+          "source": "https://cerebras.ai/product-chip/"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "tile",
+      "parent": "wafer",
+      "name": "Reticle tile (stepping)",
+      "group": "compute",
+      "color": "#5c86dd",
+      "geom": {
+        "type": "box",
+        "size": [
+          7.2,
+          0.5,
+          10.5
+        ],
+        "pos": [
+          -20,
+          2.2,
+          -17.25
+        ]
+      },
+      "repeat": {
+        "count": [
+          6,
+          1,
+          4
+        ],
+        "step": [
+          8,
+          0,
+          11.5
+        ]
+      },
+      "explode": 2,
+      "drill": "mesh-detail",
+      "desc": "A lithography scanner can only expose one reticle field (≈26×33 mm) at a time, so the wafer is patterned as a grid of identical tiles (84 on earlier WSE generations: a 12×7 array). This grid is symbolic — only a representative subset is drawn. Click **Open** to see the mesh of cores inside one tile.",
+      "specs": [
+        {
+          "label": "Tiling",
+          "value": "Same reticle mask stepped ~84× across the wafer (12 × 7), estimated for WSE-3's generation",
+          "estimate": true
+        }
+      ],
+      "role": "wafer-tile"
+    },
+    {
+      "id": "scribe-fabric",
+      "parent": "wafer",
+      "name": "Cross-scribe fabric wires",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [
+          0.6,
+          0.3,
+          10.5
+        ],
+        "pos": [
+          -16,
+          2.3,
+          -17.25
+        ]
+      },
+      "repeat": {
+        "count": [
+          5,
+          1,
+          4
+        ],
+        "step": [
+          8,
+          0,
+          11.5
+        ]
+      },
+      "explode": 2.2,
+      "desc": "Extra lithography steps pattern short wires across the scribe lines — the lanes normally sawed through when dicing a wafer into chips. Over a million of these wires stitch the 2D mesh seamlessly across tile boundaries; software never sees a seam.",
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "memoryx",
+      "name": "MemoryX (off-wafer)",
+      "group": "external",
+      "geom": {
+        "type": "box",
+        "size": [
+          10,
+          3,
+          6
+        ],
+        "pos": [
+          -45,
+          1.5,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "A separate rack-scale appliance, connected over the cluster fabric (not on the wafer, not HBM). Streams weights into the wafer layer-by-layer so a model far larger than 44 GB of on-chip SRAM can still run.",
+      "specs": [
+        {
+          "label": "Capacity",
+          "value": "24–36 TB (enterprise), 120 TB–1.2 PB (hyperscale)",
+          "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+        }
+      ]
+    },
+    {
+      "id": "swarmx",
+      "name": "SwarmX (off-wafer)",
+      "group": "external",
+      "geom": {
+        "type": "box",
+        "size": [
+          10,
+          3,
+          6
+        ],
+        "pos": [
+          45,
+          1.5,
+          0
+        ]
+      },
+      "explode": 0,
+      "desc": "A separate off-wafer broadcast/reduce fabric that links up to 2,048 CS-3 systems for data-parallel training — the wafer-scale analogue of NVLink/InfiniBand all-reduce between GPUs.",
+      "specs": [
+        {
+          "label": "Max cluster size",
+          "value": "2,048 CS-3 systems",
+          "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+        }
+      ]
+    }
+  ],
+  "scenes": {
+    "mesh-detail": {
+      "anchor": "tile",
+      "offset": [
+        0,
+        6,
+        0
+      ],
+      "components": [
+        {
+          "id": "core",
+          "name": "Cores (mesh)",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.9,
+              0.3,
+              0.9
+            ],
+            "pos": [
+              -3.85,
+              0,
+              -3.85
+            ]
+          },
+          "repeat": {
+            "count": [
+              8,
+              1,
+              8
+            ],
+            "step": [
+              1.1,
+              0,
+              1.1
+            ]
+          },
+          "explode": 0.3,
+          "drill": "core-detail",
+          "desc": "A 2D mesh of identical cores tiles the reticle (~900,000 across the whole wafer). Each core has its own program counter, 48 KB SRAM and 5-port router — a tiny, fully independent processor. This grid is symbolic. Click **Open** to look inside one core.",
+          "role": "sm-array"
+        },
+        {
+          "id": "mesh-router-grid",
+          "parent": "core",
+          "name": "Router fabric",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.18,
+              0.18,
+              0.18
+            ],
+            "pos": [
+              -3.3,
+              0.2,
+              -3.85
+            ]
+          },
+          "repeat": {
+            "count": [
+              8,
+              1,
+              8
+            ],
+            "step": [
+              1.1,
+              0,
+              1.1
+            ]
+          },
+          "explode": 0.4,
+          "desc": "Every core's 5-port router (north, south, east, west, local) sits at a mesh junction. 32-bit messages called wavelets carry a 5-bit color tag that selects the route and the task triggered on arrival — single-cycle latency, lossless flow control.",
+          "role": "mesh-router"
+        }
+      ]
+    },
+    "core-detail": {
+      "anchor": "tile",
+      "offset": [
+        0,
+        10,
+        0
+      ],
+      "components": [
+        {
+          "id": "fmac",
+          "name": "FMAC datapath",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [
+              1.4,
+              0.5,
+              1
+            ],
+            "pos": [
+              -0.9,
+              0,
+              0
+            ]
+          },
+          "explode": 0.3,
+          "desc": "An 8-wide SIMD fused multiply-accumulate unit operating on FP16 data, reading its operands directly out of this core's local SRAM. This is the only math unit in the core — there is no separate tensor-core/CUDA-core split.",
+          "specs": [
+            {
+              "label": "SIMD width",
+              "value": "8-wide FP16 (4-wide on WSE-1/2)",
+              "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "core-sram",
+          "name": "Local SRAM",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [
+              1,
+              0.4,
+              1.6
+            ],
+            "pos": [
+              0.9,
+              0,
+              0
+            ]
+          },
+          "explode": 0.3,
+          "desc": "48 KB of SRAM holding this core's code **and** data — no separate instruction cache, no L1/L2/DRAM hierarchy to miss into. Weights and activations for this core's slice of the model live here for the whole step.",
+          "specs": [
+            {
+              "label": "Size (per core)",
+              "value": "48 KB",
+              "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+            },
+            {
+              "label": "Core area",
+              "value": "≈38,000 µm² (about half logic, half SRAM)",
+              "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+            }
+          ],
+          "role": "on-chip-sram"
+        },
+        {
+          "id": "router",
+          "name": "5-port router",
+          "group": "io",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.8,
+              0.4,
+              0.8
+            ],
+            "pos": [
+              0,
+              0,
+              -1.6
+            ]
+          },
+          "explode": 0.4,
+          "desc": "Switches 32-bit wavelets between 5 ports — North, South, East, West and Local (to this core's own FMAC/SRAM) — with single-cycle latency and lossless, credit-based flow control.",
+          "specs": [
+            {
+              "label": "Ports",
+              "value": "5 (N, S, E, W, Local)",
+              "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+            }
+          ],
+          "role": "mesh-router"
+        },
+        {
+          "id": "router-port",
+          "parent": "router",
+          "name": "Port",
+          "group": "io",
+          "color": "#1f8f5a",
+          "geom": {
+            "type": "box",
+            "size": [
+              0.15,
+              0.15,
+              0.3
+            ],
+            "pos": [
+              -0.8,
+              0.25,
+              -1.6
+            ]
+          },
+          "repeat": {
+            "count": [
+              5,
+              1,
+              1
+            ],
+            "step": [
+              0.4,
+              0,
+              0
+            ]
+          },
+          "explode": 0.5,
+          "desc": "N, S, E, W, Local — each a 32-bit bidirectional link to a neighboring core's router (or, for Local, down into this core's own FMAC)."
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "weight-stream",
+      "from": "memoryx",
+      "to": "wafer",
+      "group": "memory",
+      "particles": 3
+    },
+    {
+      "id": "gradient-exchange",
+      "from": "wafer",
+      "to": "swarmx",
+      "group": "io",
+      "particles": 2
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights for the current layer sit in MemoryX, a separate off-wafer appliance reached over the cluster fabric (24 TB to 1.2 PB per system) — not HBM, not on the wafer.",
+      "focus": [
+        "memoryx"
+      ],
+      "dot": "memoryx",
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. MemoryX streams that layer's weights onto the wafer, into the specific reticle tile(s) assigned to it — \"weight streaming\" means the whole model never needs to fit on-wafer at once.",
+      "focus": [
+        "wafer",
+        "tile"
+      ],
+      "dot": "tile",
+      "drill": null,
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Opening one tile: a 2D mesh of cores, each with its own 48 KB SRAM, FMAC datapath and 5-port router — the same design repeats across all ~900,000 cores on the wafer.",
+      "focus": [
+        "core"
+      ],
+      "dot": "core",
+      "drill": "mesh-detail",
+      "stage": "mesh"
+    },
+    {
+      "text": "4. Opening one core: its slice of weights and activations lands directly in 48 KB of local SRAM — no cache hierarchy, no DRAM round trip to wait on.",
+      "focus": [
+        "core-sram"
+      ],
+      "dot": "core-sram",
+      "drill": "core-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "5. The 8-wide FP16 FMAC datapath multiplies activation × weight straight out of that local SRAM.",
+      "focus": [
+        "fmac"
+      ],
+      "dot": "fmac",
+      "drill": "core-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. The result becomes a 32-bit wavelet, handed to this core's 5-port router for single-cycle delivery toward a neighboring core.",
+      "focus": [
+        "router",
+        "router-port"
+      ],
+      "dot": "router",
+      "drill": "core-detail",
+      "stage": "mesh-router"
+    },
+    {
+      "text": "7. Back at the mesh view: the wavelet moves core-to-core across the router fabric to feed the next pipeline stage. Activations stream through the wafer — they never leave it to touch DRAM.",
+      "focus": [
+        "core",
+        "mesh-router-grid"
+      ],
+      "dot": "mesh-router-grid",
+      "drill": "mesh-detail",
+      "stage": "activation-stream"
+    },
+    {
+      "text": "8. If a wavelet must cross from one reticle tile to the next, it rides the cross-scribe wires patterned over the normally-sawed scribe lines — invisible to software, the trick that turns ~84 separate dies into one chip.",
+      "focus": [
+        "scribe-fabric"
+      ],
+      "dot": "scribe-fabric",
+      "drill": null,
+      "stage": "die-to-die"
+    },
+    {
+      "text": "9. Net effect: 44 GB of SRAM sits beside the compute at 21 PB/s aggregate bandwidth, instead of a GPU re-reading weights from HBM across the memory bus every token.",
+      "focus": [
+        "wafer"
+      ],
+      "dot": "wafer",
+      "drill": null,
+      "stage": "on-chip-bandwidth"
+    },
+    {
+      "text": "10. At the end of a training step, SwarmX — a separate off-wafer fabric — all-reduces gradients across every CS-3 in the cluster (up to 2,048 systems): the wafer-scale equivalent of NVLink/InfiniBand all-reduce between GPUs.",
+      "focus": [
+        "swarmx"
+      ],
+      "dot": "swarmx",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "4 trillion",
+      "number": 4000,
+      "role": "compute-die",
+      "source": "https://cerebras.ai/product-chip/"
+    },
+    {
+      "key": "dies",
+      "value": "1 (the whole uncut wafer; ~84 reticle tiles fused by cross-scribe wiring, not separate packaged dies)",
+      "number": 1,
+      "role": "wafer-tile",
+      "estimate": true
+    },
+    {
+      "key": "die_area",
+      "value": "46,225 mm² (the entire wafer is the \"die\")",
+      "number": 46225,
+      "role": "compute-die",
+      "source": "https://cerebras.ai/product-chip/"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "46,225 mm² (single wafer, no multi-die package)",
+      "number": 46225,
+      "role": "compute-die",
+      "source": "https://cerebras.ai/product-chip/"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 5 nm",
+      "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+    },
+    {
+      "key": "compute_units",
+      "value": "900,000 AI-optimized cores",
+      "number": 900000,
+      "role": "compute-die",
+      "source": "https://8968533.fs1.hubspotusercontent-na2.net/hubfs/8968533/Datasheets/WSE-3%20Datasheet.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP16 (no native FP8/FP4 datapath)",
+      "role": "tensor-core",
+      "source": "https://www.nextplatform.com/ai/2024/03/14/cerebras-goes-hyperscale-with-third-gen-waferscale-supercomputers/1642584"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "44 GB on-wafer SRAM",
+      "number": 44000,
+      "role": "compute-die",
+      "source": "https://8968533.fs1.hubspotusercontent-na2.net/hubfs/8968533/Datasheets/WSE-3%20Datasheet.pdf"
+    },
+    {
+      "key": "on_chip_sram_bandwidth",
+      "value": "21 PB/s memory bandwidth (= 21,000 TB/s)",
+      "number": 21000,
+      "role": "compute-die",
+      "source": "https://8968533.fs1.hubspotusercontent-na2.net/hubfs/8968533/Datasheets/WSE-3%20Datasheet.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "Unpackaged wafer, pogo-pin connector PCB (no OSAT packaging, no die singulation)",
+      "role": "substrate",
+      "source": "https://wafer.substack.com/p/breaking-down-the-cerebras-wafer"
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Active wafer ≈ 215 × 215 mm square (46,225 mm², Cerebras-confirmed area; square footprint is a derived assumption) inscribed in a 300 mm round wafer — same mm-per-unit as other chips here, so real-size comparison is meaningful.",
+    "estimate": true
+  }
+}

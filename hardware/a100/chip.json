@@ -1,0 +1,556 @@
+{
+  "schemaVersion": 1,
+  "id": "a100",
+  "name": "NVIDIA A100",
+  "vendor": "NVIDIA",
+  "arch": "Ampere",
+  "disclaimer": "Die and HBM footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). Heights, SM grids, DRAM layer counts and the substrate are illustrative.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "Package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [16, 0.6, 13], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "Multi-layer organic substrate (SXM4 module). Routes power and thousands of signals from the chip to the SXM board through solder balls.",
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Interposer (CoWoS)",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [12.5, 0.3, 9.2], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "TSMC CoWoS silicon interposer carrying the wiring between the GA100 die and the HBM2e stacks.",
+      "specs": [
+        { "label": "Packaging", "value": "CoWoS", "estimate": true }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "die",
+      "parent": "interposer",
+      "name": "GA100 die",
+      "group": "compute",
+      "geom": { "type": "box", "size": [7.2, 0.4, 7.2], "pos": [0, 0.8, 0] },
+      "explode": 2.2,
+      "desc": "The full GA100 die has 128 SMs; the A100 product enables 108 of them (binning/yield). 3rd-generation Tensor Cores add TF32, BF16 and structured sparsity to what Volta supported.",
+      "specs": [
+        {
+          "label": "Transistors",
+          "value": "54.2 billion",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        },
+        {
+          "label": "Die size",
+          "value": "826 mm²",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC N7 (7 nm)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        },
+        {
+          "label": "SMs enabled",
+          "value": "108 of 128 (full GA100)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM2e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [-4.6, 0.66, -2.95] },
+      "repeat": { "count": [1, 1, 3], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM2e stack, 3 of the 6 package sites.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM2e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [-4.6, 0.78, -2.95] },
+      "repeat": { "count": [1, 8, 3], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs. The 80 GB SXM4 A100 populates 5 of 6 possible stack sites around the die.",
+      "specs": [
+        {
+          "label": "Capacity (5 active stacks)",
+          "value": "80 GB HBM2e",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf"
+        },
+        {
+          "label": "Bandwidth (aggregate)",
+          "value": "2,039 GB/s (~2 TB/s)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf"
+        }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right-active",
+      "parent": "interposer",
+      "name": "HBM2e base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [4.6, 0.66, -2.95] },
+      "repeat": { "count": [1, 1, 2], "step": [0, 0, 2.95] },
+      "explode": 2,
+      "desc": "Logic base die for 2 more active stacks on this side (5 active total around the die).",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right-active",
+      "parent": "hbm-base-right-active",
+      "name": "HBM2e DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [4.6, 0.78, -2.95] },
+      "repeat": { "count": [1, 8, 2], "step": [0, 0.11, 2.95], "spread": 0.28 },
+      "explode": 2.3,
+      "desc": "Stacked DRAM dies joined by TSVs, feeding the right-side memory controllers.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-site-inactive",
+      "parent": "interposer",
+      "name": "HBM2e site (disabled)",
+      "group": "memory",
+      "color": "#6b6b6b",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [4.6, 0.66, 2.95] },
+      "explode": 2,
+      "desc": "The 6th package site for an HBM2e stack. On the 80 GB SXM4 A100 only 5 of the 6 sites are populated and enabled; this one is left empty.",
+      "specs": [
+        { "label": "Status", "value": "Disabled / unpopulated (binning)", "estimate": true }
+      ]
+    },
+    {
+      "id": "l2-left",
+      "parent": "die",
+      "name": "L2 cache (partition 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [3.3, 0.08, 0.7], "pos": [-1.65, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "A100 splits L2 into two partitions for higher aggregate bandwidth and lower latency than Volta's single L2 — the same split design Hopper later inherited. Each partition serves the SMs in the GPCs wired to it.",
+      "specs": [
+        {
+          "label": "Total L2 size",
+          "value": "40 MB (two 20 MB partitions)",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "l2-right",
+      "parent": "die",
+      "name": "L2 cache (partition 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [3.3, 0.08, 0.7], "pos": [1.65, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Second L2 partition. A crossbar lets any SM reach the far partition, at extra latency.",
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc-left",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.35, 0.08, 7], "pos": [-3.3, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM2e PHY for the stacks on this side.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-right",
+      "parent": "die",
+      "name": "Memory controllers",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.35, 0.08, 7], "pos": [3.3, 1.04, 0] },
+      "explode": 3.2,
+      "desc": "Memory controllers + HBM2e PHY for the stacks on this side.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "nvlink",
+      "parent": "die",
+      "name": "NVLink 3 / PCIe",
+      "group": "io",
+      "geom": { "type": "box", "size": [2.2, 0.08, 0.19], "pos": [0, 1.04, -3.5] },
+      "explode": 3.2,
+      "desc": "NVLink 3 connects GPUs directly or through NVSwitch; PCIe Gen4 connects the host CPU.",
+      "specs": [
+        {
+          "label": "NVLink bandwidth",
+          "value": "600 GB/s",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        }
+      ],
+      "role": "nvlink"
+    },
+    {
+      "id": "gigathread",
+      "parent": "die",
+      "name": "GigaThread engine + MIG partitioning",
+      "group": "control",
+      "geom": { "type": "box", "size": [2.2, 0.08, 0.19], "pos": [0, 1.04, 3.5] },
+      "explode": 3.2,
+      "desc": "Distributes thread blocks (CTAs) from launched kernels to idle SMs. Also where Multi-Instance GPU (MIG) carves the SMs, L2 and memory controllers into isolated instances.",
+      "specs": [
+        {
+          "label": "MIG instances",
+          "value": "Up to 7, each with dedicated SMs, L2 slice and memory",
+          "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+        }
+      ]
+    },
+    {
+      "id": "sm-a",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.14, 0.5], "pos": [-3.1, 1.07, -3.4] },
+      "repeat": { "count": [9, 1, 6], "step": [0.69, 0, 0.6] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors — 54 shown here, 54 more in the mirrored group below, totaling the 108 enabled SMs (grid is symbolic). Click **Open SM** to look inside.",
+      "role": "sm-array"
+    },
+    {
+      "id": "sm-b",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [0.5, 0.14, 0.5], "pos": [-3.1, 1.07, 0.4] },
+      "repeat": { "count": [9, 1, 6], "step": [0.69, 0, 0.6] },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "Streaming Multiprocessors (symbolic grid).",
+      "role": "sm-array"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-a",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 / Shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [3.4, 0.2, 2.4], "pos": [0, 0, 0] },
+          "desc": "Programmable, configurable scratchpad shared by the threads of a block. cp.async writes tiles here directly from L2/HBM; Tensor Cores read operands straight from here.",
+          "specs": [
+            {
+              "label": "L1 + shared (per SM)",
+              "value": "192 KB combined, up to 164 KB configurable as shared memory",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (3rd gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [0.7, 0.35, 0.9], "pos": [-1.25, 0.5, -0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Multiplies matrix tiles per warp instruction (mma.sync). First Tensor Core generation to add TF32 (no code changes needed for FP32 training) and structured fine-grained sparsity.",
+          "specs": [
+            {
+              "label": "Precision formats",
+              "value": "FP64, TF32, BF16, FP16, INT8, INT4",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+            },
+            {
+              "label": "Structured sparsity",
+              "value": "2:4 fine-grained sparsity — up to 2x throughput (e.g. BF16 312 → 624 TFLOPS)",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.7, 0.25, 0.9], "pos": [-1.25, 0.45, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Per-thread registers. Tensor Core accumulators live here (no separate tensor-memory on Ampere).",
+          "specs": [
+            { "label": "Size (per SM)", "value": "256 KB (4 × 64 KB)", "estimate": true }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": { "type": "box", "size": [0.7, 0.15, 0.9], "pos": [-1.25, 0.75, 0.55] },
+          "repeat": { "count": [4, 1, 1], "step": [0.83, 0, 0] },
+          "desc": "Each cycle picks a ready warp (32 threads) to issue. Scalar CUDA cores (FP32/INT32) run the epilogue: bias, activation, quantization.",
+          "role": "warp-scheduler"
+        },
+        {
+          "id": "async-copy",
+          "parent": "smem",
+          "name": "Async copy (cp.async / LDGSTS)",
+          "group": "io",
+          "geom": { "type": "box", "size": [1.6, 0.15, 0.4], "pos": [-0.9, -0.25, 1.4] },
+          "desc": "New in Ampere: the cp.async instruction (LDGSTS) copies data straight from global memory (L2/HBM) into shared memory without passing through registers or the L1 miss path. On Volta, a thread had to load a value into a register before storing it to shared memory, burning registers and round-trip latency for every tile element. Hopper later replaced this with a dedicated TMA hardware unit issued by a single thread for whole tensor tiles.",
+          "specs": [
+            {
+              "label": "vs Volta (V100)",
+              "value": "Removes the register round-trip for global→shared copies; overlaps copy with compute",
+              "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+            }
+          ],
+          "role": "async-copy"
+        }
+      ]
+    }
+  },
+  "flows": [
+    { "id": "hbm-left", "from": "hbm-dram-left", "to": "die", "group": "memory", "particles": 2 },
+    { "id": "hbm-right", "from": "hbm-dram-right-active", "to": "die", "group": "memory", "particles": 2 }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights sit in HBM2e: 80 GB across 5 active stacks (of 6 package sites), ~2 TB/s aggregate.",
+      "focus": ["hbm-dram-left", "hbm-base-left", "hbm-dram-right-active", "hbm-base-right-active", "hbm-site-inactive"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. Memory controllers on each side read their attached HBM2e stacks.",
+      "focus": ["mc-left"],
+      "dot": "mc-left",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the 40 MB L2 cache, split into two 20 MB partitions.",
+      "focus": ["l2-left", "l2-right"],
+      "dot": "l2-left",
+      "stage": "l2"
+    },
+    {
+      "text": "4. cp.async (LDGSTS) copies A/B tiles straight from L2/HBM into shared memory — new in Ampere, bypassing registers; V100 needed a register round-trip for the same copy.",
+      "focus": ["async-copy"],
+      "dot": "async-copy",
+      "drill": "sm-detail",
+      "stage": "async-copy"
+    },
+    {
+      "text": "5. Tiles sit in the 192 KB L1/shared memory, ready for the Tensor Cores.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "6. A warp issues mma.sync: the 3rd-gen Tensor Core multiplies the tile in TF32 or BF16.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "7. With structured 2:4 sparsity, the Tensor Core skips zeroed weights and roughly doubles effective throughput.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "sparsity"
+    },
+    {
+      "text": "8. Partial sums accumulate in the register file; steps 4–8 repeat along K.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: CUDA cores add bias, apply activation, quantize.",
+      "focus": ["warp-scheduler", "register-file"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. Results go back to HBM; with tensor parallelism, NVLink 3 (600 GB/s) all-reduces with other GPUs.",
+      "focus": ["nvlink"],
+      "dot": "nvlink",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "11. MIG can slice the SMs, L2 and memory controllers into up to 7 isolated GPU instances for multi-tenant serving.",
+      "focus": ["sm-a", "sm-b", "gigathread"],
+      "dot": "gigathread",
+      "drill": null,
+      "stage": "mig"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "54.2 billion (GA100 die)",
+      "number": 54.2,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "dies",
+      "value": "1",
+      "number": 1,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "die_area",
+      "value": "826 mm²",
+      "number": 826,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "826 mm² (1 die)",
+      "number": 826,
+      "role": "compute-die",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "process",
+      "value": "TSMC N7 (7 nm)",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "400 W (SXM4; 250-300 W PCIe)",
+      "number": 400,
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "compute_units",
+      "value": "108 SMs (of 128 on full GA100)",
+      "number": 108,
+      "role": "sm-array",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "3rd generation",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "INT4 (1,248 TOPS dense / 2,496 TOPS with sparsity)",
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "int8_dense",
+      "value": "624 TOPS dense INT8 Tensor (1,248 with sparsity)",
+      "number": 624,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "312 TFLOPS dense BF16 / FP16 Tensor (624 with sparsity)",
+      "number": 312,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "tf32_dense",
+      "value": "156 TFLOPS dense TF32 Tensor (312 with sparsity)",
+      "number": 156,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~87 MB total (derived: 27 MB register file + 108 x 192 KB L1/shared = 20.25 MB + 40 MB L2, per Ampere whitepaper)",
+      "number": 87,
+      "role": "l2-cache",
+      "source": "https://images.nvidia.com/aem-dam/en-zz/Solutions/data-center/nvidia-ampere-architecture-whitepaper.pdf",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "40 MB (two 20 MB partitions)",
+      "number": 40,
+      "role": "l2-cache",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "80 GB HBM2e (5 active stacks)",
+      "number": 80,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "2.039 TB/s (2,039 GB/s)",
+      "number": 2.039,
+      "role": "hbm-stack",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "600 GB/s (NVLink 3)",
+      "number": 600,
+      "role": "nvlink",
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "mig_instances",
+      "value": "up to 7 MIG instances",
+      "number": 7,
+      "source": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "CoWoS",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "GA100 die 826 mm² drawn as ≈ 28.8 × 28.8 mm (square aspect estimated from die photos); HBM2e stack ≈ 11 × 11 mm (estimate)",
+    "estimate": true
+  }
+}

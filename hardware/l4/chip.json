@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 1,
+  "id": "l4",
+  "name": "NVIDIA L4",
+  "vendor": "NVIDIA",
+  "arch": "Ada Lovelace (AD104)",
+  "disclaimer": "Illustrative geometry. Die and GDDR6 package footprints drawn to a common scale (1 unit = 4 mm; estimates where noted). SM grid is symbolic (58 real SMs approximated by a 60-slot grid) and Tensor Core/RT Core counts inside one SM are symbolic, not exact layouts.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad",
+    "media": "#9a4fbf"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "PCIe card substrate",
+      "group": "substrate",
+      "geom": {
+        "type": "box",
+        "size": [18, 0.6, 13],
+        "pos": [0, 0, 0]
+      },
+      "explode": 0,
+      "desc": "T4's successor: a single-slot, low-profile PCIe card with a passive heatsink, same 1U-friendly form factor as T4. No GDDR6-to-die interposer — chips wire-bond straight to the substrate next to the AD104 die. No NVLink; this card only talks to the host over PCIe.",
+      "specs": [
+        {
+          "label": "Form factor",
+          "value": "1-slot low-profile, PCIe, passive cooling",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        },
+        {
+          "label": "Power (TDP)",
+          "value": "72 W",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "die",
+      "parent": "package",
+      "name": "AD104 die",
+      "group": "compute",
+      "geom": {
+        "type": "box",
+        "size": [4.3, 0.4, 4.3],
+        "pos": [0, 0.5, 0]
+      },
+      "explode": 2.2,
+      "desc": "A single monolithic Ada Lovelace die, cut down from the full AD104 (60 SM) to 58 SMs enabled for L4. Smaller than T4's TU104 die, but denser and carrying the much bigger L2 cache that is Ada's main architectural answer to going wider on GDDR6 instead of HBM.",
+      "specs": [
+        {
+          "label": "Transistors (full AD104)",
+          "value": "35.8 billion",
+          "source": "https://videocardz.com/newz/nvidia-confirms-ada-102-103-104-gpu-specs-ad104-has-more-transistors-than-ga102"
+        },
+        {
+          "label": "Process",
+          "value": "TSMC 4N (custom 5 nm-class)",
+          "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+        },
+        {
+          "label": "Die size (full AD104)",
+          "value": "294.5 mm²",
+          "source": "https://videocardz.com/newz/nvidia-confirms-ada-102-103-104-gpu-specs-ad104-has-more-transistors-than-ga102"
+        }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "l2",
+      "parent": "die",
+      "name": "L2 cache",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": {
+        "type": "box",
+        "size": [3.6, 0.1, 0.9],
+        "pos": [0, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "48 MB of L2 — Ada's headline change versus Turing (T4 has only ~4 MB) and the whole reason an 8x bigger on-die cache can make a 300 GB/s GDDR6 bus behave much closer to HBM for inference workloads: hot weights and activations stay on-die instead of round-tripping to GDDR6.",
+      "specs": [
+        {
+          "label": "Size",
+          "value": "48 MB",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        }
+      ],
+      "role": "l2-cache"
+    },
+    {
+      "id": "mc",
+      "parent": "die",
+      "name": "GDDR6 memory controllers",
+      "group": "memory",
+      "geom": {
+        "type": "box",
+        "size": [0.4, 0.08, 4.1],
+        "pos": [-1.9, 0.74, 0]
+      },
+      "explode": 3.2,
+      "desc": "192-bit GDDR6 PHY across 6 independent 32-bit channels. Narrower than T4's 256-bit bus, but the huge L2 in front of it means L4 doesn't need HBM-class bandwidth to keep inference throughput up.",
+      "specs": [
+        {
+          "label": "Memory type",
+          "value": "GDDR6 (not HBM)",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        },
+        {
+          "label": "Bus width",
+          "value": "192-bit",
+          "estimate": true
+        }
+      ],
+      "role": "memory-controller"
+    },
+    {
+      "id": "video-engine",
+      "parent": "die",
+      "name": "Video encode/decode/JPEG engines",
+      "group": "media",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.08, 1],
+        "pos": [1.7, 0.74, -1.5]
+      },
+      "explode": 3.2,
+      "desc": "The media block is a major focus of L4's design, not an afterthought: 2x 7th-gen NVENC encoders, 4x 5th-gen NVDEC decoders (with AV1) and 4 dedicated JPEG decoders. NVIDIA markets L4 explicitly for combined video-decode + AI-inference pipelines (transcoding, generative AI video, vision models) — a step up from T4's single NVENC/NVDEC pair.",
+      "specs": [
+        {
+          "label": "Video engines",
+          "value": "2x NVENC (7th gen), 4x NVDEC (5th gen, incl. AV1), 4x JPEG decoder",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        }
+      ],
+      "role": "video-engine"
+    },
+    {
+      "id": "pcie",
+      "parent": "die",
+      "name": "PCIe Gen4 x16",
+      "group": "io",
+      "geom": {
+        "type": "box",
+        "size": [2.2, 0.08, 0.2],
+        "pos": [0, 0.74, -2.2]
+      },
+      "explode": 3.2,
+      "desc": "Only interconnect on the board: PCIe Gen4 x16 (64 GB/s) to the host — double T4's PCIe Gen3 link, but still no NVLink. Like T4, L4 is deployed one-per-slot for inference rather than scaled across GPUs.",
+      "specs": [
+        {
+          "label": "Interconnect",
+          "value": "PCIe Gen4 x16 (64 GB/s)",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        }
+      ],
+      "role": "pcie"
+    },
+    {
+      "id": "sm-array",
+      "parent": "die",
+      "name": "SMs",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": {
+        "type": "box",
+        "size": [0.36, 0.14, 0.5],
+        "pos": [-1.26, 0.77, -1.5]
+      },
+      "repeat": {
+        "count": [10, 1, 6],
+        "step": [0.36, 0, 0.5]
+      },
+      "explode": 3.2,
+      "drill": "sm-detail",
+      "desc": "58 Streaming Multiprocessors enabled (of 60 on the full AD104 die), each with 128 CUDA cores and 4 fourth-generation Tensor Cores (232 Tensor Cores total) plus one 3rd-gen RT Core. The grid shown (60 slots) is symbolic — it does not claim an exact physical layout. Click **Open SM** to look inside.",
+      "specs": [
+        {
+          "label": "SM count",
+          "value": "58 (of 60 on full AD104)",
+          "source": "https://jarvislabs.ai/blog/l4-gpu-price"
+        }
+      ],
+      "role": "sm-array"
+    },
+    {
+      "id": "gddr-left",
+      "parent": "package",
+      "name": "GDDR6 chips (left bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [-4.6, 0.65, -2.8]
+      },
+      "repeat": {
+        "count": [1, 1, 3],
+        "step": [0, 0, 1.8]
+      },
+      "explode": 2.3,
+      "desc": "3 of the 6 discrete GDDR6 packages, wire-bonded to the substrate next to the die. Fewer, denser chips than T4: 6 chips at 4 GB each versus T4's 8 chips at 2 GB each, for 24 GB total on a narrower 192-bit bus.",
+      "specs": [
+        {
+          "label": "Capacity (whole GPU)",
+          "value": "24 GB GDDR6",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        },
+        {
+          "label": "Bandwidth (whole GPU)",
+          "value": "300 GB/s",
+          "source": "https://www.nvidia.com/en-us/data-center/l4/"
+        },
+        {
+          "label": "Chip count / arrangement",
+          "value": "6 chips (3 left, 3 right), 4 GB each; exact package layout not disclosed",
+          "estimate": true
+        }
+      ],
+      "role": "gddr-memory"
+    },
+    {
+      "id": "gddr-right",
+      "parent": "package",
+      "name": "GDDR6 chips (right bank)",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": {
+        "type": "box",
+        "size": [1, 0.3, 0.9],
+        "pos": [4.6, 0.65, -2.8]
+      },
+      "repeat": {
+        "count": [1, 1, 3],
+        "step": [0, 0, 1.8]
+      },
+      "explode": 2.3,
+      "desc": "Second bank of 3 GDDR6 packages, mirroring the left bank.",
+      "role": "gddr-memory"
+    }
+  ],
+  "scenes": {
+    "sm-detail": {
+      "anchor": "sm-array",
+      "offset": [1.5, 3.5, 1.6],
+      "components": [
+        {
+          "id": "smem",
+          "name": "L1 data cache / shared memory",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": {
+            "type": "box",
+            "size": [3.4, 0.2, 2.4],
+            "pos": [0, 0, 0]
+          },
+          "desc": "Unified, configurable L1 data cache and shared memory, same split as Turing but now backed by L4's much bigger 48 MB L2 — a tile miss here is far more likely to hit in on-die L2 than to go all the way to GDDR6.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "Up to 128 KB, configurable between L1 cache and shared memory",
+              "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+            }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "tensor-core",
+          "parent": "smem",
+          "name": "Tensor Core (4th gen)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.35, 0.9],
+            "pos": [-1.25, 0.35, -0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "4 fourth-generation Tensor Cores per SM (232 across the GPU). Ada's Tensor Core adds FP8 with the Transformer Engine on top of Turing's FP16/INT8/INT4 — FP8 is the precision this GPU was built around for inference.",
+          "specs": [
+            {
+              "label": "Supported precisions",
+              "value": "FP8 (new), FP16/BF16, TF32, INT8",
+              "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+            },
+            {
+              "label": "Peak throughput (whole GPU, with sparsity)",
+              "value": "242 TFLOPS FP16, 485 TFLOPS FP8, 485 TOPS INT8",
+              "source": "https://www.nvidia.com/en-us/data-center/l4/"
+            }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "rt-core",
+          "parent": "smem",
+          "name": "RT Core (3rd gen)",
+          "group": "compute",
+          "color": "#7a3fb0",
+          "geom": {
+            "type": "box",
+            "size": [0.9, 0.3, 0.6],
+            "pos": [1.6, 0.35, -0.55]
+          },
+          "explode": 0,
+          "desc": "One third-generation RT Core per SM (58 total), with roughly 2x the ray-triangle intersection throughput of Turing's 1st-gen RT Core. Still outside the Tensor Core inference path — relevant for L4's graphics/virtualization side, which NVIDIA also markets alongside AI inference.",
+          "specs": [
+            {
+              "label": "RT Core generation",
+              "value": "3rd generation (Ada)",
+              "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+            }
+          ],
+          "role": "rt-core"
+        },
+        {
+          "id": "register-file",
+          "parent": "smem",
+          "name": "Register file",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.25, 0.9],
+            "pos": [-1.25, 0.72, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Per-thread registers, one 64 KB slice per processing block (4 per SM) — Ada still accumulates Tensor Core results here, no separate tensor-memory like Blackwell.",
+          "specs": [
+            {
+              "label": "Size (per SM)",
+              "value": "256 KB (4 x 64 KB)",
+              "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+            }
+          ],
+          "role": "register-file"
+        },
+        {
+          "id": "warp-scheduler",
+          "parent": "register-file",
+          "name": "Warp scheduler + CUDA cores",
+          "group": "control",
+          "geom": {
+            "type": "box",
+            "size": [0.7, 0.15, 0.9],
+            "pos": [-1.25, 1, 0.55]
+          },
+          "repeat": {
+            "count": [4, 1, 1],
+            "step": [0.83, 0, 0]
+          },
+          "desc": "Each of the 4 processing blocks has its own warp scheduler. Scalar FP32/INT32 CUDA cores run the epilogue: bias, activation, requantization back to FP8/INT8.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    {
+      "id": "gddr-left-to-die",
+      "from": "gddr-left",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "gddr-right-to-die",
+      "from": "gddr-right",
+      "to": "die",
+      "group": "memory",
+      "particles": 2
+    },
+    {
+      "id": "die-to-pcie",
+      "from": "die",
+      "to": "pcie",
+      "group": "io",
+      "particles": 1
+    }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights and activations sit in GDDR6 on a narrower 192-bit bus than T4's 256-bit — L4 leans on its L2 instead of raw GDDR6 bandwidth.",
+      "focus": ["gddr-left", "gddr-right"],
+      "dot": "gddr-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "gddr"
+    },
+    {
+      "text": "2. The GDDR6 memory controller reads the bus at up to 300 GB/s — lower than T4's 320 GB/s despite more total capacity (24 GB vs 16 GB).",
+      "focus": ["mc"],
+      "dot": "mc",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. Data lands in the 48 MB L2 cache — 12x T4's L2 and the biggest architectural change from Turing to Ada. The working set (hot weights, KV cache) is far more likely to stay resident here than to need another GDDR6 trip.",
+      "focus": ["l2"],
+      "dot": "l2",
+      "stage": "l2"
+    },
+    {
+      "text": "4. Load/store units pull operand tiles from the big L2 into the SM's L1/shared memory.",
+      "focus": ["smem"],
+      "dot": "smem",
+      "drill": "sm-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "5. The 4th-gen Tensor Cores multiply the tiles — now with FP8 available alongside FP16/INT8, the precision Ada's Transformer Engine was built for.",
+      "focus": ["tensor-core"],
+      "dot": "tensor-core",
+      "drill": "sm-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "6. Partial sums accumulate in the register file (no separate tensor-memory on Ada). Steps 4-6 repeat along K.",
+      "focus": ["register-file"],
+      "dot": "register-file",
+      "drill": "sm-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "7. Each SM also has a 3rd-gen RT Core, roughly 2x Turing's ray-intersection throughput — used by L4's graphics/virtualization workloads, separate from the Tensor Core inference path.",
+      "focus": ["rt-core"],
+      "dot": "rt-core",
+      "drill": "sm-detail",
+      "stage": "rt-core"
+    },
+    {
+      "text": "8. Epilogue: CUDA cores add bias, apply activation, and requantize the result back to FP8 or INT8.",
+      "focus": ["warp-scheduler"],
+      "dot": "warp-scheduler",
+      "drill": "sm-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "9. Results write back through the memory controller to GDDR6, usually after being absorbed by the L2 first.",
+      "focus": ["mc"],
+      "dot": "mc",
+      "drill": null,
+      "stage": "writeback"
+    },
+    {
+      "text": "10. Finished output heads out over PCIe Gen4 x16 to the host — twice T4's PCIe bandwidth, still no NVLink.",
+      "focus": ["pcie"],
+      "dot": "pcie",
+      "drill": null,
+      "stage": "pcie"
+    },
+    {
+      "text": "11. For video/generative-AI pipelines, the 2x NVENC/4x NVDEC/4x JPEG engines handle encode, decode and image decode on-die — roughly 2-4x T4's single NVENC/NVDEC pair.",
+      "focus": ["video-engine"],
+      "dot": "video-engine",
+      "drill": null,
+      "stage": "video-engine"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "35.8 billion (full AD104 die; L4 uses a cut-down 58-SM variant)",
+      "number": 35.8,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-confirms-ada-102-103-104-gpu-specs-ad104-has-more-transistors-than-ga102"
+    },
+    {
+      "key": "dies",
+      "value": "1 (monolithic)",
+      "number": 1,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "die_area",
+      "value": "294.5 mm² (full AD104)",
+      "number": 294.5,
+      "role": "compute-die",
+      "source": "https://videocardz.com/newz/nvidia-confirms-ada-102-103-104-gpu-specs-ad104-has-more-transistors-than-ga102"
+    },
+    {
+      "key": "process",
+      "value": "TSMC 4N (custom 5 nm-class)",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+    },
+    {
+      "key": "tdp",
+      "value": "72 W TDP (per card)",
+      "number": 72,
+      "source": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "key": "compute_units",
+      "value": "58 SMs (of 60 on full AD104)",
+      "number": 58,
+      "role": "sm-array",
+      "source": "https://jarvislabs.ai/blog/l4-gpu-price"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "4th generation (Ada)",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+    },
+    {
+      "key": "lowest_precision",
+      "value": "FP8 (INT8 also supported; no INT4)",
+      "role": "tensor-core",
+      "source": "https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "~0.2425 PFLOPS dense (NVIDIA lists 485 TFLOPS with sparsity; dense = sparse halved)",
+      "number": 0.2425,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/",
+      "estimate": true
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "485 TFLOPS (with sparsity)",
+      "number": 485,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "key": "int8_dense",
+      "value": "~242.5 TOPS dense (NVIDIA lists 485 TOPS with sparsity; dense = sparse halved)",
+      "number": 242.5,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/",
+      "estimate": true
+    },
+    {
+      "key": "bf16_dense",
+      "value": "~121 TFLOPS dense BF16/FP16 (NVIDIA lists 242 TFLOPS with sparsity; dense = sparse halved)",
+      "number": 121,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/",
+      "estimate": true
+    },
+    {
+      "key": "tf32_dense",
+      "value": "~60 TFLOPS dense (NVIDIA lists 120 TFLOPS with sparsity; dense = sparse halved)",
+      "number": 60,
+      "role": "tensor-core",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/",
+      "estimate": true
+    },
+    {
+      "key": "l2_cache",
+      "value": "48 MB",
+      "number": 48,
+      "role": "l2-cache",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "key": "gddr_capacity",
+      "value": "24 GB GDDR6 (per card)",
+      "number": 24,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "key": "gddr_bandwidth",
+      "value": "0.3 TB/s (300 GB/s, per card)",
+      "number": 0.3,
+      "role": "gddr-memory",
+      "source": "https://www.nvidia.com/en-us/data-center/l4/"
+    },
+    {
+      "key": "packaging",
+      "value": "Standard organic substrate, PCIe card (no CoWoS/interposer, no HBM to route)",
+      "role": "substrate",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 4,
+    "basis": "Die ~17.2 x 17.2 mm square estimate from 294.5 mm² full-AD104 area (NVIDIA publishes area only, not dimensions); GDDR6 package footprint ~4 x 3.6 mm per unit (estimate)",
+    "estimate": true
+  }
+}

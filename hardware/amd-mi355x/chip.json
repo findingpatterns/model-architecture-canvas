@@ -1,0 +1,563 @@
+{
+  "schemaVersion": 1,
+  "id": "amd-mi355x",
+  "name": "AMD Instinct MI355X",
+  "vendor": "AMD",
+  "arch": "CDNA 4",
+  "disclaimer": "Die and HBM footprints drawn to a common illustrative scale (1 unit = 2.5 mm); IOD size, exact die placement and the package substrate are illustrative estimates where noted. XCD die area and core specs are sourced where marked.",
+  "groups": {
+    "compute": "#3b6fd1",
+    "memory": "#d9822b",
+    "io": "#2f9e6e",
+    "substrate": "#3f5a3c",
+    "control": "#9aa3ad"
+  },
+  "components": [
+    {
+      "id": "package",
+      "name": "OAM package substrate",
+      "group": "substrate",
+      "geom": { "type": "box", "size": [34, 0.6, 20], "pos": [0, 0, 0] },
+      "explode": 0,
+      "desc": "OCP Accelerator Module (OAM) package. Routes power and signals to the host board; the GPU draws up to 1,400 W under direct liquid cooling.",
+      "specs": [
+        {
+          "label": "Form factor",
+          "value": "OAM, direct liquid cooled",
+          "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf"
+        },
+        {
+          "label": "TBP",
+          "value": "1,400 W",
+          "source": "https://inferencex.semianalysis.com/chips/mi355x"
+        },
+        {
+          "label": "Host interface",
+          "value": "PCIe 5.0 x16",
+          "source": "https://www.inkl.com/news/amd-reveals-core-specs-for-instinct-mi355x-cdna4-ai-accelerator-slated-for-shipping-in-the-second-half-of-2025"
+        }
+      ],
+      "role": "substrate"
+    },
+    {
+      "id": "interposer",
+      "parent": "package",
+      "name": "Package interposer",
+      "group": "substrate",
+      "color": "#b8b2a4",
+      "geom": { "type": "box", "size": [30, 0.3, 16], "pos": [0, 0.45, 0] },
+      "explode": 1,
+      "desc": "Silicon interposer / redistribution layer carrying the fine wiring between the 2 IODs, 8 XCDs and 8 HBM3E stacks. CDNA 4 cuts the IOD count from 4 (MI300X) to 2, shortening the on-package Infinity Fabric hop count.",
+      "specs": [
+        { "label": "IOD count vs MI300X", "value": "2 (down from 4)", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" }
+      ],
+      "role": "interposer"
+    },
+    {
+      "id": "iod-left",
+      "parent": "interposer",
+      "name": "IOD 0 (I/O die)",
+      "group": "io",
+      "geom": { "type": "box", "size": [9, 0.5, 9], "pos": [-6, 0.8, 0] },
+      "explode": 1.6,
+      "desc": "One of 2 I/O dies on TSMC N6. Hosts HBM3E memory controllers, a slice of the 256 MB Infinity Cache, Infinity Fabric links, and the 3D hybrid-bond pads that the 4 stacked XCDs above it attach to. Exact die area is not publicly disclosed.",
+      "specs": [
+        { "label": "Process", "value": "TSMC N6", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" },
+        { "label": "XCDs stacked on this IOD", "value": "4", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" },
+        { "label": "Die area", "value": "not disclosed; drawn large enough to host 4 stacked XCDs", "estimate": true }
+      ],
+      "role": "io-die"
+    },
+    {
+      "id": "iod-right",
+      "parent": "interposer",
+      "name": "IOD 1 (I/O die)",
+      "group": "io",
+      "geom": { "type": "box", "size": [9, 0.5, 9], "pos": [6, 0.8, 0] },
+      "explode": 1.6,
+      "desc": "Second I/O die on TSMC N6, mirrors IOD 0 and hosts the other 4 XCDs.",
+      "role": "io-die"
+    },
+    {
+      "id": "infinity-cache-left",
+      "parent": "iod-left",
+      "name": "Infinity Cache slice (IOD 0)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [8, 0.06, 8], "pos": [-6, 1.1, 0] },
+      "explode": 2.2,
+      "desc": "Memory-side last-level cache (AMD Infinity Cache / MALL) built into the IOD. Shared by all 8 XCDs over the Infinity Fabric; absorbs repeated HBM reads such as re-read weights during decode.",
+      "specs": [
+        { "label": "Total Infinity Cache (both IODs)", "value": "256 MB", "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf" }
+      ],
+      "role": "infinity-cache"
+    },
+    {
+      "id": "infinity-cache-right",
+      "parent": "iod-right",
+      "name": "Infinity Cache slice (IOD 1)",
+      "group": "memory",
+      "color": "#e0a33a",
+      "geom": { "type": "box", "size": [8, 0.06, 8], "pos": [6, 1.1, 0] },
+      "explode": 2.2,
+      "desc": "Infinity Cache slice on IOD 1, mirrors IOD 0's slice.",
+      "role": "infinity-cache"
+    },
+    {
+      "id": "mc-left",
+      "parent": "iod-left",
+      "name": "HBM3E memory controllers (IOD 0)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.5, 0.08, 8], "pos": [-10.5, 1.1, 0] },
+      "explode": 2.4,
+      "desc": "Memory controllers + PHY turning read/write requests into signals for the 4 HBM3E stacks next to this IOD.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "mc-right",
+      "parent": "iod-right",
+      "name": "HBM3E memory controllers (IOD 1)",
+      "group": "memory",
+      "geom": { "type": "box", "size": [0.5, 0.08, 8], "pos": [10.5, 1.1, 0] },
+      "explode": 2.4,
+      "desc": "Memory controllers + PHY for the 4 HBM3E stacks next to IOD 1.",
+      "role": "memory-controller"
+    },
+    {
+      "id": "ifab-link",
+      "parent": "package",
+      "name": "Infinity Fabric (IOD-to-IOD)",
+      "group": "io",
+      "geom": { "type": "box", "size": [2, 0.3, 0.6], "pos": [0, 0.8, 0] },
+      "explode": 1.9,
+      "desc": "4th-generation on-package Infinity Fabric linking the 2 IODs so every XCD can reach any HBM stack or Infinity Cache slice. With only 2 IODs (vs 4 on MI300X) a remote access needs at most one hop instead of two.",
+      "specs": [
+        { "label": "Off-package Infinity Fabric", "value": "7 links x 153 GB/s (4th gen)", "source": "https://www.inkl.com/news/amd-reveals-core-specs-for-instinct-mi355x-cdna4-ai-accelerator-slated-for-shipping-in-the-second-half-of-2025" }
+      ],
+      "role": "die-to-die-link"
+    },
+    {
+      "id": "xcd-left",
+      "parent": "iod-left",
+      "name": "XCDs (IOD 0)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [4.2, 0.4, 4.2], "pos": [-8.25, 1.33, -2.25] },
+      "repeat": { "count": [2, 1, 2], "step": [4.5, 0, 4.5] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "4 of the 8 Accelerator Complex Dies (XCDs), 3D hybrid-bonded on top of IOD 0. Each XCD is a CDNA 4 compute die on TSMC N3P with 32 active Compute Units. Click **Open XCD** to look inside.",
+      "specs": [
+        { "label": "Die area (per XCD)", "value": "110 mm2 (N3P)", "source": "https://www.tomshardware.com/tech-industry/semiconductors/inside-the-instinct-mi355x" },
+        { "label": "Active CUs per XCD", "value": "32 (of 36 physical)", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" }
+      ],
+      "role": "compute-die"
+    },
+    {
+      "id": "xcd-right",
+      "parent": "iod-right",
+      "name": "XCDs (IOD 1)",
+      "group": "compute",
+      "color": "#6f9ef0",
+      "geom": { "type": "box", "size": [4.2, 0.4, 4.2], "pos": [3.75, 1.33, -2.25] },
+      "repeat": { "count": [2, 1, 2], "step": [4.5, 0, 4.5] },
+      "explode": 3.2,
+      "drill": "xcd-detail",
+      "desc": "Other 4 XCDs, 3D hybrid-bonded on top of IOD 1.",
+      "role": "compute-die"
+    },
+    {
+      "id": "hbm-base-left",
+      "parent": "interposer",
+      "name": "HBM3E base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [-14, 0.66, -4.8] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 3.2] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM3E stack: the PHY that talks to the IOD 0 memory controller through the interposer.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-left",
+      "parent": "hbm-base-left",
+      "name": "HBM3E DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [-14, 0.78, -4.8] },
+      "repeat": { "count": [1, 12, 4], "step": [0, 0.1, 3.2], "spread": 0.22 },
+      "explode": 2.3,
+      "desc": "12-high stacked HBM3E DRAM dies joined by TSVs. 4 stacks feed IOD 0. LLM decoding is usually bound by this bandwidth: every token re-reads the weights.",
+      "specs": [
+        { "label": "Capacity (whole GPU)", "value": "288 GB across 8 stacks (12-Hi)", "source": "https://inferencex.semianalysis.com/chips/mi355x" },
+        { "label": "Bandwidth (whole GPU)", "value": "8 TB/s", "source": "https://inferencex.semianalysis.com/chips/mi355x" }
+      ],
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-base-right",
+      "parent": "interposer",
+      "name": "HBM3E base die",
+      "group": "memory",
+      "color": "#8a5a1c",
+      "geom": { "type": "box", "size": [2.75, 0.12, 2.75], "pos": [14, 0.66, -4.8] },
+      "repeat": { "count": [1, 1, 4], "step": [0, 0, 3.2] },
+      "explode": 2,
+      "desc": "Logic base die at the bottom of each HBM3E stack feeding IOD 1.",
+      "role": "hbm-stack"
+    },
+    {
+      "id": "hbm-dram-right",
+      "parent": "hbm-base-right",
+      "name": "HBM3E DRAM layers",
+      "group": "memory",
+      "color": "#c98a2e",
+      "geom": { "type": "box", "size": [2.75, 0.1, 2.75], "pos": [14, 0.78, -4.8] },
+      "repeat": { "count": [1, 12, 4], "step": [0, 0.1, 3.2], "spread": 0.22 },
+      "explode": 2.3,
+      "desc": "12-high stacked HBM3E DRAM dies feeding IOD 1.",
+      "role": "hbm-stack"
+    }
+  ],
+  "scenes": {
+    "xcd-detail": {
+      "anchor": "xcd-left",
+      "offset": [0, 4, 0],
+      "components": [
+        {
+          "id": "l2-xcd",
+          "name": "L2 cache (per XCD)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [4, 0.15, 4], "pos": [0, 0, 0] },
+          "desc": "Shared L2 cache local to this XCD, sitting between the Infinity Cache/HBM below and the 32 Compute Units. Exact capacity per XCD is not published by AMD.",
+          "specs": [
+            { "label": "Scope", "value": "Shared by all CUs within one XCD", "estimate": true }
+          ],
+          "role": "l2-cache"
+        },
+        {
+          "id": "cu-array",
+          "parent": "l2-xcd",
+          "name": "Compute Units (32 per XCD)",
+          "group": "compute",
+          "color": "#6f9ef0",
+          "geom": { "type": "box", "size": [0.35, 0.12, 0.4], "pos": [-1.47, 0.3, -1.47] },
+          "repeat": { "count": [8, 1, 4], "step": [0.42, 0, 0.42] },
+          "drill": "cu-detail",
+          "desc": "32 active CDNA 4 Compute Units per XCD (8x4 grid shown; symbolic layout). Each CU holds Matrix Cores (MFMA), vector/scalar ALUs, a 32 KB L1 vector cache and 160 KB of Local Data Share. Click **Open CU** to look inside.",
+          "specs": [
+            { "label": "CU count (per XCD)", "value": "32 active of 36 physical", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" },
+            { "label": "Total CUs (8 XCDs)", "value": "256", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" }
+          ],
+          "role": "sm-array"
+        }
+      ]
+    },
+    "cu-detail": {
+      "anchor": "xcd-left",
+      "offset": [6, 4, 0],
+      "components": [
+        {
+          "id": "lds",
+          "name": "Local Data Share (LDS)",
+          "group": "memory",
+          "color": "#e0a33a",
+          "geom": { "type": "box", "size": [2.6, 0.2, 2 ], "pos": [0, 0, 0] },
+          "desc": "Programmable scratchpad shared by the wavefronts of a workgroup, equivalent role to shared memory on other GPUs. CDNA 4 grows LDS to 160 KB per CU (up from 64 KB on CDNA 3) and adds wider GLOBAL_LOAD_LDS transfers plus read-with-transpose, so A/B tiles land here ready for the Matrix Cores.",
+          "specs": [
+            { "label": "Size (per CU)", "value": "160 KB (up from 64 KB on CDNA 3)", "source": "https://chipsandcheese.com/p/amds-cdna-4-architecture-announcement" }
+          ],
+          "role": "shared-memory"
+        },
+        {
+          "id": "l1-vector-cache",
+          "parent": "lds",
+          "name": "L1 vector cache",
+          "group": "memory",
+          "color": "#f0c060",
+          "geom": { "type": "box", "size": [2.6, 0.15, 0.6], "pos": [0, 0.3, 1.3] },
+          "desc": "Per-CU L1 cache for vector memory accesses, backed by the XCD's shared L2.",
+          "specs": [
+            { "label": "Size (per CU)", "value": "32 KB", "source": "https://chipsandcheese.com/p/amds-cdna-4-architecture-announcement" }
+          ],
+          "role": "l1-cache"
+        },
+        {
+          "id": "matrix-core",
+          "parent": "lds",
+          "name": "Matrix Core (MFMA)",
+          "group": "compute",
+          "color": "#2a58b8",
+          "geom": { "type": "box", "size": [0.55, 0.35, 0.8], "pos": [-0.9, 0.75, -0.5] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "4 Matrix Cores per CU execute MFMA (Matrix Fused Multiply-Add) instructions on whole tiles. CDNA 4 adds native MXFP4/MXFP6 micro-scaled formats alongside FP8/FP16/BF16, roughly doubling per-CU low-precision throughput over CDNA 3. Almost all AI FLOPs happen here.",
+          "specs": [
+            { "label": "New low-precision formats", "value": "MXFP4, MXFP6 (plus FP8, FP16, BF16)", "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/" },
+            { "label": "Dense MXFP4 (whole GPU)", "value": "~10.1 PFLOPS", "source": "https://inferencex.semianalysis.com/chips/mi355x" }
+          ],
+          "role": "tensor-core"
+        },
+        {
+          "id": "accumulator",
+          "parent": "matrix-core",
+          "name": "Matrix accumulator registers (AGPRs)",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.55, 0.2, 0.8], "pos": [-0.9, 0.55, 0.5] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Dedicated accumulator register file (AccVGPRs) where the Matrix Core keeps running partial sums across the K dimension, separate from the general vector register file.",
+          "role": "accumulator-register"
+        },
+        {
+          "id": "vgpr",
+          "parent": "accumulator",
+          "name": "Vector register file (VGPRs)",
+          "group": "memory",
+          "color": "#d07a40",
+          "geom": { "type": "box", "size": [0.55, 0.15, 0.8], "pos": [-0.9, 0.3, 0.5] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Per-wavefront vector registers. Final MFMA results are copied here for the epilogue.",
+          "role": "register-file"
+        },
+        {
+          "id": "scalar-alu",
+          "parent": "vgpr",
+          "name": "Scalar/vector ALU + scheduler",
+          "group": "control",
+          "geom": { "type": "box", "size": [0.55, 0.12, 0.8], "pos": [-0.9, 0.1, 0.5] },
+          "repeat": { "count": [4, 1, 1], "step": [0.6, 0, 0] },
+          "desc": "Issues wavefronts and runs the epilogue on scalar/vector ALUs: bias add, activation, quantization back to a storage format.",
+          "role": "warp-scheduler"
+        }
+      ]
+    }
+  },
+  "flows": [
+    { "id": "hbm-to-iod-left", "from": "hbm-dram-left", "to": "iod-left", "group": "memory", "particles": 2 },
+    { "id": "hbm-to-iod-right", "from": "hbm-dram-right", "to": "iod-right", "group": "memory", "particles": 2 },
+    { "id": "iod-to-iod", "from": "iod-left", "to": "iod-right", "group": "io", "particles": 3 },
+    { "id": "iod-to-xcd-left", "from": "iod-left", "to": "xcd-left", "group": "compute", "particles": 2 },
+    { "id": "iod-to-xcd-right", "from": "iod-right", "to": "xcd-right", "group": "compute", "particles": 2 }
+  ],
+  "steps": [
+    {
+      "text": "1. Weights W and activations X sit in the 288 GB HBM3E pool (8 stacks, 12-Hi).",
+      "focus": ["hbm-dram-left", "hbm-dram-right", "hbm-base-left", "hbm-base-right"],
+      "dot": "hbm-dram-left",
+      "explode": 0.6,
+      "drill": null,
+      "stage": "hbm"
+    },
+    {
+      "text": "2. The local IOD's memory controller reads the 4 HBM3E stacks next to it.",
+      "focus": ["mc-left"],
+      "dot": "mc-left",
+      "stage": "memory-controller"
+    },
+    {
+      "text": "3. If the tile lives on the other IOD's HBM, it crosses the on-package Infinity Fabric link between the 2 IODs (at most 1 hop, vs up to 2 on MI300X's 4-IOD layout).",
+      "focus": ["ifab-link"],
+      "dot": "ifab-link",
+      "stage": "die-to-die"
+    },
+    {
+      "text": "4. Data lands in the 256 MB Infinity Cache, shared by all 8 XCDs over the fabric.",
+      "focus": ["infinity-cache-left"],
+      "dot": "infinity-cache-left",
+      "stage": "infinity-cache"
+    },
+    {
+      "text": "5. The owning XCD pulls the tile into its local, shared L2 cache.",
+      "focus": ["l2-xcd"],
+      "dot": "l2-xcd",
+      "drill": "xcd-detail",
+      "stage": "l2"
+    },
+    {
+      "text": "6. A Compute Unit copies A/B tiles from L2 into its 160 KB Local Data Share (LDS).",
+      "focus": ["lds"],
+      "dot": "lds",
+      "drill": "cu-detail",
+      "stage": "shared-memory"
+    },
+    {
+      "text": "7. The CU issues an MFMA instruction: its 4 Matrix Cores multiply the tiles, e.g. in MXFP4.",
+      "focus": ["matrix-core"],
+      "dot": "matrix-core",
+      "drill": "cu-detail",
+      "stage": "tensor-core"
+    },
+    {
+      "text": "8. Partial sums accumulate in the dedicated AccVGPR accumulator registers, not the general VGPRs. Steps 6-8 repeat along K.",
+      "focus": ["accumulator"],
+      "dot": "accumulator",
+      "drill": "cu-detail",
+      "stage": "accumulate"
+    },
+    {
+      "text": "9. Epilogue: results move AccVGPR -> VGPR; scalar/vector ALUs add bias, apply activation, quantize.",
+      "focus": ["vgpr", "scalar-alu"],
+      "dot": "vgpr",
+      "drill": "cu-detail",
+      "stage": "epilogue"
+    },
+    {
+      "text": "10. Results flow back L2 -> Infinity Cache -> HBM3E; across GPUs, Infinity Fabric (7 links x 153 GB/s) all-reduces the result.",
+      "focus": ["ifab-link"],
+      "dot": "ifab-link",
+      "drill": null,
+      "stage": "writeback"
+    }
+  ],
+  "summary": [
+    {
+      "key": "transistors",
+      "value": "185 billion (whole package: 8 XCDs + 2 IODs)",
+      "number": 185,
+      "role": "compute-die",
+      "source": "https://wccftech.com/amd-instinct-mi350-gpuai-hardware-powerhouse-3nm-3d-chiplet-cdna-4-185-billion-transistors-1400w-tbp-over-4000b-llm-support/"
+    },
+    {
+      "key": "dies",
+      "value": "10 (8 XCD compute dies on N3P + 2 IOD on N6)",
+      "number": 10,
+      "role": "compute-die",
+      "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/"
+    },
+    {
+      "key": "die_area",
+      "value": "110 mm2 per XCD (N3P); IOD area not disclosed",
+      "number": 110,
+      "role": "compute-die",
+      "source": "https://www.tomshardware.com/tech-industry/semiconductors/inside-the-instinct-mi355x"
+    },
+    {
+      "key": "compute_silicon",
+      "value": "~880 mm2 (8 XCDs only; excludes undisclosed IOD area)",
+      "number": 880,
+      "role": "compute-die",
+      "estimate": true
+    },
+    {
+      "key": "process",
+      "value": "TSMC N3P (XCD) / N6 (IOD)",
+      "role": "compute-die",
+      "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/"
+    },
+    {
+      "key": "tdp",
+      "value": "1,400 W typical board power (liquid-cooled)",
+      "number": 1400,
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    },
+    {
+      "key": "compute_units",
+      "value": "256 CUs (32 active per XCD x 8 XCDs)",
+      "number": 256,
+      "role": "sm-array",
+      "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/"
+    },
+    {
+      "key": "tensor_core_gen",
+      "value": "CDNA 4 Matrix Core (MFMA)",
+      "role": "tensor-core",
+      "estimate": true
+    },
+    {
+      "key": "lowest_precision",
+      "value": "MXFP4",
+      "role": "tensor-core",
+      "source": "https://www.servethehome.com/amd-mi350-and-cdna-4-architecture-launched-with-rocm-7/"
+    },
+    {
+      "key": "fp4_dense",
+      "value": "~10.1 PFLOPS dense MXFP4 (per GPU)",
+      "number": 10.1,
+      "role": "tensor-core",
+      "source": "https://inferencex.semianalysis.com/chips/mi355x"
+    },
+    {
+      "key": "fp8_dense",
+      "value": "5.0 PFLOPS dense OCP-FP8 / MXFP8, per GPU",
+      "number": 5,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    },
+    {
+      "key": "fp8_sparse",
+      "value": "10.1 PFLOPS OCP-FP8 with structured sparsity, per GPU",
+      "number": 10.1,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    },
+    {
+      "key": "int8_dense",
+      "value": "5,000 TOPS dense INT8 matrix (5 POPS), per GPU",
+      "number": 5000,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    },
+    {
+      "key": "bf16_dense",
+      "value": "2,500 TFLOPS dense BF16 / FP16 matrix (2.5 PFLOPS), per GPU",
+      "number": 2500,
+      "role": "tensor-core",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html"
+    },
+    {
+      "key": "on_chip_sram",
+      "value": "~288 MB: 256 MB Infinity Cache + 32 MB L2 (8 x 4 MB); excludes L1, LDS and register files",
+      "number": 288,
+      "role": "infinity-cache",
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-4-architecture-whitepaper.pdf",
+      "estimate": true
+    },
+    {
+      "key": "hbm_capacity",
+      "value": "288 GB HBM3E (12-Hi, 8 stacks)",
+      "number": 288,
+      "role": "hbm-stack",
+      "source": "https://inferencex.semianalysis.com/chips/mi355x"
+    },
+    {
+      "key": "hbm_bandwidth",
+      "value": "8 TB/s",
+      "number": 8,
+      "role": "hbm-stack",
+      "source": "https://inferencex.semianalysis.com/chips/mi355x"
+    },
+    {
+      "key": "scale_up_bandwidth",
+      "value": "~1,075 GB/s aggregate Infinity Fabric (7 links x 153.6 GB/s)",
+      "number": 1075,
+      "role": "die-to-die-link",
+      "source": "https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html",
+      "estimate": true
+    },
+    {
+      "key": "c2c_bandwidth",
+      "value": "128 GB/s PCIe 5.0 x16 host link (bidirectional)",
+      "number": 128,
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-4-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "mig_instances",
+      "value": "8 compute partitions (CPX: one per XCD)",
+      "number": 8,
+      "role": "compute-die",
+      "source": "https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/white-papers/amd-cdna-4-architecture-whitepaper.pdf"
+    },
+    {
+      "key": "packaging",
+      "value": "3D hybrid-bonded XCD-on-IOD chiplets + silicon interposer",
+      "role": "interposer",
+      "estimate": true
+    }
+  ],
+  "scale": {
+    "mmPerUnit": 2.5,
+    "basis": "XCD die area measured at 110 mm2 (source); IOD, package and HBM footprint sizes are illustrative estimates",
+    "estimate": true
+  }
+}

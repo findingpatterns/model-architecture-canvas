@@ -1,0 +1,8 @@
+{
+  "name": "NVIDIA L4",
+  "description": "Ada Lovelace AD104, T4's successor: 72 W inference card, 58 SMs with 4th-gen Tensor Cores (adds FP8), 24 GB GDDR6, 48 MB L2, no HBM, no NVLink.",
+  "kind": "hardware",
+  "tags": ["nvidia", "ada-lovelace", "gpu", "inference", "gddr6"],
+  "source": "https://www.nvidia.com/en-us/data-center/l4/",
+  "author": { "name": "ModelCanvas", "github": "" }
+}
