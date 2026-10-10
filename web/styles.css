@@ -259,6 +259,52 @@ html, body {
 .card-open { color: var(--green); margin-left: auto; }
 
 .gallery-section { margin-top: 40px; }
+
+/* Search + facet filters above the active grid. */
+.filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+.filter-search {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--hair-paper);
+  border-radius: 10px;
+  background: var(--ink-raise);
+  color: var(--paper);
+  font: 400 15px "Inter", system-ui, sans-serif;
+}
+.filter-search::placeholder { color: var(--mute-paper); }
+.filter-search:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; border-color: transparent; }
+.filter-facets { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+.filter-group { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.filter-label { font-size: 11px; color: var(--mute-paper); text-transform: uppercase; margin-right: 2px; }
+.filter-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--hair-paper);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--paper);
+  font: 400 13px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+.filter-chip:hover:not(:disabled) { border-color: var(--green); }
+.filter-chip:disabled { opacity: 0.35; cursor: default; }
+.filter-chip.is-active { background: var(--green); border-color: var(--green); color: #05140c; }
+.filter-chip:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.filter-count { font-size: 11px; opacity: 0.7; }
+.filter-meta { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--mute-paper); }
+.filter-clear {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--green-light);
+  font-size: 12px;
+  cursor: pointer;
+}
+.filter-clear:hover { text-decoration: underline; }
 .gallery-section-title {
   font-size: 11px;
   font-weight: 400;
