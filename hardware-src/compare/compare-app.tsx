@@ -23,7 +23,7 @@ export function CompareApp({ ids, reducedMotion }: { ids: string[]; reducedMotio
       .catch((e) => setError(e.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (error) return <div className="center-msg"><p>{error}</p><a className="btn" href="../">← Gallery</a></div>;
+  if (error) return <div className="center-msg"><p>{error}</p><a className="btn" href="../?category=hardware">← Gallery</a></div>;
   if (!chips) return <div className="center-msg"><p className="muted">Loading chips…</p></div>;
   return <CompareLoaded chips={chips} reducedMotion={reducedMotion} />;
 }
@@ -83,7 +83,7 @@ function CompareLoaded({ chips, reducedMotion }: { chips: [Chip, Chip]; reducedM
   return (
     <div className="compare-app">
       <header className="topbar">
-        <a className="btn ghost" href="../">← Gallery</a>
+        <a className="btn ghost" href="../?category=hardware">← Gallery</a>
         <div className="title">
           <span className="title-name">{a.name} vs {b.name}</span>
           <span className="title-sub mono">

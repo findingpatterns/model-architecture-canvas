@@ -18,6 +18,27 @@
 <body>
   <!-- Gallery view (landing): grid of model cards. Shown when there is no ?model. -->
   <main id="gallery-view" class="gallery-view">
+    <!-- Category switch: the gallery shows one catalog at a time (?category=models|hardware). -->
+    <nav class="category-bar" aria-label="Catalog category">
+      <div class="category-tabs" role="tablist">
+        <button id="category-models" class="category-tab" type="button" role="tab" data-category="models">
+          Models <span id="category-models-count" class="category-count mono"></span>
+        </button>
+        <button id="category-hardware" class="category-tab" type="button" role="tab" data-category="hardware">
+          Hardware <span id="category-hardware-count" class="category-count mono"></span>
+        </button>
+      </div>
+      <div class="gallery-actions">
+        <a class="gh-cta" href="https://github.com/findingpatterns/model-architecture-canvas" target="_blank" rel="noopener noreferrer">
+          <svg class="gh-cta-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span class="gh-cta-text">Star on GitHub</span>
+          <span class="gh-cta-star">★</span>
+        </a>
+        <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
+      </div>
+    </nav>
     <header class="gallery-head">
       <div class="gallery-head-text">
         <div class="brand">
@@ -43,23 +64,15 @@
         </p>
         <p id="gallery-lead" class="gallery-lead"></p>
       </div>
-      <div class="gallery-actions">
-        <a class="gh-cta" href="https://github.com/findingpatterns/model-architecture-canvas" target="_blank" rel="noopener noreferrer">
-          <svg class="gh-cta-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true">
-            <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          <span class="gh-cta-text">Star on GitHub</span>
-          <span class="gh-cta-star">★</span>
-        </a>
-        <button id="theme-toggle-gallery" class="theme-toggle" aria-label="Toggle dark / light theme" aria-pressed="false"></button>
-      </div>
     </header>
-    <div class="gallery-section-head">
-      <h2 id="models-heading" class="gallery-section-title mono" hidden>Models</h2>
-      <a id="model-compare-link" class="compare-link mono" hidden></a>
-    </div>
-    <nav id="gallery-grid" class="gallery-grid" aria-label="Models"></nav>
-    <section id="hardware-section" class="gallery-section" aria-labelledby="hardware-heading" hidden>
+    <section id="models-section" class="gallery-section" aria-labelledby="models-heading" role="tabpanel">
+      <div class="gallery-section-head">
+        <h2 id="models-heading" class="gallery-section-title mono">Models · architecture diagrams</h2>
+        <a id="model-compare-link" class="compare-link mono" hidden></a>
+      </div>
+      <nav id="gallery-grid" class="gallery-grid" aria-label="Models"></nav>
+    </section>
+    <section id="hardware-section" class="gallery-section" aria-labelledby="hardware-heading" role="tabpanel" hidden>
       <div class="gallery-section-head">
         <h2 id="hardware-heading" class="gallery-section-title mono">Hardware · explore in 3D</h2>
         <a id="compare-link" class="compare-link mono" hidden></a>
