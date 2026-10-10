@@ -13,6 +13,8 @@ const required = [
   "web/styles.css",
   "web/compare-view.js",
   "web/model-summary.js",
+  "web/gallery-filters.js",
+  "web/gallery-filter-bar.js",
   "web/canvases",
   "web/editor/index.html",
   "web/hardware/index.html",

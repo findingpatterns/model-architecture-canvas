@@ -20,6 +20,7 @@ import {
   Controls,
 } from "https://unpkg.com/json-canvas-viewer@4.3.2";
 import { el, renderGallery as renderGalleryView, isHardware, selectCategory } from "./gallery.js";
+import { createFilterBar } from "./gallery-filter-bar.js";
 import { showCompare, changeCompareTheme, defaultPartner, compareUrl } from "./compare-view.js";
 import { parseComparePair } from "./model-summary.js";
 
@@ -146,9 +147,18 @@ function showGallery() {
   els.canvasView.hidden = true;
   els.galleryView.hidden = false;
   renderGalleryView(CATALOG, els);
-  selectCategory(new URLSearchParams(location.search).get("category"), els, { updateUrl: false });
+  filterBar = createFilterBar({
+    root: document.getElementById("filter-bar"),
+    catalog: CATALOG,
+    grids: { models: els.galleryGrid, hardware: els.hardwareGrid },
+  });
+  const category = selectCategory(new URLSearchParams(location.search).get("category"), els, { updateUrl: false });
+  filterBar.show(category, { fromUrl: true });
 }
-for (const tab of els.categoryTabs) tab.addEventListener("click", () => selectCategory(tab.dataset.category, els));
+let filterBar = null;
+for (const tab of els.categoryTabs) {
+  tab.addEventListener("click", () => filterBar?.show(selectCategory(tab.dataset.category, els)));
+}
 
 function showCanvas(entry, levelIdx) {
   activeEntry = entry;

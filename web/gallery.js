@@ -31,6 +31,7 @@ function badge(entry) {
 function card(entry) {
   const hw = isHardware(entry);
   const a = el("a", "model-card");
+  a.dataset.id = entry.id; // matched by the search/filter bar
   a.href = hw ? `hardware/?chip=${encodeURIComponent(entry.id)}` : `?model=${encodeURIComponent(entry.id)}`;
 
   const head = el("div", "card-head");
