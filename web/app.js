@@ -19,7 +19,7 @@ import {
   Minimap,
   Controls,
 } from "https://unpkg.com/json-canvas-viewer@4.3.2";
-import { el, renderGallery as renderGalleryView, isHardware } from "./gallery.js";
+import { el, renderGallery as renderGalleryView, isHardware, selectCategory } from "./gallery.js";
 import { showCompare, changeCompareTheme, defaultPartner, compareUrl } from "./compare-view.js";
 import { parseComparePair } from "./model-summary.js";
 
@@ -34,6 +34,10 @@ const els = {
   galleryLead: document.getElementById("gallery-lead"),
   hardwareGrid: document.getElementById("hardware-grid"),
   hardwareSection: document.getElementById("hardware-section"),
+  modelsSection: document.getElementById("models-section"),
+  categoryTabs: document.querySelectorAll(".category-tab"),
+  categoryModelsCount: document.getElementById("category-models-count"),
+  categoryHardwareCount: document.getElementById("category-hardware-count"),
   modelsHeading: document.getElementById("models-heading"),
   open3d: document.getElementById("open-3d"),
   openGraph: document.getElementById("open-graph"),
@@ -142,7 +146,9 @@ function showGallery() {
   els.canvasView.hidden = true;
   els.galleryView.hidden = false;
   renderGalleryView(CATALOG, els);
+  selectCategory(new URLSearchParams(location.search).get("category"), els, { updateUrl: false });
 }
+for (const tab of els.categoryTabs) tab.addEventListener("click", () => selectCategory(tab.dataset.category, els));
 
 function showCanvas(entry, levelIdx) {
   activeEntry = entry;

@@ -18,7 +18,7 @@ export function ViewerToolbar({ chipId, onResetView, theme, onToggleTheme }: Pro
 
   return (
     <header className="topbar">
-      <a className="btn ghost" href="../">← Gallery</a>
+      <a className="btn ghost" href="../?category=hardware">← Gallery</a>
       <div className="title">
         <span className="title-name">{chip.name}</span>
         <span className="title-sub mono">{chip.arch} · 3D</span>

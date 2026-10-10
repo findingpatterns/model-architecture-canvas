@@ -55,6 +55,27 @@ function card(entry) {
   return a;
 }
 
+export const CATEGORIES = ["models", "hardware"];
+
+// Show one catalog section; the active tab is reflected in ?category= (models is the default).
+export function selectCategory(category, els, { updateUrl = true } = {}) {
+  const active = CATEGORIES.includes(category) ? category : "models";
+  els.modelsSection.hidden = active !== "models";
+  els.hardwareSection.hidden = active !== "hardware";
+  for (const tab of els.categoryTabs) {
+    const on = tab.dataset.category === active;
+    tab.classList.toggle("is-active", on);
+    tab.setAttribute("aria-selected", String(on));
+  }
+  if (updateUrl) {
+    const url = new URL(location.href);
+    if (active === "models") url.searchParams.delete("category");
+    else url.searchParams.set("category", active);
+    history.replaceState(null, "", url);
+  }
+  return active;
+}
+
 function lead(models, chips) {
   const parts = [];
   if (models.length === 1) parts.push(`the ${models[0].name} architecture`);
@@ -81,9 +102,10 @@ export function renderGallery(catalog, els) {
     els.modelCompareLink.textContent = `Compare ${comparable[0].name} vs ${comparable[1].name} →`;
   }
 
+  els.categoryModelsCount.textContent = String(models.length);
+  els.categoryHardwareCount.textContent = String(chips.length);
   els.hardwareGrid.replaceChildren();
-  els.hardwareSection.hidden = chips.length === 0;
-  els.modelsHeading.hidden = chips.length === 0;
+  if (chips.length === 0) els.hardwareGrid.appendChild(el("p", "gallery-empty", "No chips yet — open a PR adding a folder under hardware/ to contribute one."));
   for (const c of chips) els.hardwareGrid.appendChild(card(c));
   // One-click comparison of the first two chips (the 3D view lets you pick any pair).
   els.compareLink.hidden = chips.length < 2;

@@ -40,7 +40,7 @@ export function App() {
   }, []);
 
   if (compareIds) return <CompareApp ids={compareIds} reducedMotion={reducedMotion} />;
-  if (error) return <div className="center-msg"><p>{error}</p><a className="btn" href="../">← Gallery</a></div>;
+  if (error) return <div className="center-msg"><p>{error}</p><a className="btn" href="../?category=hardware">← Gallery</a></div>;
   if (!chip) return <div className="center-msg"><p className="muted">Loading chip…</p></div>;
   return (
     <ChipStoreProvider init={initialState(chip, reducedMotion)}>
